@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#2d9f43</color>
+    <color name="colorPrimaryDark">#27873a</color>
+    <color name="colorAccent">#ffffff</color>
+    <color name="verde_escuro">#438446</color>
+    <color name="vermelho">#f7e70808</color>
+    <color name="white">#fff</color>
+    <color name="cinzaPataDeElefanteQuaseBranco">#f5edecec</color>
+    <color name="cinzaLetra">#f5c2c2c2</color>
+    <color name="cinzaEscuro">#f57c7c7c</color>
+    <color name="selectedIcon">#2d9f43</color>
+    <color name="colorAccentWhite">#2d9f43</color>
+    <color name="speech_bubble_agent">#2d9f43</color>
+</resources>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#b7000000"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context="br.com.joaoapps.faciplac.carona.view.activity.dialogs.MessageActivity">
+
+
+    <ImageView
+        android:id="@+id/img_icon"
+        android:src="@drawable/correct"
+        android:layout_width="60dp"
+        android:layout_height="60dp" />
+    <TextView
+        android:id="@+id/tv_title"
+        android:visibility="gone"
+        style="@style/titulos"
+        android:textSize="39sp"
+        android:text="Parabéns"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tv_subtitle"
+        android:textStyle="bold"
+        android:textSize="19sp"
+        android:textColor="#4bb960"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:text="Cadastro realizado \ncom sucesso "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>

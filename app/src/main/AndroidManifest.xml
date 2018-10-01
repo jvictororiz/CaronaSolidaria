@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.joaov.caronasolidaria">
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="com.truiton.supportmapfragment.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <permission
+        android:name="com.example.joaov.caronasolidaria.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="com.example.joaov.caronasolidaria.permission.C2D_MESSAGE" />
+
+    <permission
+        android:name="com.truiton.supportmapfragment.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
+
+    <application
+        android:name="br.com.joaoapps.faciplac.carona.SuperApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/icon"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <service android:name="br.com.joaoapps.faciplac.carona.service.firebase.push.PushFirebaseReceiver">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name="br.com.joaoapps.faciplac.carona.service.firebase.push.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity
+            android:name="br.com.joaoapps.faciplac.carona.view.activity.LoginActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="br.com.joaoapps.faciplac.carona.view.activity.AlunosPreCadastradosActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="br.com.joaoapps.faciplac.carona.view.activity.EsqueciSenhaActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="br.com.joaoapps.faciplac.carona.view.activity.dialogs.MessageActivity"
+            android:theme="@style/DialogTheme" />
+
+        <activity
+            android:name="br.com.joaoapps.faciplac.carona.view.activity.AguardandoAprovacaoActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="br.com.joaoapps.faciplac.carona.view.activity.cadastro.CadastroActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="br.com.joaoapps.faciplac.carona.view.activity.HomeAlunoActivity"
+            android:theme="@style/AppTheme" />
+
+        <service
+            android:name="br.com.joaoapps.faciplac.carona.service.ServiceFinishIntent"
+            android:stopWithTask="false" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/icon" />
+        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
+    </application>
+
+</manifest>

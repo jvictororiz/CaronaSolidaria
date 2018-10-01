@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@color/colorPrimary"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/ck_todos"
+            android:textSize="17dp"
+            android:textColor="#fff"
+            android:text="TODOS"
+            app:buttonTint="#fff"
+            android:shadowColor="#fff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/ck_espera"
+            android:textSize="17dp"
+            android:checked="true"
+            android:textColor="#fff"
+            android:text="EM ESPERA"
+            app:buttonTint="#fff"
+            android:shadowColor="#fff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/ck_aprovados"
+            android:textSize="17dp"
+            android:textColor="#fff"
+            android:text="APROVADOS"
+            app:buttonTint="#fff"
+            android:shadowColor="#fff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/ck_negados"
+            android:textSize="17dp"
+            android:textColor="#fff"
+            android:text="NÃO APROVADOS"
+            app:buttonTint="#fff"
+            android:shadowColor="#fff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</LinearLayout>

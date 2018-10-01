@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:spinner="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/corpo">
+
+    <LinearLayout
+        android:background="@drawable/borda_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Spinner
+            android:id="@+id/spinner_id"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:spinnerMode="dialog"
+            android:layout_height="50dp" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/popup_dialog_select_cards"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/cinzaLetra"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center_vertical"
+        android:paddingBottom="15dp"
+        android:paddingStart="35dp"
+        android:paddingTop="15dp"
+        android:text="Selecionar opção"
+        android:textSize="21sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="#19000000" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp">
+
+            <ImageView
+                android:id="@+id/img_oferecer_carona"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/icon_carona" />
+
+            <TextView
+                android:id="@+id/tv_oferecer_carona"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Oferecendo carona"
+                android:textColor="@color/colorPrimary" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp">
+
+            <ImageView
+                android:id="@+id/img_pedir_carona"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/icon_pedindo_carona" />
+
+            <TextView
+                android:id="@+id/tv_pedir_carona"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Pedindo carona"
+                android:textColor="@color/colorPrimary" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

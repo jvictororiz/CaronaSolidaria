@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Carona Solidaria</string>
+    <string name="google_maps_key" translatable="false" templateMergeStrategy="preserve">
+    AIzaSyAOXVRc-TKyrFnVdpoZiQPrFmCflxQWGn4
+</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="app_nome">CARONA SOLIDÁRIA</string>
+    <string name="logar">LOGAR</string>
+    <string name="cadastrar">Salvar</string>
+    <string name="nome">Nome</string>
+    <string name="cpf">CPF</string>
+    <string name="matricula">Matrícula</string>
+    <string name="data_nascimento">Data Nascimento</string>
+    <string name="email">E-mail</string>
+    <string name="telefone">Telefone</string>
+    <string name="senha">Senha</string>
+    <string name="confirme_sua_senha">Confirme sua senha</string>
+</resources>

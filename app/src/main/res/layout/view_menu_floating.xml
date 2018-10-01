@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:id="@+id/ll_body"
+    android:background="@android:color/transparent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/id_selected"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@drawable/borda_circular_menu"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/img_selected"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_carona_branco" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:visibility="gone"
+            android:id="@+id/id_pedir_carona"
+            android:layout_marginTop="6dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/borda_circular_menu"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_pedindo_carona_branco" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:visibility="gone"
+            android:id="@+id/id_ceder_carona"
+            android:layout_marginTop="6dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/borda_circular_menu"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_carona_branco" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:visibility="gone"
+            android:id="@+id/id_desativar"
+            android:layout_marginTop="6dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/borda_circular_menu"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:src="@drawable/icon_desativar" />
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+</FrameLayout>

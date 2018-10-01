@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_cadastro"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_default" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin">
+
+            <br.com.joaoapps.faciplac.carona.view.componentes.attach.AttachProfileView
+                android:id="@+id/attach_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="3dp"
+                    android:background="@drawable/shape_white_line"
+                    android:gravity="center"
+                    android:textColorHint="@color/cinzaLetra">
+
+                    <EditText
+                        android:id="@+id/edt_nome"
+                        style="@style/EditTextLogin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusableInTouchMode="true"
+                        android:hint="@string/nome"
+                        android:inputType="text"
+                        android:textCursorDrawable="@drawable/color_cursor" />
+
+                </android.support.design.widget.TextInputLayout>
+
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="3dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/shape_white_line"
+                    android:gravity="center"
+                    android:textColorHint="@color/cinzaLetra">
+
+                    <EditText
+                        android:id="@+id/edt_cpf"
+                        style="@style/EditTextLogin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/distancia_entre_campos"
+                        android:digits="01234566789"
+                        android:focusableInTouchMode="true"
+                        android:hint="@string/cpf"
+                        android:inputType="number"
+                        android:textCursorDrawable="@drawable/color_cursor" />
+
+                </android.support.design.widget.TextInputLayout>
+
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="3dp"
+                    android:background="@drawable/shape_white_line"
+                    android:gravity="center"
+                    android:textColorHint="@color/cinzaLetra">
+
+                    <EditText
+                        android:id="@+id/edt_matricula"
+                        style="@style/EditTextLogin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/distancia_entre_campos"
+                        android:digits="01234566789"
+                        android:focusableInTouchMode="true"
+                        android:hint="@string/matricula"
+                        android:inputType="number"
+                        android:textCursorDrawable="@drawable/color_cursor" />
+
+                </android.support.design.widget.TextInputLayout>
+
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="3dp"
+                    android:background="@drawable/shape_white_line"
+                    android:gravity="center"
+                    android:textColorHint="@color/cinzaLetra">
+
+                    <EditText
+                        android:id="@+id/edt_telefone"
+                        style="@style/EditTextLogin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/distancia_entre_campos"
+                        android:digits="01234566789"
+                        android:focusableInTouchMode="true"
+                        android:hint="@string/telefone"
+                        android:inputType="number"
+                        android:textCursorDrawable="@drawable/color_cursor" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="3dp"
+                    android:background="@drawable/shape_white_line"
+                    android:gravity="center"
+                    android:textColorHint="@color/cinzaLetra">
+
+                    <EditText
+                        android:id="@+id/edt_email"
+                        style="@style/EditTextLogin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/distancia_entre_campos"
+                        android:focusableInTouchMode="true"
+                        android:hint="@string/email"
+                        android:inputType="textEmailAddress"
+                        android:textCursorDrawable="@drawable/color_cursor" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="3dp"
+                    android:background="@drawable/shape_white_line"
+                    android:gravity="center"
+                    android:textColorHint="@color/cinzaLetra">
+
+                    <EditText
+                        android:id="@+id/edt_password"
+                        style="@style/EditTextLogin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/distancia_entre_campos"
+                        android:digits="01234566789"
+                        android:focusableInTouchMode="true"
+                        android:hint="@string/senha"
+                        android:inputType="numberPassword"
+                        android:textCursorDrawable="@drawable/color_cursor" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="3dp"
+                    android:background="@drawable/shape_white_line"
+                    android:gravity="center"
+                    android:textColorHint="@color/cinzaLetra">
+
+                    <EditText
+                        android:id="@+id/edt_confirma_senha"
+                        style="@style/EditTextLogin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/distancia_entre_campos"
+                        android:digits="01234566789"
+                        android:focusableInTouchMode="true"
+                        android:hint="@string/confirme_sua_senha"
+                        android:inputType="numberPassword"
+                        android:textCursorDrawable="@drawable/color_cursor" />
+                </android.support.design.widget.TextInputLayout>
+
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="25dp"
+                    android:onClick="clickCadastrar"
+                    android:text="@string/cadastrar" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>

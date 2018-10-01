@@ -1,0 +1,129 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme. -->
+    <style name="BaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/colorAccent</item>
+        <item name="android:buttonStyle">@style/estiloBotao</item>
+        <item name="editTextStyle">@style/estiloEditText</item>
+    </style>
+
+    <style name="NoActionBar" parent="BaseTheme">
+        <item name="backgroundTint">#f5edecec</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme" parent="NoActionBar">
+        <item name="colorAccent">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="android:alertDialogStyle">@style/AlertDialogCustom</item>
+    </style>
+
+    <style name="DialogTheme" parent="AppTheme">
+        <item name="colorAccent">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowTranslucentNavigation" tools:targetApi="kitkat">true</item>
+        <item name="android:windowTranslucentStatus" tools:targetApi="kitkat">true</item>
+    </style>
+
+    <style name="AlertDialogCustom" parent="@android:style/Theme.Dialog">
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorPrimaryDark</item>
+    </style>
+
+    <!-- Estilos de botões -->
+
+    <style name="CoffeeDialog" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowCloseOnTouchOutside">false</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:colorBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.3</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
+
+    <style name="estiloBotao" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/borda_circular_verde</item>
+        <item name="backgroundTint">@color/colorPrimary</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
+    <style name="estiloBotaoNegativo" parent="estiloBotao">
+        <item name="backgroundTint">@color/vermelho</item>
+    </style>
+
+    <style name="estiloEditText" parent="android:Widget.EditText">
+        <item name="android:background">@drawable/borda_edit_text</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:padding">12dp</item>
+    </style>
+
+    <style name="titulos">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">top</item>
+        <item name="android:textSize">26sp</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="DefaultImage">
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:scaleType">centerInside</item>
+    </style>
+
+    <style name="DefaultBack" parent="DefaultImage">
+        <item name="android:layout_width">35dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_alignParentLeft">true</item>
+    </style>
+
+    <style name="DefaultTextBackgroundWhite">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#FF616161</item>
+        <item name="android:textSize">14sp</item>
+        <item name="fontPath">fonts/Roboto-Medium.ttf</item>
+    </style>
+
+    <style name="TextMonthTitle" parent="DefaultTextBackgroundWhite">
+        <item name="fontPath">fonts/Roboto-Regular.ttf</item>
+        <item name="android:textColor">#616161</item>
+        <item name="android:textSize">21sp</item>
+    </style>
+
+    <style name="EditTextLogin" parent="Base.V7.Widget.AppCompat.EditText">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textColorHint">@color/cinzaEscuro</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:lines">1</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:paddingLeft">15dp</item>
+        <item name="android:paddingRight">15dp</item>
+        <item name="android:paddingBottom">15dp</item>
+        <item name="android:paddingTop">8dp</item>
+    </style>
+
+
+</resources>
