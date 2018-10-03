@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.example.joaov.caronasolidaria.R;
 
@@ -25,10 +24,10 @@ import br.com.joaoapps.faciplac.carona.view.activity.dialogs.listeners.OnEventDi
 import br.com.joaoapps.faciplac.carona.view.utils.AlertUtils;
 
 public class AlunosPreCadastradosActivity extends AppCompatActivity {
-    List<Usuario> usuarios = new ArrayList<>();
-    RecyclerView recyclerView;
-    LinearLayoutManager linearLayoutManager;
-    UsuarioNaoAutenticadoAdapter pedidosAdapter;
+    private List<Usuario> usuarios = new ArrayList<>();
+    private RecyclerView recyclerView;
+    private LinearLayoutManager linearLayoutManager;
+    private UsuarioNaoAutenticadoAdapter pedidosAdapter;
     private String query = "";
 
     private ImageView menuFilter;
@@ -122,10 +121,9 @@ public class AlunosPreCadastradosActivity extends AppCompatActivity {
     private List<Usuario> filterUsers(List<Situacao> situacaos) {
         List<Usuario> alunos = new ArrayList<>();
         for (Usuario u : usuarios) {
-
             if (u.getStatus() == Status.ALUNO) {
                 for (Situacao situacao : situacaos) {
-                    if (u.getAutenticado().getSituacao() == situacao && containsQuerySearch(u)) {
+                    if (u.getLastAutenticado().getSituacao() == situacao && containsQuerySearch(u)) {
                         alunos.add(u);
                     }
                 }

@@ -13,7 +13,9 @@ import com.example.joaov.caronasolidaria.R;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -145,7 +147,6 @@ public class CadastroActivity extends SuperActivity {
         usuario.setNome(edtNome.getText().toString());
         usuario.setCpf(edtCpf.getText().toString());
         usuario.setStatus(Status.ALUNO);
-        usuario.setAutenticado(new Autenticado(Situacao.ESPERA));
         usuario.setSenha(edtSenha.getText().toString());
         usuario.setMatricula(edtMatricula.getText().toString());
         usuario.setEmail(edtEmail.getText().toString());

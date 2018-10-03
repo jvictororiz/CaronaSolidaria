@@ -18,4 +18,5 @@
     <string name="telefone">Telefone</string>
     <string name="senha">Senha</string>
     <string name="confirme_sua_senha">Confirme sua senha</string>
+    <string name="entrar">Entrar</string>
 </resources>

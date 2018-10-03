@@ -15,22 +15,24 @@ import br.com.joaoapps.faciplac.carona.view.activity.cadastro.CadastroActivity;
 import br.com.joaoapps.faciplac.carona.view.utils.Preferences;
 
 public class LoginActivity extends AppCompatActivity {
-    EditText edtLogin;
-    EditText edtSenha;
-    Button btnLogar;
-    TextView tvCadastrar;
-    TextView tvEsqueciSenha;
+    private EditText edtLogin;
+    private EditText edtSenha;
+    private Button btnLogar;
+    private TextView tvCadastrar;
+    private TextView tvEsqueciSenha;
+    private TextView tvErro;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        edtLogin =  findViewById(R.id.edt_login);
-        edtSenha = findViewById(R.id.edt_senha);
-        btnLogar =  findViewById(R.id.btn_logar);
-        tvCadastrar = findViewById(R.id.tv_cadastrar);
-        tvEsqueciSenha = findViewById(R.id.tv_esqueci_senha);
+        edtLogin = findViewById(R.id.edt_login);
+        edtSenha = findViewById(R.id.edt_password);
+        btnLogar = findViewById(R.id.btn_login);
+        tvCadastrar = findViewById(R.id.tv_register);
+        tvEsqueciSenha = findViewById(R.id.tv_repassword);
+        tvErro = findViewById(R.id.tv_error);
 
         edtLogin.setText(Preferences.getLastLogin(this));
         if (!edtLogin.getText().toString().isEmpty()) {

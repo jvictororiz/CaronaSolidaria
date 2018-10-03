@@ -51,7 +51,7 @@ public class AguardandoAprovacaoActivity extends AppCompatActivity {
 
         tvData.setText("22/04");
 
-        if(usuario.getAutenticado() != null && (usuario.getAutenticado().getSituacao() != Situacao.APROVADO && usuario.getAutenticado().getNomeAutenticador() == null)){
+        if(usuario.getHistoricAutenticado() != null && (usuario.getLastAutenticado().getSituacao()!= Situacao.APROVADO && usuario.getLastAutenticado().getSituacao() == null)){
             imgAguardandoAprovacao.setImageResource(R.drawable.wait);
              imgAprovado.setImageResource(R.drawable.wait);
             tvTitle.setText("AGUARDANDO APROVAÇÃO");

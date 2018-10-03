@@ -44,7 +44,7 @@ public class UsuarioBO {
                     UsuarioFirebase.saveOrUpdate(usuario);
                 }
                 if (usuario.getStatus() == Status.ALUNO) {
-                    if (usuario.getAutenticado().getSituacao() == Situacao.APROVADO) {
+                    if (usuario.getLastAutenticado().getSituacao() == Situacao.APROVADO) {
                         Intent intent = new Intent(context, HomeAlunoActivity.class);
                         intent.putExtra("USUARIO", usuario);
                         context.startActivity(intent);
@@ -162,9 +162,9 @@ public class UsuarioBO {
         notificationRestService.sendNotification(notification, new OnTransacaoListener() {
             @Override
             public void success(Object object) {
-                if (usuario.getAutenticado().getSituacao() == Situacao.APROVADO) {
+                if (usuario.getLastAutenticado().getSituacao() == Situacao.APROVADO) {
                     AlertUtils.showInfo(usuario.getNome().concat(" foi notificado do sucesso de seu cadastro."), appCompatActivity);
-                } else if (usuario.getAutenticado().getSituacao() == Situacao.NEGADO) {
+                } else if (usuario.getLastAutenticado().getSituacao()== Situacao.NEGADO) {
                     AlertUtils.showInfo(usuario.getNome().concat(" foi notificado a respeito da invalidez de seu cadastro."), appCompatActivity);
                 }
             }

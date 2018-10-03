@@ -2,6 +2,7 @@ package br.com.joaoapps.faciplac.carona.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import br.com.joaoapps.faciplac.carona.model.enums.Status;
 
@@ -14,7 +15,7 @@ public class Usuario implements Serializable {
     private String cpf;
     private String matricula;
     private String senha;
-    private Autenticado autenticado;
+    private List<Autenticado> historicAutenticado;
     private Status status;
     private Date dataCadastro;
     private String email;
@@ -22,13 +23,13 @@ public class Usuario implements Serializable {
     private String telefone;
     private String urlFoto;
 
-    public Usuario(String nome, String cpf, String telefone, String matricula, String curso, String senha, Autenticado autenticado, Status status) {
+    public Usuario(String nome, String cpf, String telefone, String matricula, String curso, String senha, List<Autenticado> historicAutenticado, Status status) {
         this.nome = nome;
         this.cpf = cpf;
         this.matricula = matricula;
         this.telefone = telefone;
         this.senha = senha;
-        this.autenticado = autenticado;
+        this.historicAutenticado = historicAutenticado;
         this.status = status;
     }
 
@@ -78,12 +79,16 @@ public class Usuario implements Serializable {
         this.dataCadastro = dataCadastro;
     }
 
-    public Autenticado getAutenticado() {
-        return autenticado;
+    public List<Autenticado> getHistoricAutenticado() {
+        return historicAutenticado;
     }
 
-    public void setAutenticado(Autenticado autenticado) {
-        this.autenticado = autenticado;
+    public Autenticado getLastAutenticado(){
+        return historicAutenticado.get(historicAutenticado.size());
+    }
+
+    public void setHistoricAutenticado(List<Autenticado> historicAutenticado) {
+        this.historicAutenticado = historicAutenticado;
     }
 
     public Status getStatus() {
