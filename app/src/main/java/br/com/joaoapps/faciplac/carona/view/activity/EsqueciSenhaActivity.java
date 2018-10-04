@@ -11,7 +11,7 @@ import com.example.joaov.caronasolidaria.R;
 import br.com.joaoapps.faciplac.carona.service.email.EmailService;
 import br.com.joaoapps.faciplac.carona.view.activity.bo.UsuarioBO;
 
-public class EsqueciSenhaActivity extends AppCompatActivity {
+public class EsqueciSenhaActivity extends SuperActivity {
     EditText edtMatricula;
     EditText edtEmail;
     Button btnRecuperar;
