@@ -8,6 +8,7 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
@@ -18,14 +19,17 @@ import com.google.firebase.messaging.RemoteMessage;
 import java.util.Map;
 import java.util.Random;
 
+import br.com.joaoapps.faciplac.carona.service.firebase.push.objects.ComunicationCaronaBody;
+import br.com.joaoapps.faciplac.carona.view.activity.HomeAlunoActivity;
 import br.com.joaoapps.faciplac.carona.view.activity.LoginActivity;
+import br.com.joaoapps.faciplac.carona.view.activity.dialogs.ComunicationDialogFragment;
 
 /**
  * Created by joaov on 18/11/2017.
  */
 
 public class PushFirebaseReceiver extends FirebaseMessagingService {
-
+    public static final String INTENT_FILTER_USER_COMUNICATION = "ENTRY_USER_COMUNICATION";
     private static final String ID_NOTIFICATION = "ID_NOTIFICATION";
 
     @Override
@@ -41,8 +45,14 @@ public class PushFirebaseReceiver extends FirebaseMessagingService {
     }
 
     private void trataPushDados(Map<String, String> data) {
-        String title = data.get("title");
-        String text = data.get("detail");
+        try {
+            ComunicationCaronaBody comunicationCaronaBody = new ComunicationCaronaBody(data);
+            Intent intent = new Intent(INTENT_FILTER_USER_COMUNICATION);
+            intent.putExtra(HomeAlunoActivity.ENTRY_COMUNICATION,comunicationCaronaBody );
+            sendBroadcast(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void trataNotification(RemoteMessage.Notification notification) {

@@ -78,7 +78,6 @@
 
                 </android.support.design.widget.TextInputLayout>
 
-
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -111,14 +110,14 @@
                     android:textColorHint="@color/cinzaLetra">
 
                     <EditText
-                        android:id="@+id/edt_telefone"
+                        android:id="@+id/edt_celular"
                         style="@style/EditTextLogin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/distancia_entre_campos"
                         android:digits="01234566789"
                         android:focusableInTouchMode="true"
-                        android:hint="@string/telefone"
+                        android:hint="@string/Celular"
                         android:inputType="number"
                         android:textCursorDrawable="@drawable/color_cursor" />
 
@@ -146,6 +145,7 @@
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="3dp"
@@ -171,6 +171,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="3dp"
+                    android:id="@+id/input_confirm_password"
                     android:background="@drawable/shape_white_line"
                     android:gravity="center"
                     android:textColorHint="@color/cinzaLetra">

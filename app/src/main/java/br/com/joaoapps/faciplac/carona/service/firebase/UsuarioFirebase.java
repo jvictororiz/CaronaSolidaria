@@ -86,6 +86,7 @@ public class UsuarioFirebase {
                     Uri downloadUri = task.getResult();
                     usuario.setUrlFoto("https://firebasestorage.googleapis.com" + downloadUri.getPath() + "?alt=media");
                     saveOrUpdate(usuario);
+                    onTransacaoListener.success(null);
                 } else {
                     onTransacaoListener.error(1);
                 }
@@ -120,21 +121,21 @@ public class UsuarioFirebase {
 
         firebaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Usuario p = postSnapshot.getValue(Usuario.class);
                     assert p != null;
-                    if (usuario.getCpf().equals(p.getCpf())) {
+                    if (usuario != null && usuario.getCpf().equals(p.getCpf())) {
                         onTransacaoListener.error(Code.LOGIN_EXISTE);
                         return;
                     }
 
-                    if (usuario.getMatricula().equals(p.getMatricula())) {
+                    if (usuario != null && usuario.getMatricula().equals(p.getMatricula())) {
                         onTransacaoListener.error(Code.MATRICULA_EXISTE);
                         return;
                     }
 
-                    if (usuario.getEmail().equals(p.getEmail())) {
+                    if (usuario != null && usuario.getEmail().equals(p.getEmail())) {
                         onTransacaoListener.error(Code.EMAIL_EXISTE);
                         return;
                     }
@@ -144,7 +145,7 @@ public class UsuarioFirebase {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 if (databaseError.getCode() == DatabaseError.NETWORK_ERROR) {
                     onTransacaoListener.error(Code.NETWORK_ERROR);
                 }
@@ -180,7 +181,7 @@ public class UsuarioFirebase {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Usuario p = postSnapshot.getValue(Usuario.class);
-                    if (p.getEmail() != null && p.getEmail().equals(email) && p.getMatricula().equals(matricula)) {
+                    if (p != null && p.getEmail() != null && p.getEmail().equals(email) && p.getMatricula().equals(matricula)) {
                         onResetSenha.success(p);
                         return;
                     }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -20,6 +21,7 @@ import android.widget.LinearLayout;
 
 import com.example.joaov.caronasolidaria.R;
 import com.github.abdularis.civ.CircleImageView;
+import com.squareup.picasso.Picasso;
 
 import br.com.joaoapps.faciplac.carona.model.enums.StatusCarona;
 import br.com.joaoapps.faciplac.carona.view.componentes.sheetCardSelector.SelectorDialogBottom;
@@ -33,7 +35,7 @@ public class AttachProfileView extends LinearLayout {
     private Button btnBuscarFoto, btnTirarFoto;
     private CircleImageView imgProfile;
     private View view;
-    private Bitmap bitmap;
+    private Bitmap bitmapInit;
 
 
     public AttachProfileView(Context context) {
@@ -86,15 +88,30 @@ public class AttachProfileView extends LinearLayout {
 
 
     public void setImage(Bitmap bitmap) {
-        this.bitmap = bitmap;
         imgProfile.setImageBitmap(bitmap);
+        bitmapInit = bitmap;
+    }
+
+    public void setImage(String url) {
+        if (!url.isEmpty()) {
+            Picasso.with(getContext())
+                    .load(url)
+                    .placeholder(R.drawable.icon_user_default)
+                    .error(R.drawable.icon_user_default)
+                    .into(imgProfile);
+        }
+        bitmapInit = ((BitmapDrawable) imgProfile.getDrawable()).getBitmap();
     }
 
     public boolean containsBitmap() {
-        return bitmap != null;
+        return ((BitmapDrawable) imgProfile.getDrawable()).getBitmap() != null;
     }
 
     public Bitmap getBitmap() {
-        return bitmap;
+        return ((BitmapDrawable) imgProfile.getDrawable()).getBitmap();
+    }
+
+    public boolean changedBitmap() {
+        return  bitmapInit.equals(((BitmapDrawable) imgProfile.getDrawable()).getBitmap());
     }
 }

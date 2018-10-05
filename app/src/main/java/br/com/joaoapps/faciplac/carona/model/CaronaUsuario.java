@@ -1,6 +1,5 @@
 package br.com.joaoapps.faciplac.carona.model;
 
-import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
 
@@ -15,25 +14,25 @@ public class CaronaUsuario implements Serializable {
     private double latitude;
     private double longitude;
     private String nome;
-    private String valorCarona;
     private String pushId;
-    private String telefone;
+    private String celular;
     private StatusCarona statusCarona;
+    private LatLng positionResidence;
     private String urlFoto;
 
     public CaronaUsuario() {
         //Não remover, firebase precisa
     }
 
-    public CaronaUsuario(String pushId, String cpfUsuario, String urlFoto, String telefone, double latitude, double longitude, String nome, String valorCarona, StatusCarona statusCarona) {
+    public CaronaUsuario(LatLng positionResidence, String pushId, String cpfUsuario, String urlFoto, String celular, double latitude, double longitude, String nome, StatusCarona statusCarona) {
         this.cpfUsuario = cpfUsuario;
-        this.telefone = telefone;
+        this.celular = celular;
         this.urlFoto = urlFoto;
         this.latitude = latitude;
         this.longitude = longitude;
         this.nome = nome;
+        this.positionResidence = positionResidence;
         this.pushId = pushId;
-        this.valorCarona = valorCarona;
         this.statusCarona = statusCarona;
     }
 
@@ -45,11 +44,13 @@ public class CaronaUsuario implements Serializable {
         this.pushId = pushId;
     }
 
-    public String getValorCarona() {
-        if (valorCarona == null) {
-            valorCarona = "";
-        }
-        return valorCarona;
+
+    public LatLng getPositionResidence() {
+        return positionResidence;
+    }
+
+    public void setPositionResidence(LatLng positionResidence) {
+        this.positionResidence = positionResidence;
     }
 
     public String getUrlFoto() {
@@ -60,16 +61,12 @@ public class CaronaUsuario implements Serializable {
         this.urlFoto = urlFoto;
     }
 
-    public String getTelefone() {
-        return telefone;
+    public String getCelular() {
+        return celular;
     }
 
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
-
-    public void setValorCarona(String valorCarona) {
-        this.valorCarona = valorCarona;
+    public void setCelular(String celular) {
+        this.celular = celular;
     }
 
     public double getLatitude() {

@@ -3,11 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_body"
-    style="@style/DialogTheme"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="#00ffffff"
     android:gravity="center"
     android:orientation="vertical"
+    android:theme="@style/DialogTheme"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp"
     app:cardUseCompatPadding="true">
@@ -16,25 +17,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/tv_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_gravity="end"
-                android:layout_marginRight="25dp"
-                android:background="@drawable/shape_border_circle_ali"
-                android:padding="15dp"
-                android:textSize="12sp"
-                tools:text="30 segundos" />
-        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -79,6 +61,7 @@
 
                 <TextView
                     android:id="@+id/tv_message"
+                    fontPath="fonts/Roboto-Medium.ttf"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
@@ -91,11 +74,26 @@
         </LinearLayout>
 
         <RelativeLayout
+            android:id="@+id/body_step_one"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="30dp"
             android:layout_marginBottom="15dp"
+            android:layout_marginRight="30dp"
             android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerInParent="true"
+                android:layout_gravity="end"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/shape_border_circle_ali"
+                android:padding="15dp"
+                android:textSize="12sp"
+                tools:text="30 segundos" />
 
             <ImageView
                 android:id="@+id/img_positive"
@@ -115,6 +113,16 @@
 
 
         </RelativeLayout>
+
+        <Button
+            android:id="@+id/btn_see_profile"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginStart="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_border_circle_ref"
+            android:text="@string/visualizar_perfil" />
     </LinearLayout>
 
 

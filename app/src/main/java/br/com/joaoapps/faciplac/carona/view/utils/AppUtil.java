@@ -23,6 +23,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Vibrator;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.v4.app.ActivityCompat;
@@ -98,6 +99,12 @@ public class AppUtil {
             }
         }
         return false;
+    }
+
+    public static void vibrate(Context context, long time){
+        Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        assert v != null;
+        v.vibrate(300);
     }
 
     public static String getB64fromBitmap(Bitmap fotoSelfie) {

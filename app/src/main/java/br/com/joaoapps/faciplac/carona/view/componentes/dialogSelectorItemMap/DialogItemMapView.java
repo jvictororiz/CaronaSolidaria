@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ import br.com.joaoapps.faciplac.carona.model.enums.StatusCarona;
 import br.com.joaoapps.faciplac.carona.view.utils.AnimationUtils;
 import br.com.joaoapps.faciplac.carona.view.utils.AppUtil;
 import br.com.joaoapps.faciplac.carona.view.utils.GpsUtils;
+import br.com.joaoapps.faciplac.carona.view.utils.Mask;
 
 public class DialogItemMapView extends LinearLayout {
 
@@ -36,6 +38,7 @@ public class DialogItemMapView extends LinearLayout {
     private View llBodyCollected;
     private View llBodyExpanded;
     private View llBodyExpandedTop;
+    private ViewGroup llBodyDistance;
     private View llBodyCollectedTop;
     private CaronaUsuario caronaUsuario;
     private TYPE_STATE currentState;
@@ -72,18 +75,18 @@ public class DialogItemMapView extends LinearLayout {
     public void refreshCaronaUsuarios(Location locationActual, final CaronaUsuario caronaUsuario, final OnEventesCaronaUsuarioDetailed onEventesCaronaUsuarioDetailed) {
         this.caronaUsuario = caronaUsuario;
         this.onEventesCaronaUsuarioDetailed = onEventesCaronaUsuarioDetailed;
+        viewRoute.setVisibility(VISIBLE);
 
         if (locationActual != null) {
-            tvDistance.setText(GpsUtils.distanceTo(locationActual, getLocationEstablishmenbt(caronaUsuario)).concat(" de distância"));
+            tvDistance.setText("A ".concat(GpsUtils.distanceTo(locationActual, getLocationEstablishmenbt(caronaUsuario)).concat(" de distância de você")));
         }
 
         tvName.setText(caronaUsuario.getNome());
         tvNameBig.setText(caronaUsuario.getNome());
-        String nameLocale = GpsUtils.getNameLocale(context, caronaUsuario.getLatitude(), caronaUsuario.getLongitude());
+        String nameLocale = GpsUtils.getNameLocale(context, caronaUsuario.getPositionResidence().getLatitude(), caronaUsuario.getPositionResidence().getLongitude());
         tvAdress.setText(nameLocale);
-
         tvaAdressBig.setText(nameLocale);
-        tvNumber.setText(caronaUsuario.getTelefone());
+        tvNumber.setText(Mask.addMask(caronaUsuario.getCelular(), "######****-**##"));
         tvButtonBig.setText(caronaUsuario.getStatusCarona() == StatusCarona.DAR_CARONA ? "Pedir carona" : "Oferecer carona");
         if (caronaUsuario.getUrlFoto() != null && !caronaUsuario.getUrlFoto().isEmpty()) {
             Picasso.with(context)
@@ -109,6 +112,7 @@ public class DialogItemMapView extends LinearLayout {
         setVisibleAnimate(llBodyExpanded);
         setVisibleAnimate(llBodyExpandedTop);
         setVisibleAnimate(imgProfile);
+        setVisibleAnimate(llBodyDistance);
         llBodyCollected.setVisibility(INVISIBLE);
         AnimationUtils.setVisible(this, llBodyExpandedTop);
         setInvisibleAnimate(llBodyCollected);
@@ -122,6 +126,7 @@ public class DialogItemMapView extends LinearLayout {
         llBody.animate().translationY(0).setDuration(600);
         setVisibleAnimate(DialogItemMapView.this);
         setVisibleAnimate(llBodyCollected);
+        setInvisibleAnimate(llBodyDistance);
         setVisibleAnimate(llBodyCollectedTop);
         setInvisibleAnimate(llBodyExpanded);
         setInvisibleAnimate(imgProfile);
@@ -150,7 +155,7 @@ public class DialogItemMapView extends LinearLayout {
         viewCall.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                onEventesCaronaUsuarioDetailed.onCall(caronaUsuario.getTelefone());
+                onEventesCaronaUsuarioDetailed.onCall(caronaUsuario.getCelular());
             }
         });
 
@@ -177,6 +182,7 @@ public class DialogItemMapView extends LinearLayout {
         llBodyCollected = view.findViewById(R.id.ll_body_collected);
         llBodyExpanded = view.findViewById(R.id.ll_body_expanded);
         llBodyExpandedTop = view.findViewById(R.id.ll_body_top_expanded);
+        llBodyDistance = view.findViewById(R.id.ll_body_distance);
         llBodyCollectedTop = view.findViewById(R.id.ll_body_collected_top);
         imgIcon = view.findViewById(R.id.img_icon);
     }
@@ -197,6 +203,14 @@ public class DialogItemMapView extends LinearLayout {
                 view.setVisibility(VISIBLE);
             }
         });
+    }
+
+    public void unmaskNumber() {
+        tvNumber.setText(caronaUsuario.getCelular());
+    }
+
+    public void hideButton() {
+        viewRoute.setVisibility(GONE);
     }
 
     public enum TYPE_STATE {

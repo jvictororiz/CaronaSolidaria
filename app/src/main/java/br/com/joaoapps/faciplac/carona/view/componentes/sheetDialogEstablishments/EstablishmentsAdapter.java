@@ -42,10 +42,8 @@ public class EstablishmentsAdapter extends RecyclerView.Adapter<EstablishmentsAd
     @Override
     public void onBindViewHolder(@NonNull final EstablishmentsViewHolder holder, int position) {
         CaronaUsuario caronaUsuario = caronaUsuarios.get(position);
-
-        // holder.imgIcon.setImageResource();   Picasso
-        holder.tvAddress.setText(GpsUtils.getNameLocale(context, caronaUsuario.getLatitude(), caronaUsuario.getLongitude()));
-        holder.tvDistance.setText(GpsUtils.distanceTo(getLocation(myCaronaUsuario), getLocation(caronaUsuario)));
+        holder.tvAddress.setText(GpsUtils.getNameLocale(context, caronaUsuario.getPositionResidence().getLatitude(), caronaUsuario.getPositionResidence().getLongitude()));
+        holder.tvDistance.setText("A ".concat(GpsUtils.distanceTo(getLocation(myCaronaUsuario), getLocation(caronaUsuario)).concat(" de você")));
         holder.tvName.setText(caronaUsuario.getNome());
         if (caronaUsuario.getUrlFoto() != null && !caronaUsuario.getUrlFoto().isEmpty()) {
             Picasso.with(context)

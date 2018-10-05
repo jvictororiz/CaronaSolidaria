@@ -1,6 +1,7 @@
 package br.com.joaoapps.faciplac.carona.view.activity;
 
 import com.example.joaov.caronasolidaria.R;
+import com.github.abdularis.civ.CircleImageView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -8,15 +9,23 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.Picasso;
 
+import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,9 +36,13 @@ import br.com.joaoapps.faciplac.carona.model.CaronaUsuario;
 import br.com.joaoapps.faciplac.carona.model.Usuario;
 import br.com.joaoapps.faciplac.carona.model.enums.StatusCarona;
 import br.com.joaoapps.faciplac.carona.service.firebase.CaronaUsuarioFirebase;
+import br.com.joaoapps.faciplac.carona.service.firebase.push.PushFirebaseReceiver;
+import br.com.joaoapps.faciplac.carona.service.firebase.push.objects.ComunicationCaronaBody;
 import br.com.joaoapps.faciplac.carona.service.listeners.OnRefreshUsuarisCaronas;
 import br.com.joaoapps.faciplac.carona.service.listeners.OnTransacaoListener;
 import br.com.joaoapps.faciplac.carona.service.rest.UsuarioRestService;
+import br.com.joaoapps.faciplac.carona.view.activity.cadastro.CadastroActivity;
+import br.com.joaoapps.faciplac.carona.view.activity.dialogs.ComunicationDialogFragment;
 import br.com.joaoapps.faciplac.carona.view.activity.maps.mapConfiguration.CustomRender;
 import br.com.joaoapps.faciplac.carona.view.activity.maps.mapConfiguration.MarkerItem;
 import br.com.joaoapps.faciplac.carona.view.componentes.dialogSelectorItemMap.DialogItemMapView;
@@ -42,16 +55,16 @@ import br.com.joaoapps.faciplac.carona.view.utils.AppUtil;
 import br.com.joaoapps.faciplac.carona.view.utils.Preferences;
 
 public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener, DialogItemMapView.OnEventesCaronaUsuarioDetailed {
-    private static final long MIN_TIME_BW_UPDATES = 50000;
-    private static final float MIN_DISTANCE_CHANGE_FOR_UPDATES = 2000;
     private static final int REQUEST_PHONE_CALL = 115;
+    private static final long TIME_TO_CLOSE_BACK = 4000;
+    public static final String ENTRY_COMUNICATION = "ENTRY_COMUNICATION";
 
     private StatusCarona statusCarona;
     private Usuario usuario;
     private CaronaUsuario meuUsuarioCarona;
     private CaronaUsuario caronaUsuarioSelecionado;
     private Location locationActual;
-    private LinearLayout viewMyLocation;
+    private ViewGroup viewMyLocation, llBodyProfile;
     private ClusterManager<MarkerItem> mClusterManager;
     private List<CaronaUsuario> listUsers;
     public GoogleMap mMap;
@@ -59,28 +72,187 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     private SearchViewHV searchViewHV;
     private CaronaUsuarioDialogBottom caronaUsuarioDialogBottom;
     private String numberTellphone;
+    private boolean hasClose;
+    private BroadcastReceiver receiver;
+    private CircleImageView imgProfile;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_aluno);
-        setupToolbar("");
-        initViews();
-        statusCarona = StatusCarona.DAR_CARONA;
+        SuperActivity.closeDialogLoad();
+        registerReceiver();
         usuario = (Usuario) Objects.requireNonNull(getIntent().getExtras()).getSerializable("USUARIO");
+        assert usuario != null;
+        setupToolbar(usuario.getNome());
+        initViews();
+        statusCarona = StatusCarona.RECEBER_CARONA;
+        initImgProfile();
         initGps();
         setEvents();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        findAllUsers(false);
+        findAllUsers(true);
         hideKeyboard();
+    }
+
+    private void initImgProfile() {
+        if (!usuario.getUrlFoto().isEmpty()) {
+            Picasso.with(this)
+                    .load(usuario.getUrlFoto())
+                    .placeholder(R.drawable.icon_user_default)
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .error(R.drawable.icon_user_default)
+                    .into(imgProfile);
+        }
+    }
+
+    private void registerReceiver() {
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                try {
+                    ComunicationCaronaBody comunicationCaronaBody = (ComunicationCaronaBody) intent.getSerializableExtra(ENTRY_COMUNICATION);
+                    switch (comunicationCaronaBody.getStep()) {
+                        case ComunicationCaronaBody.STEP_ONE_COMUNICATION:
+                            teratmentInitComunication(comunicationCaronaBody);
+                            break;
+                        case ComunicationCaronaBody.STEP_TWO_ACCEPT:
+                            treatmentResopnseComunication(comunicationCaronaBody);
+                            break;
+
+                        case ComunicationCaronaBody.STEP_TWO_DENIED:
+                            treatmentDeniedComunication(comunicationCaronaBody);
+                            break;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        registerReceiver(receiver, new IntentFilter(PushFirebaseReceiver.INTENT_FILTER_USER_COMUNICATION));
+    }
+
+    private void treatmentDeniedComunication(final ComunicationCaronaBody comunicationCaronaBody) {
+        String message = "";
+        switch (comunicationCaronaBody.getMyUser().getStatusCarona()) {
+            case RECEBER_CARONA:
+                message = ("Olá " + (comunicationCaronaBody.getMyUser().getNome().concat(", Desculpe mas estou indisponível no momento")));
+                break;
+            case DAR_CARONA:
+                message = ("Olá " + (comunicationCaronaBody.getMyUser().getNome().concat(", Eu agradeço porém, agora estou indisponível")));
+                break;
+        }
+        ComunicationDialogFragment popupAlert = ComunicationDialogFragment.newInstance(message, comunicationCaronaBody.getStatusCarona(), comunicationCaronaBody.getMyUser(), comunicationCaronaBody.getOtherUser());
+        popupAlert.show(getSupportFragmentManager(), comunicationCaronaBody.getOtherUser().getCpfUsuario());
+        popupAlert.setCancelable(true);
+        AppUtil.vibrate(HomeAlunoActivity.this, 200);
+        popupAlert.configToStepThree();
+    }
+
+    private void treatmentResopnseComunication(final ComunicationCaronaBody comunicationCaronaBody) {
+        String message = "";
+        switch (comunicationCaronaBody.getMyUser().getStatusCarona()) {
+            case RECEBER_CARONA:
+                message = ("Olá " + (comunicationCaronaBody.getMyUser().getNome().concat(", posso te da uma carona, visualise meu perfil para ver o meu celular :)")));
+                break;
+            case DAR_CARONA:
+                message = ("Olá " + (comunicationCaronaBody.getMyUser().getNome().concat(", obrigado, eu aceito a carona, pode visualizar o meu perfil para ver o meu número :)")));
+                break;
+        }
+        final ComunicationDialogFragment popupAlert = ComunicationDialogFragment.newInstance(message, comunicationCaronaBody.getStatusCarona(), comunicationCaronaBody.getMyUser(), comunicationCaronaBody.getOtherUser());
+        popupAlert.show(getSupportFragmentManager(), comunicationCaronaBody.getOtherUser().getCpfUsuario());
+        popupAlert.setCancelable(false);
+        AppUtil.vibrate(HomeAlunoActivity.this, 200);
+        popupAlert.configToStepTwo(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogSelectorItemMapView.refreshCaronaUsuarios(locationActual, comunicationCaronaBody.getOtherUser(), HomeAlunoActivity.this);
+                dialogSelectorItemMapView.unmaskNumber();
+                dialogSelectorItemMapView.hideButton();
+                showExpandedEstalbishmentSelected();
+                popupAlert.dismiss();
+            }
+        });
+    }
+
+    private void teratmentInitComunication(final ComunicationCaronaBody comunicationCaronaBody) {
+        String message = "";
+        switch (comunicationCaronaBody.getMyUser().getStatusCarona()) {
+            case RECEBER_CARONA:
+                message = ("Olá " + (comunicationCaronaBody.getMyUser().getNome().concat(", você aceita uma carona?")));
+                break;
+            case DAR_CARONA:
+                message = ("Olá " + (comunicationCaronaBody.getMyUser().getNome().concat(", você poderia me da uma carona?")));
+                break;
+        }
+        final ComunicationDialogFragment popupAlert = ComunicationDialogFragment.newInstance(message, comunicationCaronaBody.getStatusCarona(), comunicationCaronaBody.getMyUser(), comunicationCaronaBody.getOtherUser());
+        popupAlert.show(getSupportFragmentManager(), comunicationCaronaBody.getOtherUser().getCpfUsuario());
+        popupAlert.setCancelable(false);
+        popupAlert.initTimeToDeny();
+        AppUtil.vibrate(HomeAlunoActivity.this, 200);
+
+        popupAlert.configToStepOne(new ComunicationDialogFragment.OnClickButtons() {
+            @Override
+            public void positive() {
+                dialogSelectorItemMapView.refreshCaronaUsuarios(locationActual, comunicationCaronaBody.getOtherUser(), HomeAlunoActivity.this);
+                dialogSelectorItemMapView.unmaskNumber();
+                dialogSelectorItemMapView.hideButton();
+                AlertUtils.showInfo("Sua resposta foi enviada para " + comunicationCaronaBody.getOtherUser().getNome(), HomeAlunoActivity.this);
+                showExpandedEstalbishmentSelected();
+                sendFeedbackToOtherUser(comunicationCaronaBody, true);
+                popupAlert.dismiss();
+            }
+
+            @Override
+            public void negative() {
+                AlertUtils.showInfo("Sua resposta foi enviada para " + comunicationCaronaBody.getOtherUser().getNome(), HomeAlunoActivity.this);
+                sendFeedbackToOtherUser(comunicationCaronaBody, false);
+                popupAlert.dismiss();
+            }
+        });
+    }
+
+    private void sendFeedbackToOtherUser(ComunicationCaronaBody comunicationCaronaBody, boolean accept) {
+        UsuarioRestService usuarioRestService = new UsuarioRestService(this);
+        if (accept) {
+            usuarioRestService.aceitarCarona(comunicationCaronaBody.getMyUser(), comunicationCaronaBody.getOtherUser(), getCallbackStepTwo());
+        } else {
+            usuarioRestService.negarCarona(comunicationCaronaBody.getMyUser(), comunicationCaronaBody.getOtherUser(), getCallbackStepTwo());
+        }
+
+    }
+
+    private OnTransacaoListener getCallbackStepTwo() {
+        return new OnTransacaoListener() {
+            @Override
+            public void success(Object object) {
+
+            }
+
+            @Override
+            public void error(int code) {
+
+            }
+        };
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (meuUsuarioCarona != null) {
+            CaronaUsuarioFirebase.openOrUpdate(this, meuUsuarioCarona);
+        }
+        searchViewHV.clearFocousSearch();
     }
 
     private void initViews() {
         viewMyLocation = findViewById(R.id.ll_body_mylocation);
         searchViewHV = findViewById(R.id.searchHV);
         dialogSelectorItemMapView = findViewById(R.id.dialgo_selector);
+        llBodyProfile = findViewById(R.id.ll_body_profile);
+        imgProfile = findViewById(R.id.img_profile);
     }
 
     private void initGps() {
@@ -88,7 +260,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
             @Override
             public void onLocationChanged(Location location) {
                 locationActual = location;
-                meuUsuarioCarona = new CaronaUsuario(usuario.getPushId(), usuario.getCpf(), usuario.getUrlFoto(), usuario.getTelefone(), location.getLatitude(), location.getLongitude(), usuario.getNome(), "5", statusCarona);
+                meuUsuarioCarona = new CaronaUsuario(usuario.getPositionResidence(), usuario.getPushId(), usuario.getCpf(), usuario.getUrlFoto(), usuario.getTelefone(), location.getLatitude(), location.getLongitude(), usuario.getNome(), statusCarona);
                 CaronaUsuarioFirebase.openOrUpdate(HomeAlunoActivity.this, meuUsuarioCarona);
                 moveCamera(new LatLng(meuUsuarioCarona.getLatitude(), meuUsuarioCarona.getLongitude()));
                 caronaUsuarioDialogBottom.init(meuUsuarioCarona, new DialogSelectorItemMapView.OnSelectCaronaUsuario() {
@@ -133,13 +305,25 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
 
             @Override
             public void onError(int code) {
-
+                AlertUtils.showAlert("Sem conexão", HomeAlunoActivity.this);
             }
         });
     }
 
+    private View.OnClickListener callbackGoToEditProfile() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CadastroActivity.start(HomeAlunoActivity.this, usuario);
+            }
+        };
+    }
+
     private void setEvents() {
-        findViewById(R.id.toolbar_back).setOnClickListener(new View.OnClickListener() {
+        llBodyProfile.setOnClickListener(callbackGoToEditProfile());
+        imgProfile.setOnClickListener(callbackGoToEditProfile());
+
+        findViewById(R.id.toolbar).findViewById(R.id.toolbar_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 CaronaUsuarioFirebase.exit(HomeAlunoActivity.this, Preferences.getLastCpfLogged(HomeAlunoActivity.this));
@@ -171,12 +355,24 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
             }
         });
 
+        searchViewHV.setListenerDistance(new SearchViewHV.OnDistanceListener() {
+            @Override
+            public void changed(long distance) {
+                findAllUsers(true);
+            }
+        });
+
         caronaUsuarioDialogBottom = new CaronaUsuarioDialogBottom(this);
 
         viewMyLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                moveCamera(new LatLng(meuUsuarioCarona.getLatitude(), meuUsuarioCarona.getLongitude()));
+                if (meuUsuarioCarona != null) {
+                    moveCamera(new LatLng(meuUsuarioCarona.getLatitude(), meuUsuarioCarona.getLongitude()));
+                } else {
+                    AlertUtils.showAlert("Sessão Expirada", HomeAlunoActivity.this);
+                    startActivityClearingOthers(LoginActivity.class);
+                }
             }
         });
 
@@ -189,7 +385,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     }
 
     private void moveCamera(LatLng latlng) {
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 14.5f));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 16.5f));
 
     }
 
@@ -239,42 +435,28 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     }
 
     @Override
-    public void onClickComunication(CaronaUsuario caronaUsuarioSelecionado) {
-//        Uri gmmIntentUri = Uri.parse("geo:" + caronaUsuarioSelecionado.getLatitude() + "," + caronaUsuarioSelecionado.getLongitude() + "?q=" + location.getLatitude() + "," + location.getLongitude());
-//        Intent intent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_PREVIOUS_IS_TOP);
-//        intent.setData(gmmIntentUri);
-//        startActivity(intent);
-
+    public void onClickComunication(final CaronaUsuario caronaUsuarioSelecionado) {
         UsuarioRestService usuarioRestService = new UsuarioRestService(this);
         if (statusCarona == StatusCarona.DAR_CARONA) {
-            usuarioRestService.oferecerCarona(meuUsuarioCarona, caronaUsuarioSelecionado, new OnTransacaoListener() {
-                @Override
-                public void success(Object object) {
-                    Log.i("", "");
-                }
-
-                @Override
-                public void error(int code) {
-
-                }
-            });
+            usuarioRestService.oferecerCarona(meuUsuarioCarona, caronaUsuarioSelecionado, getCallback());
         } else {
-            usuarioRestService.pedirCarona(meuUsuarioCarona, caronaUsuarioSelecionado, new OnTransacaoListener() {
-                @Override
-                public void success(Object object) {
-                    Log.i("", "");
-                }
-
-                @Override
-                public void error(int code) {
-                    Log.i("", "");
-                }
-            });
+            usuarioRestService.pedirCarona(meuUsuarioCarona, caronaUsuarioSelecionado, getCallback());
         }
+        hideDetailedEstablishementSelected();
+    }
 
+    private OnTransacaoListener getCallback() {
+        return new OnTransacaoListener() {
+            @Override
+            public void success(Object object) {
+                AlertUtils.showInfo("Foi enviado um alerta para " + caronaUsuarioSelecionado.getNome() + ", aguarde sua resposta... ", HomeAlunoActivity.this);
+            }
 
+            @Override
+            public void error(int code) {
+                AlertUtils.showAlert("Sem conexão", HomeAlunoActivity.this);
+            }
+        };
     }
 
     @Override
@@ -304,7 +486,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     }
 
     private void setUpClusterer(boolean isFirst, String query) {
-        if (mMap != null) {
+        if (mMap != null && meuUsuarioCarona != null) {
             mMap.clear();
             if (mClusterManager != null) {
                 mClusterManager.clearItems();
@@ -355,9 +537,11 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
 
 
     private void convertEstablishmentInPointer(String query) {
+        boolean empty = true;
         if (listUsers != null && !listUsers.isEmpty()) {
             for (CaronaUsuario caronaUsuario : getUsersByStatusCarona()) {
-                if (!usuario.getCpf().equals(caronaUsuario.getCpfUsuario()) && caronaUsuario.getNome().toLowerCase().contains(query.toLowerCase())) {
+                if (!usuario.getCpf().equals(caronaUsuario.getCpfUsuario()) && caronaUsuario.getNome().toLowerCase().contains(query.toLowerCase()) && isDistanceMin(meuUsuarioCarona, caronaUsuario)) {
+                    empty = false;
                     double lat = (caronaUsuario.getLatitude());
                     double lng = (caronaUsuario.getLongitude());
                     CharSequence charSequence = caronaUsuario.getNome().subSequence(0, 1);
@@ -366,7 +550,20 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
                     mClusterManager.addItem(markItem);
                 }
             }
+            if (empty) {
+                AlertUtils.showAlert("Nenhum usuário compativel online no momento.", this);
+            }
         }
+    }
+
+    private boolean isDistanceMin(CaronaUsuario meuUsuarioCarona, CaronaUsuario caronaUsuario) {
+        Location locOne = new Location("");
+        Location locTwo = new Location("");
+        locOne.setLatitude(meuUsuarioCarona.getPositionResidence().getLatitude());
+        locOne.setLongitude(meuUsuarioCarona.getPositionResidence().getLongitude());
+        locTwo.setLatitude(caronaUsuario.getPositionResidence().getLatitude());
+        locTwo.setLongitude(caronaUsuario.getPositionResidence().getLongitude());
+        return locOne.distanceTo(locTwo) <= searchViewHV.getDistanceMin();
     }
 
     private List<CaronaUsuario> getUsersByStatusCarona() {
@@ -383,20 +580,84 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case REQUEST_PHONE_CALL: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     String uri = "tel:" + numberTellphone;
                     Intent intent = new Intent(Intent.ACTION_CALL);
                     intent.setData(Uri.parse(uri));
                 } else {
-                    AlertUtils.showAlert("Sem premissão para acessar o telefone", this);
+                    ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE);
                 }
             }
         }
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (dialogSelectorItemMapView != null && dialogSelectorItemMapView.getCurrentState() != DialogItemMapView.TYPE_STATE.HIDE) {
+            hideDetailedEstablishementSelected();
+            return;
+        }
+        if (caronaUsuarioDialogBottom != null && caronaUsuarioDialogBottom.isShowing()) {
+            caronaUsuarioDialogBottom.dismiss();
+            return;
+        }
+        if (hasClose) {
+            super.onBackPressed();
+        } else {
+            AlertUtils.showInfo("Aperte mais uma vez para sair", HomeAlunoActivity.this);
+            hasClose = true;
+            initTimeToClose();
+        }
+
+    }
+
+    private void initTimeToClose() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    hasClose = false;
+                } catch (Exception ignore) {
+
+                }
+            }
+        }, TIME_TO_CLOSE_BACK);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == CadastroActivity.USER_CODE) {
+            if (data != null) {
+                usuario = (Usuario) data.getSerializableExtra("USER");
+                if (usuario != null) {
+                    setSupportActionBar(null);
+                    setupToolbar(usuario.getNome());
+                    initImgProfile();
+                    hideKeyboard();
+                }
+            }
+        }
+
+    }
+
+    @Override
+    public void hideKeyboard() {
+        super.hideKeyboard();
+        searchViewHV.clearFocousSearch();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        CaronaUsuarioFirebase.exit(this, Preferences.getLastCpfLogged(this));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        CaronaUsuarioFirebase.exit(this, Preferences.getLastCpfLogged(this));
+        unregisterReceiver(receiver);
     }
 }

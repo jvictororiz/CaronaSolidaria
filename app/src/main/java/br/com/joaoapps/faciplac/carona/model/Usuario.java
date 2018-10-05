@@ -2,7 +2,6 @@ package br.com.joaoapps.faciplac.carona.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 import br.com.joaoapps.faciplac.carona.model.enums.Status;
 
@@ -15,21 +14,23 @@ public class Usuario implements Serializable {
     private String cpf;
     private String matricula;
     private String senha;
-    private List<Autenticado> historicAutenticado;
+    private Autenticado autenticado;
     private Status status;
     private Date dataCadastro;
     private String email;
     private String pushId;
     private String telefone;
     private String urlFoto;
+    private LatLng positionActual;
+    private LatLng positionResidence;
 
-    public Usuario(String nome, String cpf, String telefone, String matricula, String curso, String senha, List<Autenticado> historicAutenticado, Status status) {
+    public Usuario(String nome, String cpf, String telefone, String matricula, String curso, String senha, Autenticado autenticado, Status status) {
         this.nome = nome;
         this.cpf = cpf;
         this.matricula = matricula;
         this.telefone = telefone;
         this.senha = senha;
-        this.historicAutenticado = historicAutenticado;
+        this.autenticado = autenticado;
         this.status = status;
     }
 
@@ -40,12 +41,28 @@ public class Usuario implements Serializable {
         return urlFoto.replace("/profiles/", "%2Fprofiles%2F");
     }
 
+    public LatLng getPositionActual() {
+        return positionActual;
+    }
+
+    public void setPositionActual(LatLng positionActual) {
+        this.positionActual = positionActual;
+    }
+
+    public LatLng getPositionResidence() {
+        return positionResidence;
+    }
+
+    public void setPositionResidence(LatLng positionResidence) {
+        this.positionResidence = positionResidence;
+    }
+
     public String getTelefone() {
         return telefone;
     }
 
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
+    public void setTelefone(String celular) {
+        this.telefone = celular;
     }
 
     public void setUrlFoto(String urlFoto) {
@@ -79,16 +96,12 @@ public class Usuario implements Serializable {
         this.dataCadastro = dataCadastro;
     }
 
-    public List<Autenticado> getHistoricAutenticado() {
-        return historicAutenticado;
+    public Autenticado getAutenticado() {
+        return autenticado;
     }
 
-    public Autenticado getLastAutenticado(){
-        return historicAutenticado.get(historicAutenticado.size());
-    }
-
-    public void setHistoricAutenticado(List<Autenticado> historicAutenticado) {
-        this.historicAutenticado = historicAutenticado;
+    public void setAutenticado(Autenticado autenticado) {
+        this.autenticado = autenticado;
     }
 
     public Status getStatus() {

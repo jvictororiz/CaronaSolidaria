@@ -1,34 +1,28 @@
 package br.com.joaoapps.faciplac.carona.service.firebase.push.objects;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonSerializable;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 
 public class ComunicationCaronaRequest implements JsonDeserializer {
-    ComunicationCaronaRequestBody comunicationCaronaRequestBody;
-    String to;
+    private ComunicationCaronaBody data;
+    private String to;
 
-    public ComunicationCaronaRequest(ComunicationCaronaRequestBody comunicationCaronaRequestBody, String to) {
-        this.comunicationCaronaRequestBody = comunicationCaronaRequestBody;
+    public ComunicationCaronaRequest(ComunicationCaronaBody data, String to) {
+        this.data = data;
         this.to = to;
     }
 
-    public ComunicationCaronaRequestBody getComunicationCaronaRequestBody() {
-        return comunicationCaronaRequestBody;
+    public ComunicationCaronaBody getData() {
+        return data;
     }
 
-    public void setComunicationCaronaRequestBody(ComunicationCaronaRequestBody comunicationCaronaRequestBody) {
-        this.comunicationCaronaRequestBody = comunicationCaronaRequestBody;
+    public void setData(ComunicationCaronaBody data) {
+        this.data = data;
     }
 
     public String getTo() {
@@ -45,6 +39,6 @@ public class ComunicationCaronaRequest implements JsonDeserializer {
         if (json.getAsJsonObject() != null) {
             element = json.getAsJsonObject();
         }
-        return (new Gson().fromJson(element, ComunicationCaronaRequestBody.class));
+        return (new Gson().fromJson(element, ComunicationCaronaBody.class));
     }
 }

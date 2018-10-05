@@ -93,25 +93,29 @@ public class LocationActivity extends SuperActivity {
     }
 
     private void getLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            showDialogPermission();
-            return;
-        } else if (!gpsIsEnabled(this) || googleApiClient == null) {
-            showMessageTurnOnGpsIfDesabled();
-            return;
-        }
-
-        LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(500000);
-        mLocationRequest.setFastestInterval(500000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                lastLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                onLocationListener.onLocationChanged(location);
+        try {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                showDialogPermission();
+                return;
+            } else if (!gpsIsEnabled(this) || googleApiClient == null) {
+                showMessageTurnOnGpsIfDesabled();
+                return;
             }
-        });
+
+            LocationRequest mLocationRequest = new LocationRequest();
+            mLocationRequest.setInterval(500000);
+            mLocationRequest.setFastestInterval(500000);
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    lastLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                    onLocationListener.onLocationChanged(location);
+                }
+            });
+        } catch (Exception ignore) {
+
+        }
 
     }
 
