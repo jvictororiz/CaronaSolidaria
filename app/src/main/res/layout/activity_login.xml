@@ -9,166 +9,186 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:orientation="vertical">
-
-            <TextView
-            fontPath="fonts/Roboto-Thin.ttf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:text="Seja Bem vindo"
-            android:textColor="@color/white"
-            android:textSize="38sp" />
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:background="@drawable/shape_login_round"
-            android:orientation="vertical"
-            android:paddingBottom="26dp"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp"
-            android:paddingTop="26dp">
+            android:layout_gravity="center"
+            android:layout_marginTop="-20dp"
+            android:gravity="center"
+            android:orientation="vertical">
 
-
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/animation_view"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                app:lottie_autoPlay="false"
-                app:lottie_loop="false"
-                app:lottie_rawRes="@raw/animation_login" />
-
+            <TextView
+                fontPath="fonts/Roboto-Thin.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"
+                android:gravity="center"
+                android:text="Seja\n Bem vindo"
+                android:textColor="@color/white"
+                android:textSize="35sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="7dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/shape_login_round"
                 android:gravity="center"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:paddingBottom="15dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:paddingTop="26dp">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginTop="6dp"
-                    android:src="@drawable/ic_login_field" />
 
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/login_input"
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/animation_view"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="10dp"
+                    app:lottie_autoPlay="false"
+                    app:lottie_loop="false"
+                    app:lottie_rawRes="@raw/animation_login" />
+
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="7dp"
                     android:gravity="center"
-                    android:textColorHint="@color/cinzaLetra">
+                    android:orientation="horizontal">
 
-                    <EditText
-                        android:id="@+id/edt_login"
-                        style="@style/EditTextLogin"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:focusableInTouchMode="true"
-                        android:hint="@string/matricula"
-                        android:inputType="textEmailAddress"
-                        android:textCursorDrawable="@drawable/color_cursor" />
-
-                    <TextView
-                        android:id="@+id/tv_error"
+                    <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:layout_marginTop="-15dp"
-                        android:textColor="#f41111"
-                        android:textSize="14sp"
-                        android:visibility="gone"
-                        tools:text="Usuário inválido" />
+                        android:layout_marginEnd="6dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginTop="6dp"
+                        android:src="@drawable/ic_login_field" />
 
-                </android.support.design.widget.TextInputLayout>
-            </LinearLayout>
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/login_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textColorHint="@color/cinzaLetra">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#b4dedede" />
+                        <EditText
+                            android:id="@+id/edt_login"
+                            style="@style/EditTextLogin"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:focusableInTouchMode="true"
+                            android:hint="@string/matricula"
+                            android:inputType="textEmailAddress"
+                            android:textCursorDrawable="@drawable/color_cursor" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/tv_error"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginTop="-15dp"
+                            android:textColor="#f41111"
+                            android:textSize="14sp"
+                            android:visibility="gone"
+                            tools:text="Usuário inválido" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginTop="6dp"
-                    android:contentDescription="@string/senha"
-                    android:src="@drawable/ic_password_field" />
+                    </android.support.design.widget.TextInputLayout>
+                </LinearLayout>
 
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/password_input"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#b4dedede" />
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:textColorHint="@color/cinzaLetra">
+                    android:orientation="horizontal">
 
-                    <EditText
-                        android:id="@+id/edt_password"
-                        style="@style/EditTextLogin"
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="6dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginTop="6dp"
+                        android:contentDescription="@string/senha"
+                        android:src="@drawable/ic_password_field" />
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/password_input"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:hint="@string/senha"
-                        android:inputType="textPassword"
-                        android:textCursorDrawable="@drawable/color_cursor" />
+                        android:gravity="center"
+                        android:textColorHint="@color/cinzaLetra">
 
-                </android.support.design.widget.TextInputLayout>
+                        <EditText
+                            android:id="@+id/edt_password"
+                            style="@style/EditTextLogin"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:hint="@string/senha"
+                            android:inputType="textPassword"
+                            android:textCursorDrawable="@drawable/color_cursor" />
+
+                    </android.support.design.widget.TextInputLayout>
+                </LinearLayout>
+
             </LinearLayout>
 
+            <Button
+                android:id="@+id/btn_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/entrar" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_repassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_gravity="start"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:text="Esqueci a senha"
+                    android:textColor="@color/cinzaEscuro"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_register"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="end"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginRight="20dp"
+                    android:text="Cadastre-se"
+                    android:textColor="@color/cinzaEscuro"
+                    android:textSize="16sp" />
+            </RelativeLayout>
         </LinearLayout>
+    </ScrollView>
 
-        <Button
-            android:id="@+id/btn_login"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/entrar" />
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/tv_repassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="20dp"
-        android:text="Esqueci a senha"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/tv_register"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="20dp"
-        android:layout_marginRight="20dp"
-        android:text="Cadastre-se"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="16sp" />
 
 </RelativeLayout>

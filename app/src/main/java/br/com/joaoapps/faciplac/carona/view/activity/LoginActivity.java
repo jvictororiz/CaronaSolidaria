@@ -3,19 +3,13 @@ package br.com.joaoapps.faciplac.carona.view.activity;
 import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.airbnb.lottie.LottieComposition;
 import com.example.joaov.caronasolidaria.R;
 
 import br.com.joaoapps.faciplac.carona.view.activity.bo.UsuarioBO;
@@ -87,6 +81,16 @@ public class LoginActivity extends SuperActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (edtLogin.isFocused()) {
+            showEyesAnimation();
+        } else {
+            closeEyesAnimation();
+        }
+    }
+
     private void configAnimationView() {
         animationView.setMinFrame(0);
         animationView.setMaxFrame(10);
@@ -99,33 +103,40 @@ public class LoginActivity extends SuperActivity {
         return new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                if (edtSenha.isFocused()) {
-                    startAnimation();
+                if (edtLogin.isFocused()) {
+                    showEyesAnimation();
                 } else {
-                    animationView.setProgress(0f);
+                    closeEyesAnimation();
                 }
             }
         };
     }
 
-    private void startAnimation() {
+    private void closeEyesAnimation() {
         final ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f).setDuration(1000);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                Log.i("teste", valueAnimator.getAnimatedFraction() + "");
                 animationView.setProgress(valueAnimator.getAnimatedFraction());
                 if (valueAnimator.getAnimatedFraction() > 0.6f && valueAnimator.getAnimatedFraction() < 0.7f) {
                     animator.cancel();
                 }
             }
         });
+        animator.start();
+    }
 
-//        if (animationView.getProgress() == 0f) {
-//            animator.start();
-//        } else {
-//            animationView.setProgress(0f);
-//        }
+    private void showEyesAnimation() {
+        final ValueAnimator animator = ValueAnimator.ofFloat(0.0f, 1f).setDuration(700);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                animationView.setProgress(0.6f - valueAnimator.getAnimatedFraction());
+//                if (valueAnimator.getAnimatedFraction() > 0.6f && valueAnimator.getAnimatedFraction() < 0.7f) {
+//                    animator.cancel();
+//                }
+            }
+        });
         animator.start();
     }
 }
