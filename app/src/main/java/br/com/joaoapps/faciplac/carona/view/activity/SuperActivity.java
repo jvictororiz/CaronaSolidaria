@@ -55,14 +55,16 @@ public class SuperActivity extends AppCompatActivity {
                     backButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            finish();
+                            SuperActivity.this.onBackPressed();
                         }
                     });
                 }
 
                 if (!visibleBack) {
+                    assert backButton != null;
                     backButton.setVisibility(View.GONE);
                 } else {
+                    assert backButton != null;
                     backButton.setVisibility(View.VISIBLE);
                 }
             }
@@ -114,8 +116,9 @@ public class SuperActivity extends AppCompatActivity {
     public void hideKeyboard() {
         if (getCurrentFocus() != null) {
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            assert inputMethodManager != null;
             inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-            View view = getWindow().getDecorView();
+            getWindow().getDecorView();
         }
     }
 

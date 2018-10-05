@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Carona Solidaria</string>
-    <string name="google_maps_key" translatable="false" templateMergeStrategy="preserve">
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
     AIzaSyAOXVRc-TKyrFnVdpoZiQPrFmCflxQWGn4
 </string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -15,8 +15,16 @@
     <string name="matricula">Matrícula</string>
     <string name="data_nascimento">Data Nascimento</string>
     <string name="email">E-mail</string>
-    <string name="telefone">Telefone</string>
+    <string name="Celular">Celular:</string>
     <string name="senha">Senha</string>
     <string name="confirme_sua_senha">Confirme sua senha</string>
-    <string name="entrar">Entrar</string>
+    <string name="cep">CEP</string>
+    <string name="minha_localiza_o">Localização atual</string>
+    <string name="avan_ar">Avançar</string>
+    <string name="digite_seu_endere_o">Digite seu endereço</string>
+    <string name="text_register_location">Toque em algum ponto do mapa para cadastrar uma localização. Assim podemos exibir apenas usuários que moram perto de você</string>
+    <string name="estou_indo_para">Está indo para:</string>
+    <string name="ola">Olá </string>
+    <string name="visualizar_perfil">Visualizar perfil</string>
+    <string name="fechar">Fechar</string>
 </resources>

@@ -23,7 +23,9 @@ import br.com.joaoapps.faciplac.carona.service.rest.UsuarioRestService;
 import br.com.joaoapps.faciplac.carona.view.activity.AguardandoAprovacaoActivity;
 import br.com.joaoapps.faciplac.carona.view.activity.AlunosPreCadastradosActivity;
 import br.com.joaoapps.faciplac.carona.view.activity.HomeAlunoActivity;
+import br.com.joaoapps.faciplac.carona.view.activity.RegistroLocalizacaoActivity;
 import br.com.joaoapps.faciplac.carona.view.activity.SuperActivity;
+import br.com.joaoapps.faciplac.carona.view.activity.cadastro.CadastroActivity;
 import br.com.joaoapps.faciplac.carona.view.utils.AlertUtils;
 
 /**
@@ -37,28 +39,30 @@ public class UsuarioBO {
         UsuarioFirebase.doLogin(login, senha, new OnLogarListener() {
             @Override
             public void success(Usuario usuario) {
-                SuperActivity.closeDialogLoad();
                 String tocken = FirebaseInstanceId.getInstance().getToken();
                 if (tocken != null) {
                     usuario.setPushId(tocken);
                     UsuarioFirebase.saveOrUpdate(usuario);
                 }
                 if (usuario.getStatus() == Status.ALUNO) {
-                    if (usuario.getLastAutenticado().getSituacao() == Situacao.APROVADO) {
-                        Intent intent = new Intent(context, HomeAlunoActivity.class);
+                    if (usuario.getAutenticado().getSituacao() == Situacao.APROVADO) {
+                        Intent intent = new Intent(context, RegistroLocalizacaoActivity.class);
                         intent.putExtra("USUARIO", usuario);
                         context.startActivity(intent);
                     } else {
                         Intent intent = new Intent(context, AguardandoAprovacaoActivity.class);
                         intent.putExtra(AguardandoAprovacaoActivity.USUARIO, usuario);
                         context.startActivity(intent);
+                        SuperActivity.closeDialogLoad();
                     }
                 } else if (usuario.getStatus() == Status.DIRETOR || usuario.getStatus() == Status.SUB_DIRETOR) {
                     Intent intent = new Intent(context, AlunosPreCadastradosActivity.class);
                     intent.putExtra("USUARIO", usuario);
                     SuperActivity.startActivityMessagePositive(context, intent, "Login realizado\ncom sucesso !");
                     SuperApplication.setUsuarioLogado(usuario);
+                    SuperActivity.closeDialogLoad();
                 } else {
+                    SuperActivity.closeDialogLoad();
                     SuperActivity.startActivityMessageNegative(context, null, "Login ou senha incorretos !");
                 }
             }
@@ -73,8 +77,32 @@ public class UsuarioBO {
         });
     }
 
+    public static void editUser(final Bitmap bitmap, final Usuario usuario, final AppCompatActivity context) {
+        SuperActivity.showDialogLoad(context);
+        UsuarioFirebase.saveOrUpdate(usuario);
+        if (bitmap != null) {
+            UsuarioFirebase.saveImageUser(usuario, bitmap, new OnTransacaoListener() {
+                @Override
+                public void success(Object object) {
+                    SuperActivity.closeDialogLoad();
+                    context.setResult(CadastroActivity.USER_CODE, new Intent().putExtra("USER", usuario));
+                    context.finish();
+                }
 
-    public static void registerUser(final Bitmap bitmap, final Usuario usuario, final AppCompatActivity context) {
+                @Override
+                public void error(int code) {
+                    SuperActivity.closeDialogLoad();
+                    context.finish();
+                }
+            });
+        } else {
+            context.setResult(CadastroActivity.USER_CODE, new Intent().putExtra("USER", usuario));
+            context.finish();
+            SuperActivity.closeDialogLoad();
+        }
+    }
+
+    public static void registerOrEditUser(final Bitmap bitmap, final Usuario usuario, final AppCompatActivity context) {
         SuperActivity.showDialogLoad(context);
         final Intent intent = new Intent(context, AguardandoAprovacaoActivity.class);
         intent.putExtra(AguardandoAprovacaoActivity.USUARIO, usuario);
@@ -87,6 +115,7 @@ public class UsuarioBO {
                     saveImageUser(context, usuario, bitmap);
                 }
                 SuperActivity.startActivityMessage(context, intent, "Parabéns", "Cadaastro realizado \ncom sucesso !");
+
                 context.finish();
             }
 
@@ -162,9 +191,9 @@ public class UsuarioBO {
         notificationRestService.sendNotification(notification, new OnTransacaoListener() {
             @Override
             public void success(Object object) {
-                if (usuario.getLastAutenticado().getSituacao() == Situacao.APROVADO) {
+                if (usuario.getAutenticado().getSituacao() == Situacao.APROVADO) {
                     AlertUtils.showInfo(usuario.getNome().concat(" foi notificado do sucesso de seu cadastro."), appCompatActivity);
-                } else if (usuario.getLastAutenticado().getSituacao()== Situacao.NEGADO) {
+                } else if (usuario.getAutenticado().getSituacao() == Situacao.NEGADO) {
                     AlertUtils.showInfo(usuario.getNome().concat(" foi notificado a respeito da invalidez de seu cadastro."), appCompatActivity);
                 }
             }
@@ -176,11 +205,11 @@ public class UsuarioBO {
         });
     }
 
-    public static void pedirCarona(CaronaUsuario myUser, CaronaUsuario otherUser){
+    public static void pedirCarona(CaronaUsuario myUser, CaronaUsuario otherUser) {
 
     }
 
-    public static void oferecerCarona(){
+    public static void oferecerCarona() {
 
     }
 }

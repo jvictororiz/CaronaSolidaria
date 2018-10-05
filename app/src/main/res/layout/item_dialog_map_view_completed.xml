@@ -5,8 +5,8 @@
     android:id="@+id/ll_body"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="15dp"
     android:layout_marginEnd="20dp"
+    android:layout_marginStart="15dp"
     android:orientation="vertical">
 
     <com.github.abdularis.civ.CircleImageView
@@ -15,11 +15,11 @@
         android:layout_height="150dp"
         android:layout_gravity="center"
         android:clickable="false"
-        app:strokeColor="@color/colorPrimary"
-        app:strokeWidth="9dp"
         android:elevation="10dp"
         android:src="@drawable/icon_user_default"
-        app:highlightColor="@color/colorPrimary" />
+        app:highlightColor="@color/colorPrimary"
+        app:strokeColor="@color/colorPrimary"
+        app:strokeWidth="9dp" />
 
 
     <LinearLayout
@@ -40,6 +40,33 @@
             android:elevation="2dp"
             android:orientation="vertical"
             android:visibility="visible">
+
+            <LinearLayout
+                android:id="@+id/ll_body_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="-2dp"
+                android:background="@drawable/shape_border_circle_ref"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/tv_distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:layout_marginStart="6dp"
+                    android:paddingBottom="3dp"
+                    android:paddingLeft="6dp"
+                    android:paddingRight="6dp"
+                    android:paddingTop="3dp"
+                    android:textColor="#fff"
+                    android:textSize="13sp"
+                    tools:text="20 M" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/ll_body_collected_top"
@@ -107,38 +134,12 @@
                         fontPath="fonts/Roboto-Medium.ttf"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
                         android:layout_gravity="center"
+                        android:gravity="start"
                         android:textColor="#616161"
                         android:textSize="26sp"
                         tools:ignore="MissingPrefix"
-                        tools:text="Peixe na rede Pátio Brasil" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/shape_border_circle_ref"
-                        android:gravity="center"
-                        android:padding="5dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/tv_distance"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="6dp"
-                            android:layout_marginStart="6dp"
-                            android:paddingBottom="3dp"
-                            android:paddingLeft="6dp"
-                            android:paddingRight="6dp"
-                            android:paddingTop="3dp"
-                            tools:text="20 M"
-                            android:textColor="#fff"
-                            android:textSize="13sp" />
-                    </LinearLayout>
+                        tools:text="João Victor Holanda" />
 
                     <RelativeLayout
                         android:id="@+id/view_call"
@@ -148,17 +149,17 @@
                         android:gravity="center">
 
                         <TextView
-                            android:id="@+id/text_telefone"
+                            android:id="@+id/text_celular"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Telefone"
+                            android:text="@string/Celular"
                             android:textColor="@color/colorPrimary" />
 
                         <TextView
                             android:id="@+id/tv_number"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/text_telefone"
+                            android:layout_below="@+id/text_celular"
                             android:textSize="16sp"
                             tools:text="61 998125199" />
 
@@ -168,16 +169,23 @@
                             android:layout_height="22dp"
                             android:layout_alignParentRight="true"
                             android:layout_centerInParent="true"
-                            android:src="@drawable/ic_telefone" />
+                            android:src="@drawable/ic_celular" />
 
                     </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:text="@string/estou_indo_para"
+                        android:textColor="@color/colorPrimary" />
 
                     <TextView
                         android:id="@+id/tv_address_big"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="48dp"
-                        android:layout_marginTop="30dp"
+
                         android:textSize="16sp"
                         tools:text="CLS 302 Quadra 22 setor oeste 15/2" />
 
@@ -193,9 +201,9 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
-        android:background="@drawable/gradient_route_map"
-        android:paddingLeft="15dp"
-        android:paddingRight="20dp"
+        android:background="@drawable/selector_route"
+        android:paddingEnd="20dp"
+        android:paddingStart="15dp"
         android:paddingTop="20dp"
         android:translationY="-45dp">
 
@@ -211,9 +219,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                tools:text="Pedir carona"
                 android:textColor="#fff"
-                android:textSize="17sp" />
+                android:textSize="17sp"
+                tools:text="Pedir carona" />
 
             <ImageView
                 android:layout_width="30dp"

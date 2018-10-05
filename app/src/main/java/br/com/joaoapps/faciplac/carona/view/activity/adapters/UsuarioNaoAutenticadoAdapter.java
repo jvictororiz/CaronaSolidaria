@@ -41,7 +41,7 @@ public class UsuarioNaoAutenticadoAdapter extends RecyclerView.Adapter<UsuarioNa
 
     @Override
     public AlunoHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_alunos_new, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_alunos, parent, false);
         return new UsuarioNaoAutenticadoAdapter.AlunoHolder(itemView);
     }
 
@@ -54,13 +54,13 @@ public class UsuarioNaoAutenticadoAdapter extends RecyclerView.Adapter<UsuarioNa
         holder.tvMatricula.setText(usuario.getMatricula());
         holder.tvDataCadastro.setText(DateUtils.toString("dd/MM/yyyy", usuario.getDataCadastro()));
 
-        if (usuario.getLastAutenticado().getSituacao() != Situacao.ESPERA) {
-            holder.tvNomeAutenticador.setText(usuario.getLastAutenticado().getNomeAutenticador());
-            holder.tvDataAutenticada.setText(DateUtils.toString("dd/MM/yyyy", usuario.getLastAutenticado().getDateAutenticacao()));
-            if (usuario.getLastAutenticado().getSituacao() == Situacao.APROVADO) {
+        if (usuario.getAutenticado().getSituacao() != Situacao.ESPERA) {
+            holder.tvNomeAutenticador.setText(usuario.getAutenticado().getNomeAutenticador());
+            holder.tvDataAutenticada.setText(DateUtils.toString("dd/MM/yyyy", usuario.getAutenticado().getDateAutenticacao()));
+            if (usuario.getAutenticado().getSituacao() == Situacao.APROVADO) {
                 holder.imgAutenticado.setImageResource(R.drawable.positive_joia_icon);
             }
-            if (usuario.getLastAutenticado().getSituacao() == Situacao.NEGADO) {
+            if (usuario.getAutenticado().getSituacao() == Situacao.NEGADO) {
                 holder.imgAutenticado.setImageResource(R.drawable.negative_joia_icon);
             }
 
@@ -75,7 +75,7 @@ public class UsuarioNaoAutenticadoAdapter extends RecyclerView.Adapter<UsuarioNa
                 DialogUtils.showDialogConfirm(context, "Tem certeza que deseja aprovar o acesso de " + usuario.getNome() + " ?", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        usuario.getHistoricAutenticado().add(new Autenticado(Situacao.APROVADO, new Date(), SuperApplication.getUsuarioLogado().getNome()));
+                        usuario.setAutenticado(new Autenticado(Situacao.APROVADO, new Date(), SuperApplication.getUsuarioLogado().getNome()));
                         Notification notification = new Notification("Faciplac Carona","Seu acesso ao faciplac carona foi aprovado com sucesso");
                         notification.setPushIdRemetente(usuario.getPushId());
                         UsuarioBO.sendFeedbackDiretoria(context, usuario, notification);
@@ -92,7 +92,7 @@ public class UsuarioNaoAutenticadoAdapter extends RecyclerView.Adapter<UsuarioNa
                 DialogUtils.showDialogConfirm(context, "Tem certeza que deseja negar o acesso de " + usuario.getNome() + " ?", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        usuario.getHistoricAutenticado().add(new Autenticado(Situacao.NEGADO, new Date(), SuperApplication.getUsuarioLogado().getNome()));
+                        usuario.setAutenticado(new Autenticado(Situacao.NEGADO, new Date(), SuperApplication.getUsuarioLogado().getNome()));
                         Notification notification = new Notification("Faciplac Carona","Seu acesso ao faciplac carona infelizmente foi negado");
                         notification.setPushIdRemetente(usuario.getPushId());
                         UsuarioBO.sendFeedbackDiretoria(context, usuario, notification);
@@ -125,17 +125,17 @@ public class UsuarioNaoAutenticadoAdapter extends RecyclerView.Adapter<UsuarioNa
 
         public AlunoHolder(View v) {
             super(v);
-//            tvNome = (TextView) v.findViewById(R.id.tv_nome);
-//            tvCpf = (TextView) v.findViewById(R.id.tv_cpf);
-//            tvMatricula = (TextView) v.findViewById(R.id.tv_matricula);
-//            tvNomeMae = v.findViewById(R.id.tv_nome_mae);
-//            tvDataCadastro = v.findViewById(R.id.tv_data_cadastro);
-//            btnAprovar = (ImageView) v.findViewById(R.id.btn_aprovar);
-//            btnNeggar = (ImageView) v.findViewById(R.id.btn_negar);
-//            tvNomeAutenticador = v.findViewById(R.id.tv_nome_autenticador);
-//            tvDataAutenticada = v.findViewById(R.id.tv_data_autenticada);
-//            bodyAutenticacao = v.findViewById(R.id.rr_body_autenticador);
-//            imgAutenticado = v.findViewById(R.id.img_autenticado);
+            tvNome = (TextView) v.findViewById(R.id.tv_nome);
+            tvCpf = (TextView) v.findViewById(R.id.tv_cpf);
+            tvMatricula = (TextView) v.findViewById(R.id.tv_matricula);
+            tvNomeMae = v.findViewById(R.id.tv_nome_mae);
+            tvDataCadastro = v.findViewById(R.id.tv_data_cadastro);
+            btnAprovar = (ImageView) v.findViewById(R.id.btn_aprovar);
+            btnNeggar = (ImageView) v.findViewById(R.id.btn_negar);
+            tvNomeAutenticador = v.findViewById(R.id.tv_nome_autenticador);
+            tvDataAutenticada = v.findViewById(R.id.tv_data_autenticada);
+            bodyAutenticacao = v.findViewById(R.id.rr_body_autenticador);
+            imgAutenticado = v.findViewById(R.id.img_autenticado);
         }
     }
 

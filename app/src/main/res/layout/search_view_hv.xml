@@ -34,8 +34,10 @@
                 app:defaultQueryHint="Buscar por nome" />
 
             <LinearLayout
+                android:id="@+id/body_top"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_centerInParent="true"
                 android:gravity="center"
@@ -85,6 +87,37 @@
                 </LinearLayout>
 
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_body_distance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/body_top"
+                android:padding="5dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <SeekBar
+                    android:id="@+id/seekbar"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/tv_distance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_border_circle_ali"
+                    android:padding="6dp"
+                    android:gravity="center"
+                    android:textSize="12sp"
+                    tools:text="Até 22,35 metros de vocÊ" />
+
+
+            </LinearLayout>
+
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>

@@ -6,7 +6,7 @@
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorPrimary">@color/colorAccent</item>
-        <item name="android:buttonStyle">@style/estiloBotao</item>
+        <!--<item name="android:buttonStyle">@style/estiloBotao</item>-->
         <item name="editTextStyle">@style/estiloEditText</item>
     </style>
 
@@ -56,9 +56,8 @@
         <item name="android:windowIsFloating">true</item>
     </style>
 
-    <style name="estiloBotao" parent="Widget.AppCompat.Button">
+    <style name="estiloBotao" parent="Base.TextAppearance.AppCompat.Widget.Button">
         <item name="android:background">@drawable/borda_circular_verde</item>
-        <item name="backgroundTint">@color/colorPrimary</item>
         <item name="android:gravity">center</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">#ffffff</item>
@@ -81,7 +80,7 @@
     <style name="titulos">
         <item name="android:gravity">center</item>
         <item name="android:layout_gravity">top</item>
-        <item name="android:textSize">26sp</item>
+        <item name="android:textSize">22sp</item>
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textStyle">bold</item>
     </style>

@@ -46,6 +46,7 @@ public class DialogSelectorItemMapView extends LinearLayout {
     public void init(Context context) {
         this.context = context;
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        assert inflater != null;
         view = inflater.inflate(R.layout.item_dialog_map_view, this, true);
         setViews();
         hide();
@@ -60,7 +61,7 @@ public class DialogSelectorItemMapView extends LinearLayout {
     public void refreshEstablishment(final CaronaUsuario caronaUsuario, final OnSelectCaronaUsuario onSelectCaronaUsuario) {
 
         tvName.setText(caronaUsuario.getNome());
-        tvAddress.setText(caronaUsuario.getTelefone());
+        tvAddress.setText(caronaUsuario.getCelular());
         if (caronaUsuario.getUrlFoto() != null && !caronaUsuario.getUrlFoto().isEmpty()) {
             Picasso.with(context)
                     .load(caronaUsuario.getUrlFoto())

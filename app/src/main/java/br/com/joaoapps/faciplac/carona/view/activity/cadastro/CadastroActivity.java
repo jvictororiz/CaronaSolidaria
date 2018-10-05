@@ -1,5 +1,6 @@
 package br.com.joaoapps.faciplac.carona.view.activity.cadastro;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -13,9 +14,7 @@ import com.example.joaov.caronasolidaria.R;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -33,6 +32,7 @@ import br.com.joaoapps.faciplac.carona.view.utils.ValidaCPF;
 
 public class CadastroActivity extends SuperActivity {
 
+    public static final int USER_CODE = 100;
     private EditText edtNome;
     private EditText edtCpf;
     private EditText edtMatricula;
@@ -44,24 +44,52 @@ public class CadastroActivity extends SuperActivity {
 
     private Usuario usuario;
     private Bitmap bitmap;
+    private boolean isEdition;
 
+    public static void start(Activity context, Usuario usuario) {
+        Intent starter = new Intent(context, CadastroActivity.class);
+        starter.putExtra("USUARIO", usuario);
+        context.startActivityForResult(starter, CadastroActivity.USER_CODE);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro);
         setupToolbar("Cadastro");
-
         edtNome = findViewById(R.id.edt_nome);
         edtCpf = findViewById(R.id.edt_cpf);
         edtMatricula = findViewById(R.id.edt_matricula);
         edtSenha = findViewById(R.id.edt_password);
         edtConfirmaSenha = findViewById(R.id.edt_confirma_senha);
         edtEmail = findViewById(R.id.edt_email);
-        edtTelefone = findViewById(R.id.edt_telefone);
+        edtTelefone = findViewById(R.id.edt_celular);
         attachProfileView = findViewById(R.id.attach_profile);
         setConfigs();
 
+        usuario = (Usuario) getIntent().getSerializableExtra("USUARIO");
+        isEdition = usuario != null;
+        if (isEdition) {
+            setUserInFilds();
+        }
+
+
+    }
+
+    private void setUserInFilds() {
+        edtNome.setText(usuario.getNome());
+        edtCpf.setText(usuario.getCpf());
+        edtEmail.setText(usuario.getEmail());
+        edtTelefone.setText(usuario.getTelefone());
+        edtMatricula.setText(usuario.getMatricula());
+        attachProfileView.config(this);
+        attachProfileView.setImage(usuario.getUrlFoto());
+        edtCpf.setEnabled(false);
+        edtCpf.setAlpha(0.3f);
+        edtMatricula.setEnabled(false);
+        edtMatricula.setAlpha(0.3f);
+        findViewById(R.id.input_confirm_password).setVisibility(View.GONE);
+        findViewById(R.id.input_password).setVisibility(View.GONE);
 
     }
 
@@ -80,7 +108,7 @@ public class CadastroActivity extends SuperActivity {
         }
 
         if (!ValidaCPF.isCPF(edtCpf.getText().toString().replaceAll("[.]", "").replaceAll("[-]", ""))) {
-            AlertUtils.showAlert("Cpf inválido", this);
+            AlertUtils.showAlert("CPF inválido", this);
             return;
         }
         if (!validateEmail()) {
@@ -88,24 +116,27 @@ public class CadastroActivity extends SuperActivity {
             return;
         }
 
-        if (validatePasswords()) {
-            AlertUtils.showAlert("Senhas não correspondem", this);
-            return;
-        }
-
-        if (!validateForcePassword()) {
-            AlertUtils.showAlert("Senha deve ter no mínimo 4 caracteres", this);
-            return;
-        }
 
         if (!attachProfileView.containsBitmap()) {
             AlertUtils.showAlert("Você deve inserir uma foto para a confirmação de usuário", this);
             return;
         }
-
         setFieldInValues();
-        UsuarioBO.registerUser(attachProfileView.getBitmap(), usuario, this);
+        if (!isEdition) {
+            if (validatePasswords()) {
+                AlertUtils.showAlert("Senhas não correspondem", this);
+                return;
+            }
 
+            if (!validateForcePassword()) {
+                AlertUtils.showAlert("Senha deve ter no mínimo 4 caracteres", this);
+                return;
+            }
+            UsuarioBO.registerOrEditUser(attachProfileView.getBitmap(), usuario, this);
+        } else {
+            Bitmap bitmap = attachProfileView.changedBitmap() ? attachProfileView.getBitmap() : null;
+            UsuarioBO.editUser(bitmap, usuario, this);
+        }
 
     }
 
@@ -131,28 +162,39 @@ public class CadastroActivity extends SuperActivity {
     }
 
     private boolean validateFieldsEmpty() {
-        return (!TextUtils.isEmpty(edtNome.getText().toString())
-                && !TextUtils.isEmpty(edtCpf.getText().toString())
-                && !TextUtils.isEmpty(edtMatricula.getText().toString())
-                && !TextUtils.isEmpty(edtEmail.getText().toString())
-                && !TextUtils.isEmpty(Mask.unmask(edtTelefone.getText().toString()))
-                && !TextUtils.isEmpty(edtSenha.getText().toString())
-                && !TextUtils.isEmpty(edtConfirmaSenha.getText().toString())
-
-        );
+        if (!isEdition) {
+            return (!TextUtils.isEmpty(edtNome.getText().toString())
+                    && !TextUtils.isEmpty(edtCpf.getText().toString())
+                    && !TextUtils.isEmpty(edtMatricula.getText().toString())
+                    && !TextUtils.isEmpty(edtEmail.getText().toString())
+                    && !TextUtils.isEmpty(Mask.unmask(edtTelefone.getText().toString()))
+                    && !TextUtils.isEmpty(edtSenha.getText().toString())
+                    && !TextUtils.isEmpty(edtConfirmaSenha.getText().toString()));
+        } else {
+            return !TextUtils.isEmpty(edtNome.getText().toString())
+                    && !TextUtils.isEmpty(edtCpf.getText().toString())
+                    && !TextUtils.isEmpty(edtMatricula.getText().toString())
+                    && !TextUtils.isEmpty(edtEmail.getText().toString())
+                    && !TextUtils.isEmpty(Mask.unmask(edtTelefone.getText().toString()));
+        }
     }
 
     private void setFieldInValues() {
-        usuario = new Usuario();
+        if (usuario == null) {
+            usuario = new Usuario();
+        }
         usuario.setNome(edtNome.getText().toString());
-        usuario.setCpf(edtCpf.getText().toString());
-        usuario.setStatus(Status.ALUNO);
-        usuario.setSenha(edtSenha.getText().toString());
-        usuario.setMatricula(edtMatricula.getText().toString());
         usuario.setEmail(edtEmail.getText().toString());
         usuario.setTelefone(edtTelefone.getText().toString());
-        usuario.setDataCadastro(new Date());
         usuario.setPushId(FirebaseInstanceId.getInstance().getId());
+        if (!isEdition) {
+            usuario.setSenha(edtSenha.getText().toString());
+            usuario.setStatus(Status.ALUNO);
+            usuario.setAutenticado(new Autenticado(Situacao.ESPERA));
+            usuario.setCpf(edtCpf.getText().toString());
+            usuario.setMatricula(edtMatricula.getText().toString());
+            usuario.setDataCadastro(new Date());
+        }
     }
 
     @Override

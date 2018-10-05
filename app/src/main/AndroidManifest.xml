@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="com.truiton.supportmapfragment.permission.MAPS_RECEIVE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <permission
@@ -35,6 +36,7 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_maps_key" />
+
 
         <service android:name="br.com.joaoapps.faciplac.carona.service.firebase.push.PushFirebaseReceiver">
             <intent-filter>
@@ -75,6 +77,9 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name="br.com.joaoapps.faciplac.carona.view.activity.HomeAlunoActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name="br.com.joaoapps.faciplac.carona.view.activity.RegistroLocalizacaoActivity"
             android:theme="@style/AppTheme" />
 
         <service

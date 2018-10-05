@@ -13,12 +13,14 @@ public abstract class SuperSheetPopup {
     protected Context context;
     protected BottomSheetDialog mBottomSheetDialog;
     private View view;
+    private boolean showing;
 
     public SuperSheetPopup(Context context) {
         this.context = context;
     }
 
     public void show() {
+        showing = true;
         if (view == null) {
             mBottomSheetDialog = new BottomSheetDialog(context);
             view = createView();
@@ -34,7 +36,12 @@ public abstract class SuperSheetPopup {
         }
     }
 
+    public boolean isShowing() {
+        return showing;
+    }
+
     public void dismiss() {
+        showing = false;
         if (mBottomSheetDialog != null) {
             mBottomSheetDialog.dismiss();
         }

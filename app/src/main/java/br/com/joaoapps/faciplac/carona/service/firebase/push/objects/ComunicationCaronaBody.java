@@ -6,7 +6,9 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.util.Map;
 
 import br.com.joaoapps.faciplac.carona.model.CaronaUsuario;
 import br.com.joaoapps.faciplac.carona.model.enums.StatusCarona;
@@ -15,16 +17,45 @@ import br.com.joaoapps.faciplac.carona.model.enums.StatusCarona;
  * Created by joaov on 19/11/2017.
  */
 
-public class ComunicationCaronaRequestBody implements JsonDeserializer {
+public class ComunicationCaronaBody implements JsonDeserializer, Serializable {
+    public static final int STEP_ONE_COMUNICATION = 0;
+    public static final int STEP_TWO_ACCEPT = 1;
+    public static final int STEP_TWO_DENIED = 2;
 
+    private Integer step;
     private CaronaUsuario myUser;
     private CaronaUsuario otherUser;
     private StatusCarona statusCarona;
 
-    public ComunicationCaronaRequestBody(CaronaUsuario myUser, CaronaUsuario otherUser, StatusCarona statusCarona) {
+    public ComunicationCaronaBody(int step, CaronaUsuario myUser, CaronaUsuario otherUser, StatusCarona statusCarona) {
         this.myUser = myUser;
         this.otherUser = otherUser;
+        this.step = step;
         this.statusCarona = statusCarona;
+    }
+
+    public ComunicationCaronaBody(Map<String, String> data) {
+        Gson gson = new Gson();
+        this.otherUser = gson.fromJson(data.get("myUser"), CaronaUsuario.class);
+        this.myUser = gson.fromJson(data.get("otherUser"), CaronaUsuario.class);
+        this.statusCarona = getInverse(gson.fromJson(data.get("statusCarona"), StatusCarona.class));
+        this.step = gson.fromJson(data.get("step"), Integer.class);
+    }
+
+    private StatusCarona getInverse(StatusCarona statusCarona) {
+        if (statusCarona == StatusCarona.DAR_CARONA) {
+            return StatusCarona.RECEBER_CARONA;
+        } else {
+            return StatusCarona.DAR_CARONA;
+        }
+    }
+
+    public Integer getStep() {
+        return step;
+    }
+
+    public void setStep(int step) {
+        this.step = step;
     }
 
     public CaronaUsuario getMyUser() {
@@ -57,6 +88,6 @@ public class ComunicationCaronaRequestBody implements JsonDeserializer {
         if (json.getAsJsonObject() != null) {
             element = json.getAsJsonObject();
         }
-        return (new Gson().fromJson(element, ComunicationCaronaRequestBody.class));
+        return (new Gson().fromJson(element, ComunicationCaronaBody.class));
     }
 }

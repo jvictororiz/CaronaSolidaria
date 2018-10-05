@@ -13,8 +13,8 @@ import com.example.joaov.caronasolidaria.R;
 import br.com.joaoapps.faciplac.carona.model.Usuario;
 import br.com.joaoapps.faciplac.carona.model.enums.Situacao;
 
-public class AguardandoAprovacaoActivity extends SuperActivity {
-    public final static String USUARIO ="Usuario";
+public class AguardandoAprovacaoActivity extends AppCompatActivity {
+    public final static String USUARIO ="USUARIO";
 
     private TextView tvTitle;
     private TextView tvData;
@@ -51,7 +51,7 @@ public class AguardandoAprovacaoActivity extends SuperActivity {
 
         tvData.setText("22/04");
 
-        if(usuario.getHistoricAutenticado() != null && (usuario.getLastAutenticado().getSituacao()!= Situacao.APROVADO && usuario.getLastAutenticado().getSituacao() == null)){
+        if(usuario.getAutenticado() != null && (usuario.getAutenticado().getSituacao() != Situacao.APROVADO && usuario.getAutenticado().getNomeAutenticador() == null)){
             imgAguardandoAprovacao.setImageResource(R.drawable.wait);
              imgAprovado.setImageResource(R.drawable.wait);
             tvTitle.setText("AGUARDANDO APROVAÇÃO");

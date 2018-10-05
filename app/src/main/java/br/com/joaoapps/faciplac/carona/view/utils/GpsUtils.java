@@ -80,10 +80,7 @@ public class GpsUtils {
             geocoder = new Geocoder(context, SuperApplication.getLocale());
 
             addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-
-            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-
-            return address;
+            return addresses.get(0).getAddressLine(0);
         } catch (Exception e) {
             return "";
         }
@@ -95,16 +92,25 @@ public class GpsUtils {
         }
     }
 
+    public static String getTextToDistance(float distance) {
+        String distanceText = "";
+        if (distance >= 1000) {
+            distanceText = (String.valueOf(getDecimal(0, distance / 1000))) + " KM";
+        } else {
+            distanceText = (String.valueOf(getDecimal(0, distance))).concat(" M");
+        }
+        return distanceText;
+    }
+
+
     public static String distanceTo(Location locationOne, Location locationTwo) {
         float distance = locationOne.distanceTo(locationTwo);
 
         String distanceText = "";
         if (distance >= 1000) {
-            distanceText = String.valueOf(getDecimal(distance / 1000)) + " KM";
-        } else if (distance >= 0 && distance <= 10) {
-            distanceText = "Menos de 10 metros";
+            distanceText = (String.valueOf(getDecimal(distance / 1000))) + " KM";
         } else {
-            distanceText = String.valueOf(getDecimal(distance)) + " M";
+            distanceText = (String.valueOf(getDecimal(distance))).concat(" M");
         }
 
         distanceText = distanceText.replace(".", ",");
@@ -112,9 +118,14 @@ public class GpsUtils {
     }
 
     private static float getDecimal(float distance) {
+        return getDecimal(2, distance);
+    }
+
+    private static float getDecimal(int decimal, float distance) {
         int casasDecimais = 2;
         BigDecimal aNumber = new BigDecimal(distance);
         aNumber = aNumber.setScale(casasDecimais, BigDecimal.ROUND_HALF_UP);
         return aNumber.floatValue();
     }
+
 }

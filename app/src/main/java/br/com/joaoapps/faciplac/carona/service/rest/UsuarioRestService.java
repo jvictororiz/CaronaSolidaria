@@ -9,7 +9,7 @@ import br.com.joaoapps.faciplac.carona.model.enums.StatusCarona;
 import br.com.joaoapps.faciplac.carona.service.ServicePost;
 import br.com.joaoapps.faciplac.carona.service.exceptions.Code;
 import br.com.joaoapps.faciplac.carona.service.firebase.push.objects.ComunicationCaronaRequest;
-import br.com.joaoapps.faciplac.carona.service.firebase.push.objects.ComunicationCaronaRequestBody;
+import br.com.joaoapps.faciplac.carona.service.firebase.push.objects.ComunicationCaronaBody;
 import br.com.joaoapps.faciplac.carona.service.firebase.push.objects.Notification;
 import br.com.joaoapps.faciplac.carona.service.firebase.push.objects.NotificationRequest;
 import br.com.joaoapps.faciplac.carona.service.firebase.push.objects.ResponseBody;
@@ -54,20 +54,29 @@ public class UsuarioRestService {
     }
 
     public void pedirCarona(CaronaUsuario myUser, CaronaUsuario otherUser, final OnTransacaoListener onTransacaoListener) {
-        serviceCarona(onTransacaoListener, StatusCarona.RECEBER_CARONA, myUser, otherUser);
+        serviceCarona(ComunicationCaronaBody.STEP_ONE_COMUNICATION, onTransacaoListener, StatusCarona.RECEBER_CARONA, myUser, otherUser);
     }
 
     public void oferecerCarona(CaronaUsuario myUser, CaronaUsuario otherUser, final OnTransacaoListener onTransacaoListener) {
-        serviceCarona(onTransacaoListener, StatusCarona.DAR_CARONA, myUser, otherUser);
+        serviceCarona(ComunicationCaronaBody.STEP_ONE_COMUNICATION, onTransacaoListener, StatusCarona.DAR_CARONA, myUser, otherUser);
     }
 
-    private void serviceCarona(final OnTransacaoListener onTransacaoListener, final StatusCarona statusCarona, final CaronaUsuario myUser, final CaronaUsuario otherUser) {
-        final Thread thread = new Thread(new Runnable() {
+    public void negarCarona(CaronaUsuario myUser, CaronaUsuario otherUser, final OnTransacaoListener onTransacaoListener) {
+        serviceCarona(ComunicationCaronaBody.STEP_TWO_DENIED,onTransacaoListener, StatusCarona.DAR_CARONA, myUser, otherUser);
+    }
 
+    public void aceitarCarona(CaronaUsuario myUser, CaronaUsuario otherUser, final OnTransacaoListener onTransacaoListener) {
+        serviceCarona(ComunicationCaronaBody.STEP_TWO_ACCEPT,onTransacaoListener, StatusCarona.DAR_CARONA, myUser, otherUser);
+
+    }
+
+
+    private void serviceCarona(final int step, final OnTransacaoListener onTransacaoListener, final StatusCarona statusCarona, final CaronaUsuario myUser, final CaronaUsuario otherUser) {
+        final Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    ComunicationCaronaRequestBody notificationRequest = new ComunicationCaronaRequestBody(myUser, otherUser, statusCarona);
+                    ComunicationCaronaBody notificationRequest = new ComunicationCaronaBody(step, myUser, otherUser, statusCarona);
                     ComunicationCaronaRequest comunicationCaronaRequest = new ComunicationCaronaRequest(notificationRequest, otherUser.getPushId());
                     String gsonString = new Gson().toJson(comunicationCaronaRequest);
                     RequestBody body = RequestBody.create(JSON, gsonString);

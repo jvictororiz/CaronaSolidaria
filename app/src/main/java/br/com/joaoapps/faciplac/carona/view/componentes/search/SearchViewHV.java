@@ -1,7 +1,9 @@
 package br.com.joaoapps.faciplac.carona.view.componentes.search;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.SearchView;
@@ -11,25 +13,33 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.example.joaov.caronasolidaria.R;
 
 import br.com.joaoapps.faciplac.carona.model.enums.StatusCarona;
 import br.com.joaoapps.faciplac.carona.view.componentes.sheetCardSelector.SelectorDialogBottom;
+import br.com.joaoapps.faciplac.carona.view.utils.AnimationUtils;
+import br.com.joaoapps.faciplac.carona.view.utils.GpsUtils;
 
 
 public class SearchViewHV extends LinearLayout {
     private Context context;
     private View view;
-    private View llBody;
+    private ViewGroup llBody;
     private SearchView search;
     private View llBodyChangeCarona;
     private ImageView imgSelector;
     private SelectorDialogBottom selectorDialogBottom;
     private StatusCarona statusCaronaActual;
     private boolean isFirst = true;
-    private ViewGroup llRefresh;
+    private ViewGroup llRefresh, llBodyDistance;
+    private SeekBar seekBar;
+    private TextView tvDistance;
     private ImageView imgRefresh;
+    private OnDistanceListener onDistanceListener;
+    private float distanceActual;
 
     public SearchViewHV(Context context) {
         super(context);
@@ -66,14 +76,45 @@ public class SearchViewHV extends LinearLayout {
         llBodyChangeCarona = view.findViewById(R.id.ll_filter);
         imgSelector = view.findViewById(R.id.fb_type_card);
         imgRefresh = view.findViewById(R.id.fb_refresh);
+        llBodyDistance = view.findViewById(R.id.ll_body_distance);
+        tvDistance = view.findViewById(R.id.tv_distance);
+        seekBar = view.findViewById(R.id.seekbar);
     }
 
     public void setRefreshListener(final OnClickListener onClickListener) {
         llRefresh.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                    imgRefresh.animate().setDuration(500).rotation(imgRefresh.getRotation() + 180);
+                imgRefresh.animate().setDuration(700).rotation(imgRefresh.getRotation() + 720);
                 onClickListener.onClick(view);
+            }
+        });
+    }
+
+    public void setListenerDistance(final OnDistanceListener onDistanceListener) {
+        this.onDistanceListener = onDistanceListener;
+        final int step = 1;
+        int max = 2000;
+        final int min = 200;
+        distanceActual = min + (max / 2 * step);
+        seekBar.setMax((max - min) / step);
+        seekBar.setProgress(max / 2);
+        tvDistance.setText("Mora até " + (GpsUtils.getTextToDistance(distanceActual)) + " de você");
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                distanceActual = min + (progress * step);
+                tvDistance.setText("Mora até " + (GpsUtils.getTextToDistance(distanceActual)) + " de você");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                onDistanceListener.changed(seekBar.getProgress());
             }
         });
     }
@@ -81,12 +122,15 @@ public class SearchViewHV extends LinearLayout {
     public void configEventChangeType(StatusCarona statusCarona, final SelectorDialogBottom.OnStatusCarona onStatusCarona, final OnQurySubmit onQurySubmit) {
         search.onActionViewExpanded();
         statusCaronaActual = statusCarona;
+        changeStatusView(statusCaronaActual);
         selectorDialogBottom = new SelectorDialogBottom(context, statusCaronaActual, new SelectorDialogBottom.OnStatusCarona() {
             @Override
             public void selected(StatusCarona statusCarona) {
-                statusCaronaActual = statusCaronaActual.equals(StatusCarona.RECEBER_CARONA) ? StatusCarona.DAR_CARONA : StatusCarona.RECEBER_CARONA;
-                changeStatusView(statusCaronaActual);
-                onStatusCarona.selected(statusCaronaActual);
+                if (statusCarona != statusCaronaActual) {
+                    statusCaronaActual = statusCaronaActual.equals(StatusCarona.RECEBER_CARONA) ? StatusCarona.DAR_CARONA : StatusCarona.RECEBER_CARONA;
+                    changeStatusView(statusCaronaActual);
+                    onStatusCarona.selected(statusCaronaActual);
+                }
             }
         });
 
@@ -119,18 +163,38 @@ public class SearchViewHV extends LinearLayout {
             }
         });
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                search.clearFocus();
+            }
+        }, 350);
+
+
     }
 
     private void changeStatusView(StatusCarona statusCarona) {
         if (statusCarona.equals(StatusCarona.DAR_CARONA)) {
+            if (onDistanceListener != null) {
+                setVisibleAnimate(llBodyDistance);
+            }
             imgSelector.setImageDrawable(getResources().getDrawable(R.drawable.icon_carona));
         } else if (statusCarona.equals(StatusCarona.RECEBER_CARONA)) {
+            setInvisibleAnimate(llBodyDistance);
             imgSelector.setImageDrawable(getResources().getDrawable(R.drawable.icon_pedindo_carona));
         }
     }
 
+    private void setInvisibleAnimate(final View view) {
+        AnimationUtils.setInvisible(llBody, view);
+    }
+
+    private void setVisibleAnimate(final View view) {
+        AnimationUtils.setVisible(llBody, view);
+    }
+
     public void show() {
-        llBody.animate().setDuration(580).translationY(0);
+        llBody.animate().setDuration(780).translationY(0);
     }
 
     public StatusCarona getStatusCaronaActual() {
@@ -138,11 +202,23 @@ public class SearchViewHV extends LinearLayout {
     }
 
     public void hide() {
-        llBody.animate().setDuration(580).translationY(-280);
+        llBody.animate().setDuration(780).translationY(-380);
+    }
+
+    public float getDistanceMin() {
+        return distanceActual;
+    }
+
+    public void clearFocousSearch() {
+        search.clearFocus();
     }
 
     public interface OnQurySubmit {
         void submit(String query);
+    }
+
+    public interface OnDistanceListener {
+        void changed(long distance);
     }
 
 
