@@ -14,6 +14,7 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -27,6 +28,8 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.model.LatLng;
+
+import static android.content.Context.LOCATION_SERVICE;
 
 /**
  * Created by joaov on 16/12/2017.
@@ -51,7 +54,7 @@ public class LocationActivity extends SuperActivity {
     }
 
     public boolean gpsIsEnabled(Activity context) {
-        LocationManager service = (LocationManager) getSystemService(context.LOCATION_SERVICE);
+        LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
         return service.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
@@ -112,9 +115,10 @@ public class LocationActivity extends SuperActivity {
                     lastLocation = new LatLng(location.getLatitude(), location.getLongitude());
                     onLocationListener.onLocationChanged(location);
                 }
+
             });
         } catch (Exception ignore) {
-
+            ignore.printStackTrace();
         }
 
     }

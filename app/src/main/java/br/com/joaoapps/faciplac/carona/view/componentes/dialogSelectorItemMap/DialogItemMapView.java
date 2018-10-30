@@ -44,6 +44,7 @@ public class DialogItemMapView extends LinearLayout {
     private TYPE_STATE currentState;
     private CircleImageView imgProfile;
     private TextView tvButtonBig;
+    private View tvApresentationCelular;
 
     public DialogItemMapView(Context context) {
         super(context);
@@ -172,6 +173,7 @@ public class DialogItemMapView extends LinearLayout {
         tvNumber = view.findViewById(R.id.tv_number);
         tvAdress = view.findViewById(R.id.tv_address);
         tvaAdressBig = view.findViewById(R.id.tv_address_big);
+        tvApresentationCelular = view.findViewById(R.id.text_celular);
         tvButtonBig = view.findViewById(R.id.tv_button_big);
         tvName = view.findViewById(R.id.tv_name);
         tvNameBig = view.findViewById(R.id.tv_name_big);
@@ -211,6 +213,14 @@ public class DialogItemMapView extends LinearLayout {
 
     public void hideButton() {
         viewRoute.setVisibility(GONE);
+    }
+
+    public View getViewNumber() {
+        return tvApresentationCelular;
+    }
+
+    public boolean isEnableCall() {
+        return viewRoute.getVisibility() != VISIBLE;
     }
 
     public enum TYPE_STATE {

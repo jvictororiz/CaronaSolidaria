@@ -221,5 +221,11 @@ public class SearchViewHV extends LinearLayout {
         void changed(long distance);
     }
 
+    public ImageView getImgRefresh() {
+        return imgRefresh;
+    }
 
+    public ImageView getImgSelector() {
+        return imgSelector;
+    }
 }

@@ -4,17 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#b7000000"
+    android:background="#79000000"
     android:gravity="center"
     android:orientation="vertical"
     tools:context="br.com.joaoapps.faciplac.carona.view.activity.dialogs.MessageActivity">
 
 
-    <ImageView
-        android:id="@+id/img_icon"
-        android:src="@drawable/correct"
-        android:layout_width="60dp"
-        android:layout_height="60dp" />
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="false"
+        app:lottie_rawRes="@raw/animation_success" />
     <TextView
         android:id="@+id/tv_title"
         android:visibility="gone"

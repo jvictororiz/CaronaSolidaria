@@ -11,9 +11,9 @@
     </style>
 
     <style name="NoActionBar" parent="BaseTheme">
-        <item name="backgroundTint">#f5edecec</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:buttonStyle">@style/estiloBotao</item>
     </style>
 
     <style name="AppTheme" parent="NoActionBar">
@@ -56,12 +56,12 @@
         <item name="android:windowIsFloating">true</item>
     </style>
 
-    <style name="estiloBotao" parent="Base.TextAppearance.AppCompat.Widget.Button">
+    <style name="estiloBotao" parent="Base.Widget.AppCompat.Button">
         <item name="android:background">@drawable/borda_circular_verde</item>
         <item name="android:gravity">center</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">#ffffff</item>
-        <item name="android:padding">8dp</item>
+        <item name="android:padding">2dp</item>
     </style>
 
     <style name="estiloBotaoNegativo" parent="estiloBotao">
@@ -113,8 +113,21 @@
 
     <style name="EditTextLogin" parent="Base.V7.Widget.AppCompat.EditText">
         <item name="android:background">@android:color/transparent</item>
-        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textColor">#ea232323</item>
         <item name="android:textColorHint">@color/cinzaEscuro</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:lines">1</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:paddingLeft">15dp</item>
+        <item name="android:paddingRight">15dp</item>
+        <item name="android:paddingBottom">15dp</item>
+        <item name="android:paddingTop">8dp</item>
+    </style>
+
+    <style name="EditTextReset" parent="Base.V7.Widget.AppCompat.EditText">
+        <item name="android:background">@null</item>
+        <item name="android:textColor">#fff</item>
+        <item name="android:textColorHint">@color/white</item>
         <item name="android:maxLines">1</item>
         <item name="android:lines">1</item>
         <item name="android:textSize">17sp</item>

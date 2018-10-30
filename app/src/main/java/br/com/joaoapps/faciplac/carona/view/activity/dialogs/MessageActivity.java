@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+
 import android.widget.TextView;
 
 import com.example.joaov.caronasolidaria.R;
@@ -23,7 +24,6 @@ public class MessageActivity extends AppCompatActivity {
     private TextView tvTitle;
     private TextView tvSubtitle;
     private Intent intent;
-    private ImageView imgIcon;
 
 
     @Override
@@ -31,9 +31,8 @@ public class MessageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
 
-        tvTitle = (TextView) findViewById(R.id.tv_title);
-        tvSubtitle = (TextView) findViewById(R.id.tv_subtitle);
-        imgIcon = (ImageView) findViewById(R.id.img_icon);
+        tvTitle =  findViewById(R.id.tv_title);
+        tvSubtitle =  findViewById(R.id.tv_subtitle);
 
         Bundle bundle = getIntent().getExtras();
         if(bundle != null) {
@@ -44,12 +43,9 @@ public class MessageActivity extends AppCompatActivity {
 
             if(codeIcon != null){
                 tvTitle.setVisibility(View.GONE);
-                imgIcon.setVisibility(View.VISIBLE);
 
                 if(codeIcon.equals(ICON_SUCCESS)){
-                    imgIcon.setImageResource(R.drawable.correct);
                 }else if(codeIcon.equals(ICON_ERROR)){
-                    imgIcon.setImageResource(R.drawable.negado);
                     tvSubtitle.setTextColor(Color.RED);
                 }
             }else{

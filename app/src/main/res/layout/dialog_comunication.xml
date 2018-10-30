@@ -14,9 +14,12 @@
     app:cardUseCompatPadding="true">
 
     <LinearLayout
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -25,16 +28,27 @@
             android:padding="10dp">
 
             <LinearLayout
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    tools:text="Tempo para responder:\n30 segundos" />
+
                 <com.github.abdularis.civ.CircleImageView
                     android:id="@+id/img_profile"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_marginTop="15dp"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="10dp"
                     android:src="@drawable/icon_user_default"
                     app:strokeColor="@color/colorPrimary"
                     app:strokeWidth="6dp" />
@@ -42,8 +56,11 @@
                 <TextView
                     android:id="@+id/tv_name"
                     fontPath="fonts/Roboto-Medium.ttf"
-                    android:layout_width="wrap_content"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:maxLines="1"
                     android:layout_marginTop="10dp"
                     android:textColor="@color/colorPrimary"
                     tools:text="João Victor" />
@@ -52,12 +69,13 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/ic_speech_bubble"
+                android:background="@drawable/dialog_chat"
                 android:orientation="horizontal"
-                android:paddingBottom="25dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:paddingTop="25dp">
+                android:layout_marginStart="10dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp">
 
                 <TextView
                     android:id="@+id/tv_message"
@@ -75,31 +93,20 @@
 
         <RelativeLayout
             android:id="@+id/body_step_one"
+            android:layout_gravity="center"
+            android:gravity="right"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
-            android:layout_marginRight="30dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginStart="30dp"
             android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/tv_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerInParent="true"
-                android:layout_gravity="end"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="15dp"
-                android:background="@drawable/shape_border_circle_ali"
-                android:padding="15dp"
-                android:textSize="12sp"
-                tools:text="30 segundos" />
 
             <ImageView
                 android:id="@+id/img_positive"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
-                android:layout_alignParentTop="true"
+                android:layout_centerInParent="true"
                 android:layout_marginEnd="35dp"
                 android:layout_toStartOf="@+id/img_negative"
                 android:src="@drawable/positive_joia_icon" />
@@ -107,6 +114,7 @@
             <ImageView
                 android:id="@+id/img_negative"
                 android:layout_width="45dp"
+                android:layout_centerInParent="true"
                 android:layout_height="45dp"
                 android:layout_alignParentEnd="true"
                 android:src="@drawable/negative_joia_icon" />
@@ -116,13 +124,15 @@
 
         <Button
             android:id="@+id/btn_see_profile"
-            android:layout_marginEnd="30dp"
-            android:layout_marginBottom="20dp"
-            android:layout_marginStart="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginStart="30dp"
             android:background="@drawable/shape_border_circle_ref"
-            android:text="@string/visualizar_perfil" />
+            android:text="@string/visualizar_perfil"
+            android:textAllCaps="false" />
     </LinearLayout>
 
 

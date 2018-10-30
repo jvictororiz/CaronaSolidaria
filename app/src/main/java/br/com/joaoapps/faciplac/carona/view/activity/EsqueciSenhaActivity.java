@@ -10,8 +10,9 @@ import com.example.joaov.caronasolidaria.R;
 
 import br.com.joaoapps.faciplac.carona.service.email.EmailService;
 import br.com.joaoapps.faciplac.carona.view.activity.bo.UsuarioBO;
+import br.com.joaoapps.faciplac.carona.view.utils.AlertUtils;
 
-public class EsqueciSenhaActivity extends AppCompatActivity {
+public class EsqueciSenhaActivity extends SuperActivity {
     EditText edtMatricula;
     EditText edtEmail;
     Button btnRecuperar;
@@ -20,16 +21,23 @@ public class EsqueciSenhaActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_esqueci_senha);
+        setupToolbar("Recuperar Senha");
 
-        EmailService.loginEmail();
-
-        edtMatricula = (EditText) findViewById(R.id.edt_matricula);
-        edtEmail = (EditText) findViewById(R.id.edt_email);
-        btnRecuperar = (Button) findViewById(R.id.btn_recuperar);
+        edtMatricula =  findViewById(R.id.edt_matricula);
+        edtEmail =  findViewById(R.id.edt_email);
+        btnRecuperar =  findViewById(R.id.btn_recuperar);
 
         btnRecuperar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(edtEmail.getText().toString().isEmpty()){
+                    AlertUtils.showAlert("Preencha o campo de e-mail", EsqueciSenhaActivity.this);
+                    return;
+                }
+                if (edtMatricula.getText().toString().isEmpty()) {
+                    AlertUtils.showAlert("Preencha o campo de matrícula", EsqueciSenhaActivity.this);
+                    return;
+                }
                 UsuarioBO.resetSenha(EsqueciSenhaActivity.this, edtMatricula.getText().toString(), edtEmail.getText().toString());
             }
         });

@@ -13,10 +13,13 @@ import android.view.ViewGroup;
 
 import com.example.joaov.caronasolidaria.R;
 
+import java.util.Objects;
+
 import br.com.joaoapps.faciplac.carona.view.activity.SuperActivity;
+import br.com.joaoapps.faciplac.carona.view.utils.AlertUtils;
 
 public class LoadDialogFragment extends AppCompatDialogFragment {
-    private final int TIMEOUT = 150000;
+    private final int TIMEOUT = 9000;
 
     public static LoadDialogFragment newInstance() {
 
@@ -56,7 +59,7 @@ public class LoadDialogFragment extends AppCompatDialogFragment {
                 public void run() {
                     dismiss();
                     if(getContext() != null) {
-                        SuperActivity.startActivityMessageNegative(getContext(), null, "Falha na conexão");
+                        AlertUtils.showAlert("Tempo limite excedido, tente novamente mais tarde", Objects.requireNonNull(getActivity()));
                     }
 
                 }

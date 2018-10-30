@@ -8,7 +8,9 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.joaov.caronasolidaria.R;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -23,10 +25,12 @@ import br.com.joaoapps.faciplac.carona.model.Autenticado;
 import br.com.joaoapps.faciplac.carona.model.Usuario;
 import br.com.joaoapps.faciplac.carona.model.enums.Situacao;
 import br.com.joaoapps.faciplac.carona.model.enums.Status;
+import br.com.joaoapps.faciplac.carona.view.activity.RegistroLocalizacaoActivity;
 import br.com.joaoapps.faciplac.carona.view.activity.SuperActivity;
 import br.com.joaoapps.faciplac.carona.view.activity.bo.UsuarioBO;
 import br.com.joaoapps.faciplac.carona.view.componentes.attach.AttachProfileView;
 import br.com.joaoapps.faciplac.carona.view.utils.AlertUtils;
+import br.com.joaoapps.faciplac.carona.view.utils.GpsUtils;
 import br.com.joaoapps.faciplac.carona.view.utils.Mask;
 import br.com.joaoapps.faciplac.carona.view.utils.ValidaCPF;
 
@@ -41,6 +45,8 @@ public class CadastroActivity extends SuperActivity {
     private EditText edtEmail;
     private EditText edtTelefone;
     private AttachProfileView attachProfileView;
+    private ViewGroup llLocation;
+    private TextView tvAddress;
 
     private Usuario usuario;
     private Bitmap bitmap;
@@ -65,15 +71,34 @@ public class CadastroActivity extends SuperActivity {
         edtEmail = findViewById(R.id.edt_email);
         edtTelefone = findViewById(R.id.edt_celular);
         attachProfileView = findViewById(R.id.attach_profile);
+        tvAddress = findViewById(R.id.tv_address);
+        llLocation = findViewById(R.id.ll_body_location);
         setConfigs();
 
         usuario = (Usuario) getIntent().getSerializableExtra("USUARIO");
         isEdition = usuario != null;
         if (isEdition) {
             setUserInFilds();
+            configViewLocation();
+        }else{
+            llLocation.setVisibility(View.GONE);
         }
 
 
+    }
+
+    private void configViewLocation() {
+        llLocation.setVisibility(View.VISIBLE);
+        tvAddress.setText(GpsUtils.getNameLocale(CadastroActivity.this, usuario.getPositionResidence().getLatitude(), usuario.getPositionResidence().getLongitude()));
+        llLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(CadastroActivity.this, RegistroLocalizacaoActivity.class);
+                intent.putExtra(RegistroLocalizacaoActivity.EDITION, true);
+                intent.putExtra("USUARIO", usuario);
+                startActivity(intent);
+            }
+        });
     }
 
     private void setUserInFilds() {

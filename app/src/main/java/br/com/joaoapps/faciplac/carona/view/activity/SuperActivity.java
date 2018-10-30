@@ -39,7 +39,7 @@ public class SuperActivity extends AppCompatActivity {
             actionBar.setTitle(title);
             actionBar.setElevation(0);
         } else {
-            Toolbar toolbar = findById(R.id.toolbar);
+            Toolbar toolbar = findViewById(R.id.toolbar);
             if (toolbar != null) {
                 setSupportActionBar(toolbar);
                 TextView toolbarTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
@@ -206,16 +206,8 @@ public class SuperActivity extends AppCompatActivity {
         context.startActivity(intentMessage);
     }
 
-    public static void startActivityMessageNegative(Context context, Intent intent, String message) {
-        Intent intentMessage = new Intent(context, MessageActivity.class);
-        intentMessage.putExtra(MessageActivity.SUBTITLE, message);
-        intentMessage.putExtra(MessageActivity.INTENT, intent);
-        intentMessage.putExtra(MessageActivity.CODE_ICON, MessageActivity.ICON_ERROR);
-        context.startActivity(intentMessage);
-    }
-
     public static void showDialogLoad(AppCompatActivity context) {
-        if (loadDialogFragment != null && loadDialogFragment.getDialog().isShowing()) {
+        if (loadDialogFragment != null && loadDialogFragment.getDialog() != null && loadDialogFragment.getDialog().isShowing()) {
             loadDialogFragment.dismiss();
         }
         FragmentManager fm = context.getSupportFragmentManager();

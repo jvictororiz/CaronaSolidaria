@@ -71,7 +71,8 @@
                         android:layout_marginEnd="6dp"
                         android:layout_marginRight="8dp"
                         android:layout_marginTop="6dp"
-                        android:src="@drawable/ic_login_field" />
+                        android:src="@drawable/ic_login_field"
+                        android:tint="@color/colorPrimary" />
 
                     <android.support.design.widget.TextInputLayout
                         android:id="@+id/login_input"
@@ -87,7 +88,7 @@
                             android:layout_height="wrap_content"
                             android:focusableInTouchMode="true"
                             android:hint="@string/matricula"
-                            android:inputType="textEmailAddress"
+                            android:inputType="number"
                             android:textCursorDrawable="@drawable/color_cursor" />
 
                         <TextView
@@ -122,7 +123,8 @@
                         android:layout_marginRight="8dp"
                         android:layout_marginTop="6dp"
                         android:contentDescription="@string/senha"
-                        android:src="@drawable/ic_password_field" />
+                        android:src="@drawable/ic_password_field"
+                        android:tint="@color/colorPrimary" />
 
                     <android.support.design.widget.TextInputLayout
                         android:id="@+id/password_input"
@@ -138,7 +140,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:hint="@string/senha"
-                            android:inputType="textPassword"
+                            android:inputType="numberPassword"
                             android:textCursorDrawable="@drawable/color_cursor" />
 
                     </android.support.design.widget.TextInputLayout>
@@ -149,11 +151,13 @@
             <Button
                 android:id="@+id/btn_login"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:layout_marginLeft="25dp"
                 android:layout_marginRight="25dp"
                 android:layout_marginTop="16dp"
-                android:text="@string/entrar" />
+                android:background="@drawable/borda_circular_verde"
+                android:text="@string/entrar"
+                android:textAllCaps="false" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -163,6 +167,7 @@
 
                 <TextView
                     android:id="@+id/tv_repassword"
+                    fontPath="fonts/Roboto-Medium.ttf"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
@@ -170,21 +175,21 @@
                     android:layout_marginBottom="20dp"
                     android:layout_marginLeft="20dp"
                     android:text="Esqueci a senha"
-                    android:textColor="@color/cinzaEscuro"
+                    android:textColor="@color/verde_escuro"
                     android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tv_register"
+                    fontPath="fonts/Roboto-Medium.ttf"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
                     android:layout_gravity="end"
                     android:layout_marginBottom="20dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginEnd="20dp"
                     android:text="Cadastre-se"
-                    android:textColor="@color/cinzaEscuro"
+                    android:textColor="@color/verde_escuro"
                     android:textSize="16sp" />
             </RelativeLayout>
         </LinearLayout>

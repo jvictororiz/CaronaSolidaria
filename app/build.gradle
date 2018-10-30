@@ -2,11 +2,11 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.2'
     defaultConfig {
         applicationId "com.example.joaov.caronasolidaria"
         minSdkVersion 19
-        targetSdkVersion 27
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
@@ -31,7 +31,7 @@ dependencies {
     implementation files('libs/additionnal.jar')
     implementation files('libs/mail.jar')
     implementation 'com.google.firebase:firebase-core:16.0.3'
-    implementation "com.android.support:support-compat:27.1.1"
+    implementation 'com.android.support:support-compat:27.1.1'
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.github.abdularis:CircularImageView:v1.2'
@@ -52,7 +52,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-places:15.0.1'
     implementation 'com.google.maps.android:android-maps-utils:0.5+'
     implementation 'com.androidadvance:topsnackbar:1.1.1'
-
+    implementation 'com.airbnb.android:lottie:2.6.0-beta19'
+    implementation 'com.elconfidencial.bubbleshowcase:bubbleshowcase:1.2.2'
 }
 
 android {

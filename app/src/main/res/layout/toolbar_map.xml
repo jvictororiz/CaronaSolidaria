@@ -37,7 +37,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:gravity="end|center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingStart="20dp">
 
             <TextView
                 android:id="@+id/toolbar_title"

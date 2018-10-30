@@ -63,7 +63,7 @@ public class UsuarioBO {
                     SuperActivity.closeDialogLoad();
                 } else {
                     SuperActivity.closeDialogLoad();
-                    SuperActivity.startActivityMessageNegative(context, null, "Login ou senha incorretos !");
+                    AlertUtils.showAlert("Login ou senha incorretos !", context);
                 }
             }
 
@@ -71,7 +71,7 @@ public class UsuarioBO {
             public void error(int code) {
                 SuperActivity.closeDialogLoad();
                 if (code == Code.CPF_SENHA_INCORRETO) {
-                    SuperActivity.startActivityMessageNegative(context, null, "Login ou senha incorretos !");
+                    AlertUtils.showAlert("Login ou senha incorretos !", context);
                 }
             }
         });
@@ -114,7 +114,7 @@ public class UsuarioBO {
                 if (bitmap != null) {
                     saveImageUser(context, usuario, bitmap);
                 }
-                SuperActivity.startActivityMessage(context, intent, "Parabéns", "Cadaastro realizado \ncom sucesso !");
+                SuperActivity.startActivityMessagePositive(context, intent, "Cadaastro realizado \ncom sucesso !");
 
                 context.finish();
             }
@@ -123,15 +123,15 @@ public class UsuarioBO {
             public void error(int code) {
                 SuperActivity.closeDialogLoad();
                 if (code == Code.LOGIN_EXISTE) {
-                    SuperActivity.startActivityMessageNegative(context, null, "CPF já está cadastrado !");
+                    AlertUtils.showAlert("CPF já está cadastrado !", context);
                 } else if (code == Code.NETWORK_ERROR) {
-                    SuperActivity.startActivityMessageNegative(context, null, "Sem internet");
+                    AlertUtils.showAlert("Sem internet", context);
                 } else if (code == Code.MATRICULA_EXISTE) {
-                    SuperActivity.startActivityMessageNegative(context, null, "Matrícula já está cadastrada");
+                    AlertUtils.showAlert("Matrícula já está cadastrada", context);
                 } else if (code == Code.EMAIL_EXISTE) {
-                    SuperActivity.startActivityMessageNegative(context, null, "E-mail já está cadastrado");
+                    AlertUtils.showAlert("E-mail já está cadastrado", context);
                 } else {
-                    SuperActivity.startActivityMessageNegative(context, null, "Erro inesperado");
+                    AlertUtils.showAlert("Erro inesperado", context);
                 }
 
             }
@@ -167,7 +167,7 @@ public class UsuarioBO {
                     public void error(int code) {
                         SuperActivity.closeDialogLoad();
                         if (code == Code.ERRO_ENVIAR_EMAIL) {
-                            SuperActivity.startActivityMessageNegative(appCompatActivity, null, "Erro ao enviar e-mail");
+                            AlertUtils.showAlert("Erro ao enviar e-mail. Favor procurar a secretaria para regularização de sua conta.", appCompatActivity);
                         }
                     }
                 });
@@ -178,8 +178,8 @@ public class UsuarioBO {
             public void error(int code) {
                 SuperActivity.closeDialogLoad();
                 if (code == Code.MATRICULA_EMAIL_INCORRETOS) {
-                    SuperActivity.startActivityMessageNegative(appCompatActivity, null, "Matricula ou e-mail\n não correspondem a\n nenhuma conta");
-                }
+                    AlertUtils.showAlert("Matricula ou e-mail não correspondem a nenhuma conta", appCompatActivity);
+                    }
             }
         });
     }

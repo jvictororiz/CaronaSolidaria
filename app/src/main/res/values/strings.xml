@@ -22,9 +22,10 @@
     <string name="minha_localiza_o">Localização atual</string>
     <string name="avan_ar">Avançar</string>
     <string name="digite_seu_endere_o">Digite seu endereço</string>
-    <string name="text_register_location">Toque em algum ponto do mapa para cadastrar uma localização. Assim podemos exibir apenas usuários que moram perto de você</string>
+    <string name="text_register_location">Toque em algum ponto do mapa para cadastrar uma localização. Assim podemos exibir apenas usuários que moram perto de você.</string>
     <string name="estou_indo_para">Está indo para:</string>
     <string name="ola">Olá </string>
     <string name="visualizar_perfil">Visualizar perfil</string>
     <string name="fechar">Fechar</string>
+    <string name="entrar">Entrar</string>
 </resources>

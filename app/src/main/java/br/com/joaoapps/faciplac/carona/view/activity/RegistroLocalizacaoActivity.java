@@ -6,36 +6,31 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.example.joaov.caronasolidaria.R;
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Objects;
 
-import br.com.joaoapps.faciplac.carona.model.CaronaUsuario;
 import br.com.joaoapps.faciplac.carona.model.LatLng;
 import br.com.joaoapps.faciplac.carona.model.Usuario;
-import br.com.joaoapps.faciplac.carona.service.firebase.CaronaUsuarioFirebase;
 import br.com.joaoapps.faciplac.carona.service.firebase.UsuarioFirebase;
-import br.com.joaoapps.faciplac.carona.view.activity.bo.UsuarioBO;
 import br.com.joaoapps.faciplac.carona.view.utils.AlertUtils;
-import br.com.joaoapps.faciplac.carona.view.utils.Preferences;
 
 public class RegistroLocalizacaoActivity extends LocationActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
 
+    public static final String EDITION = "EDITION";
     private Usuario usuario;
     private LatLng locationActual;
     private LatLng locationSelected;
     private LinearLayout viewMyLocation;
     private Button btnNex;
     public GoogleMap mMap;
+    public boolean isEdition;
 
 
     @Override
@@ -45,15 +40,23 @@ public class RegistroLocalizacaoActivity extends LocationActivity implements OnM
         SuperActivity.closeDialogLoad();
         initViews();
         hideKeyboard();
-        setupToolbar("Cadastrar minha\nlocalização");
+        isEdition = getIntent().getBooleanExtra(EDITION, false);
         usuario = (Usuario) Objects.requireNonNull(getIntent().getExtras()).getSerializable("USUARIO");
-        hideNext();
+        hideButtonNext();
+
         if (usuario != null && usuario.getPositionResidence() != null) {
-            goHomeActivity();
+            if (!isEdition)
+                goHomeActivity();
         } else {
             SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
             mapFragment.getMapAsync(this);
         }
+        if (isEdition) {
+            setupToolbar("Alterar minha\nlocalização");
+        } else {
+            setupToolbar("Cadastrar minha\nlocalização");
+        }
+
     }
 
     private void initViews() {
@@ -66,7 +69,10 @@ public class RegistroLocalizacaoActivity extends LocationActivity implements OnM
             @Override
             public void onLocationChanged(Location location) {
                 locationActual = new LatLng(location.getLatitude(), location.getLongitude());
-                moveCamera(locationActual);
+                if (!isEdition) {
+                    moveCamera(locationActual);
+                }
+
             }
 
             @Override
@@ -110,9 +116,13 @@ public class RegistroLocalizacaoActivity extends LocationActivity implements OnM
 
     private void goHomeActivity() {
         UsuarioFirebase.saveOrUpdate(usuario);
-        Intent intent = new Intent(RegistroLocalizacaoActivity.this, HomeAlunoActivity.class);
-        intent.putExtra("USUARIO", usuario);
-        startActivityAnim(intent);
+        if (!isEdition) {
+            Intent intent = new Intent(RegistroLocalizacaoActivity.this, HomeAlunoActivity.class);
+            intent.putExtra("USUARIO", usuario);
+            startActivityAnim(intent);
+        } else {
+            btnNex.setText("Salvar");
+        }
         finish();
     }
 
@@ -132,13 +142,19 @@ public class RegistroLocalizacaoActivity extends LocationActivity implements OnM
         mMap.setOnMapClickListener(this);
         initGps();
         setEvents();
+
+        if (isEdition) {
+            locationSelected = new LatLng(usuario.getPositionResidence().getLatitude(), usuario.getPositionResidence().getLongitude());
+            applyMarker(new com.google.android.gms.maps.model.LatLng(locationActual.getLatitude(), locationActual.getLongitude()));
+            moveCamera(locationSelected);
+        }
     }
 
-    private void hideNext() {
+    private void hideButtonNext() {
         btnNex.animate().alpha(0.3f);
     }
 
-    private void showNext() {
+    private void showButtonNext() {
         btnNex.animate().alpha(1f).setDuration(500);
     }
 
@@ -153,7 +169,7 @@ public class RegistroLocalizacaoActivity extends LocationActivity implements OnM
             mMap.clear();
             mMap.addMarker(new MarkerOptions().position(latLng));
             moveCamera(latLng);
-            showNext();
+            showButtonNext();
         }
     }
 }

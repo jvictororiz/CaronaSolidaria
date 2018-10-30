@@ -164,9 +164,9 @@ public class ComunicationDialogFragment extends AppCompatDialogFragment {
         new CountDownTimer(TIME_TO_RESPONSE, 1000) {
             public void onTick(long millisUntilFinished) {
                 if (millisUntilFinished > 1000) {
-                    tvTime.setText((String.valueOf(millisUntilFinished / 1000)).concat(" Segundos"));
+                    tvTime.setText("Tempo para responder:\n"+(String.valueOf(millisUntilFinished / 1000)).concat(" Segundos"));
                 } else {
-                    tvTime.setText((String.valueOf(millisUntilFinished / 1000)).concat(" Segundo"));
+                    tvTime.setText("Tempo para responder:\n"+(String.valueOf(millisUntilFinished / 1000)).concat(" Segundo"));
                 }
             }
 

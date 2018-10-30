@@ -1,5 +1,9 @@
 package br.com.joaoapps.faciplac.carona.view.activity;
 
+import com.elconfidencial.bubbleshowcase.BubbleShowCase;
+import com.elconfidencial.bubbleshowcase.BubbleShowCaseBuilder;
+import com.elconfidencial.bubbleshowcase.BubbleShowCaseListener;
+import com.elconfidencial.bubbleshowcase.BubbleShowCaseSequence;
 import com.example.joaov.caronasolidaria.R;
 import com.github.abdularis.civ.CircleImageView;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -18,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -81,20 +86,36 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_aluno);
-        SuperActivity.closeDialogLoad();
-        registerReceiver();
-        usuario = (Usuario) Objects.requireNonNull(getIntent().getExtras()).getSerializable("USUARIO");
-        assert usuario != null;
-        setupToolbar(usuario.getNome());
-        initViews();
-        statusCarona = StatusCarona.RECEBER_CARONA;
-        initImgProfile();
-        initGps();
-        setEvents();
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-        findAllUsers(true);
-        hideKeyboard();
+        try {
+            SuperActivity.closeDialogLoad();
+            registerReceiver();
+            usuario = (Usuario) Objects.requireNonNull(getIntent().getExtras()).getSerializable("USUARIO");
+            assert usuario != null;
+            setupToolbar(usuario.getNome());
+            initViews();
+            statusCarona = StatusCarona.RECEBER_CARONA;
+            initImgProfile();
+            initGps();
+            setEvents();
+            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+            mapFragment.getMapAsync(this);
+            findAllUsers(true);
+            hideKeyboard();
+
+            BubbleShowCaseBuilder bubbleTutorial1 = createBubbleTutorial("Alterar staus", "Aqui você pode alterar o status caso queria pedir ou oferecer carona", searchViewHV.getImgSelector(), "STAUS", BubbleShowCase.ArrowPosition.TOP);
+            BubbleShowCaseBuilder bubbleTutorial2 = createBubbleTutorial("Atualizar alunos", "Novos alunos podem ter entrado na rede, aqui você pode buscar todos novamente", searchViewHV.getImgRefresh(), "REFRESH", BubbleShowCase.ArrowPosition.TOP);
+            BubbleShowCaseBuilder bubbleTutorial3 = createBubbleTutorial("Dados pessoais", "Você pode clicar aqui para modificar seus dados pessoais e a sua localização", llBodyProfile, "DADOS_PESSOAIS", BubbleShowCase.ArrowPosition.TOP);
+
+            new BubbleShowCaseSequence()
+                    .addShowCase(bubbleTutorial1)
+                    .addShowCase(bubbleTutorial2)
+                    .addShowCase(bubbleTutorial3)
+                    .show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            finish();
+        }
+
     }
 
     private void initImgProfile() {
@@ -163,7 +184,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         }
         final ComunicationDialogFragment popupAlert = ComunicationDialogFragment.newInstance(message, comunicationCaronaBody.getStatusCarona(), comunicationCaronaBody.getMyUser(), comunicationCaronaBody.getOtherUser());
         popupAlert.show(getSupportFragmentManager(), comunicationCaronaBody.getOtherUser().getCpfUsuario());
-        popupAlert.setCancelable(false);
+        popupAlert.setCancelable(true);
         AppUtil.vibrate(HomeAlunoActivity.this, 200);
         popupAlert.configToStepTwo(new View.OnClickListener() {
             @Override
@@ -189,7 +210,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         }
         final ComunicationDialogFragment popupAlert = ComunicationDialogFragment.newInstance(message, comunicationCaronaBody.getStatusCarona(), comunicationCaronaBody.getMyUser(), comunicationCaronaBody.getOtherUser());
         popupAlert.show(getSupportFragmentManager(), comunicationCaronaBody.getOtherUser().getCpfUsuario());
-        popupAlert.setCancelable(false);
+        popupAlert.setCancelable(true);
         popupAlert.initTimeToDeny();
         AppUtil.vibrate(HomeAlunoActivity.this, 200);
 
@@ -376,7 +397,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
             }
         });
 
-        findById(R.id.toolbar_back).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.toolbar_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
@@ -402,6 +423,14 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         viewMyLocation.animate().setDuration(200).alpha(0f);
         searchViewHV.hide();
         dialogSelectorItemMapView.showExpanded();
+        showTutorialIfFirstAccess();
+    }
+
+    private void showTutorialIfFirstAccess() {
+        createBubbleTutorial("Desbloqueio do telefone", "O número deste aluno será desbloqueado assim que ele responder ao seu chamado.", null, "TELEFONE", R.mipmap.ic_cell_block, BubbleShowCase.ArrowPosition.BOTTOM).show();
+//        new BubbleShowCaseSequence()
+//                .addShowCase(bubbleTutorial1)
+//                .show();
     }
 
     private void hideDetailedEstablishementSelected() {
@@ -431,7 +460,11 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     @Override
     public void onCall(String number) {
         this.numberTellphone = number;
-        AppUtil.callPhone(this, number, REQUEST_PHONE_CALL);
+        if (dialogSelectorItemMapView.isEnableCall()) {
+            AppUtil.callPhone(this, number, REQUEST_PHONE_CALL);
+        } else {
+            AlertUtils.showAlert("Primeiro é necessário que este usuário aceite.", this);
+        }
     }
 
     @Override
@@ -552,6 +585,14 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
             }
             if (empty) {
                 AlertUtils.showAlert("Nenhum usuário compativel online no momento.", this);
+            } else {
+                int count = mClusterManager.getClusterMarkerCollection().getMarkers().size();
+                if (count > 1) {
+                    AlertUtils.showInfo(count + " alunos online no momento", this);
+                } else {
+                    AlertUtils.showInfo("Apenas um usuário online no momento", this);
+                }
+
             }
         }
     }
@@ -640,8 +681,31 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
                 }
             }
         }
+    }
+
+    private BubbleShowCaseBuilder createBubbleTutorial(String title, String description, View view, String idImage, BubbleShowCase.ArrowPosition direction) {
+        return createBubbleTutorial("Alterar staus", "Aqui você pode alterar o status se deseja pedir ou oferecer carona", searchViewHV.getImgSelector(), "STAUS", R.drawable.icon_pedindo_carona_branco, BubbleShowCase.ArrowPosition.TOP);
+    }
+
+    private BubbleShowCaseBuilder createBubbleTutorial(String title, String description, View view, String idImage, int icon, BubbleShowCase.ArrowPosition direction) {
+        BubbleShowCaseBuilder image = new BubbleShowCaseBuilder(this)
+                .title(title)
+                .description(description)
+                .arrowPosition(direction)
+                .backgroundColor(getResources().getColor(R.color.colorPrimary))
+                .textColor(Color.WHITE)
+                .showOnce(idImage)
+                .titleTextSize(18)
+                .descriptionTextSize(14)
+                .image(getResources().getDrawable(icon));
+
+        if (view != null) {
+            image.targetView(view);
+        }
+        return image;
 
     }
+
 
     @Override
     public void hideKeyboard() {
