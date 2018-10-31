@@ -31,12 +31,12 @@ import br.com.joaoapps.faciplac.carona.view.utils.DialogUtils;
  * Created by joaov on 02/11/2017.
  */
 
-public class UsuarioNaoAutenticadoAdapter extends RecyclerView.Adapter<UsuarioNaoAutenticadoAdapter.AlunoHolder> {
+public class UsuarioNaoAutenticadoV2Adapter extends RecyclerView.Adapter<UsuarioNaoAutenticadoV2Adapter.AlunoHolder> {
 
     private List<Usuario> usuarios;
     private AppCompatActivity context;
 
-    public UsuarioNaoAutenticadoAdapter(List<Usuario> usuarios, AppCompatActivity context) {
+    public UsuarioNaoAutenticadoV2Adapter(List<Usuario> usuarios, AppCompatActivity context) {
         this.usuarios = usuarios;
         this.context = context;
     }
@@ -44,8 +44,8 @@ public class UsuarioNaoAutenticadoAdapter extends RecyclerView.Adapter<UsuarioNa
     @NonNull
     @Override
     public AlunoHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_alunos, parent, false);
-        return new UsuarioNaoAutenticadoAdapter.AlunoHolder(itemView);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_alunos_v2, parent, false);
+        return new UsuarioNaoAutenticadoV2Adapter.AlunoHolder(itemView);
     }
 
     @Override
@@ -53,31 +53,15 @@ public class UsuarioNaoAutenticadoAdapter extends RecyclerView.Adapter<UsuarioNa
         final Usuario usuario = usuarios.get(position);
 
         holder.tvNome.setText(usuario.getNome());
-        holder.tvCpf.setText(usuario.getCpf());
-        holder.tvMatricula.setText(usuario.getMatricula());
-        holder.tvDataCadastro.setText(DateUtils.toString("dd/MM/yyyy", usuario.getDataCadastro()));
-
-        if (usuario.getAutenticado().getSituacao() != Situacao.ESPERA) {
-            holder.tvNomeAutenticador.setText(usuario.getAutenticado().getNomeAutenticador());
-            holder.tvDataAutenticada.setText(DateUtils.toString("dd/MM/yyyy", usuario.getAutenticado().getDateAutenticacao()));
-            if (usuario.getAutenticado().getSituacao() == Situacao.APROVADO) {
-                holder.imgAutenticado.setImageResource(R.drawable.positive_joia_icon);
-            }
-            if (usuario.getAutenticado().getSituacao() == Situacao.NEGADO) {
-                holder.imgAutenticado.setImageResource(R.drawable.negative_joia_icon);
-            }
-
-        } else {
-            holder.bodyAutenticacao.setVisibility(View.GONE);
-        }
-
         if (usuario.getUrlFoto() != null && !usuario.getUrlFoto().isEmpty()) {
             Picasso.with(context)
                     .load(usuario.getUrlFoto())
-                    .placeholder(R.drawable.icon_user_default)
+                    .placeholder(R.drawable.icon_carona)
                     .error(R.drawable.icon_user_default)
-                    .into(holder.imgUser);
+                    .into(holder.imgProfile);
         }
+
+        holder.tvNameAdm.setText(usuario.getAutenticado().getNomeAutenticador());
 
 
         holder.btnAprovar.setOnClickListener(new View.OnClickListener() {
@@ -122,31 +106,22 @@ public class UsuarioNaoAutenticadoAdapter extends RecyclerView.Adapter<UsuarioNa
 
     class AlunoHolder extends RecyclerView.ViewHolder {
         TextView tvNome;
-        TextView tvMatricula;
-        CircleImageView imgUser;
-        TextView tvCpf;
-        TextView tvDataCadastro;
-        TextView tvNomeAutenticador;
-        TextView tvDataAutenticada;
-        RelativeLayout bodyAutenticacao;
+        TextView tvNameAdm;
+        CircleImageView imgProfile;
+        ViewGroup llBody;
         ImageView btnAprovar;
         ImageView btnNeggar;
-        ImageView imgAutenticado;
 
 
         public AlunoHolder(View v) {
             super(v);
-            tvNome = v.findViewById(R.id.tv_nome);
-            imgUser = v.findViewById(R.id.img_user);
-            tvCpf = v.findViewById(R.id.tv_cpf);
-            tvMatricula = v.findViewById(R.id.tv_matricula);
-            tvDataCadastro = v.findViewById(R.id.tv_data_cadastro);
+            tvNome = v.findViewById(R.id.tv_name);
+            tvNameAdm = v.findViewById(R.id.tv_name_adm);
             btnAprovar = v.findViewById(R.id.btn_aprovar);
             btnNeggar = v.findViewById(R.id.btn_negar);
-            tvNomeAutenticador = v.findViewById(R.id.tv_nome_autenticador);
-            tvDataAutenticada = v.findViewById(R.id.tv_data_autenticada);
-            bodyAutenticacao = v.findViewById(R.id.rr_body_autenticador);
-            imgAutenticado = v.findViewById(R.id.img_autenticado);
+            llBody = v.findViewById(R.id.ll_body);
+            imgProfile = v.findViewById(R.id.img_profile);
+            btnNeggar = v.findViewById(R.id.btn_negar);
         }
     }
 

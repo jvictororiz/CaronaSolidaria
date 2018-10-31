@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_menu"
-
     tools:context="br.com.joaoapps.faciplac.carona.view.activity.HomeAlunoActivity">
 
     <LinearLayout
@@ -42,7 +40,8 @@
 
             <LinearLayout
                 android:id="@+id/ll_body_mylocation"
-                android:layout_width="50dp"
+                android:layout_width="wrap_content"
+                android:alpha="0.4"
                 android:layout_height="50dp"
                 android:layout_gravity="end"
                 android:layout_marginBottom="-62dp"
@@ -51,8 +50,15 @@
                 android:background="@drawable/shape_mylocation_white"
                 android:elevation="5dp"
                 android:gravity="center"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:padding="6dp">
+
+                <TextView
+                    android:text="Minha Localização"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
                 <ImageView
                     android:layout_width="30dp"
@@ -90,10 +96,8 @@
         android:layout_marginEnd="30dp"
         android:layout_marginStart="30dp"
         android:textSize="16sp"
-        android:background="@drawable/shape_border_next"
         android:enabled="true"
         android:text="@string/avan_ar"
-        android:textAllCaps="false"
-        android:textColor="@color/verde_escuro" />
+        android:textAllCaps="false" />
 </RelativeLayout>
 

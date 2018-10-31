@@ -34,8 +34,8 @@ public class SuperActivity extends AppCompatActivity {
     protected void setupToolbar(boolean visibleBack, String title) {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(false);
+            actionBar.setDisplayHomeAsUpEnabled(false);
             actionBar.setTitle(title);
             actionBar.setElevation(0);
         } else {

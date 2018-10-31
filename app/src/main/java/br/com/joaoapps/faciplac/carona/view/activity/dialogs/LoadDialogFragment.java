@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
@@ -19,7 +20,8 @@ import br.com.joaoapps.faciplac.carona.view.activity.SuperActivity;
 import br.com.joaoapps.faciplac.carona.view.utils.AlertUtils;
 
 public class LoadDialogFragment extends AppCompatDialogFragment {
-    private final int TIMEOUT = 9000;
+
+    private OnTimeoutListener listenre;
 
     public static LoadDialogFragment newInstance() {
 
@@ -32,10 +34,9 @@ public class LoadDialogFragment extends AppCompatDialogFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_load, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        return view;
+        return inflater.inflate(R.layout.dialog_load, container, false);
     }
 
 
@@ -48,24 +49,35 @@ public class LoadDialogFragment extends AppCompatDialogFragment {
             d.setAlpha(80);
             int width = ViewGroup.LayoutParams.MATCH_PARENT;
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
-            getDialog().getWindow().setLayout(width, height);
+            Objects.requireNonNull(getDialog().getWindow()).setLayout(width, height);
             getDialog().getWindow().setBackgroundDrawable(d);
             getDialog().show();
 
             final Handler handler = new Handler();
-            handler.postDelayed( new Runnable() {
+            int TIMEOUT = 9000;
+            handler.postDelayed(new Runnable() {
 
                 @Override
                 public void run() {
                     dismiss();
-                    if(getContext() != null) {
-                        AlertUtils.showAlert("Tempo limite excedido, tente novamente mais tarde", Objects.requireNonNull(getActivity()));
+                    if (getContext() != null) {
+//                        AlertUtils.showAlert("Tempo limite excedido, tente novamente mais tarde", Objects.requireNonNull(getActivity()));
+                        if (listenre != null){
+                            listenre.timeout();
+                        }
                     }
 
                 }
-            }, TIMEOUT );
+            }, TIMEOUT);
 
 
         }
+
+    }
+    public void setOnTimeoutListener(OnTimeoutListener listener){
+        this.listenre = listener;
+    }
+    public interface OnTimeoutListener{
+        void timeout();
     }
 }

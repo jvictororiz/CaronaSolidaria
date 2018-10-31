@@ -31,6 +31,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -61,7 +62,7 @@ import br.com.joaoapps.faciplac.carona.view.utils.Preferences;
 
 public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener, DialogItemMapView.OnEventesCaronaUsuarioDetailed {
     private static final int REQUEST_PHONE_CALL = 115;
-    private static final long TIME_TO_CLOSE_BACK = 4000;
+    private static final long TIME_TO_CLOSE_BACK = 2000;
     public static final String ENTRY_COMUNICATION = "ENTRY_COMUNICATION";
 
     private StatusCarona statusCarona;
@@ -400,7 +401,13 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         findViewById(R.id.toolbar_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                if (hasClose) {
+                    HomeAlunoActivity.super.finish();
+                } else {
+                    Toast.makeText(HomeAlunoActivity.this, "Aperte mais uma vez para sair", Toast.LENGTH_SHORT).show();
+                    hasClose = true;
+                    initTimeToClose();
+                }
             }
         });
     }

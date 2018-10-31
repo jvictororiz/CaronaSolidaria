@@ -37,6 +37,7 @@ import br.com.joaoapps.faciplac.carona.view.utils.ValidaCPF;
 public class CadastroActivity extends SuperActivity {
 
     public static final int USER_CODE = 100;
+    public static final int LOCATION_CODE = 200;
     private EditText edtNome;
     private EditText edtCpf;
     private EditText edtMatricula;
@@ -62,7 +63,7 @@ public class CadastroActivity extends SuperActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro);
-        setupToolbar("Cadastro");
+        usuario = (Usuario) getIntent().getSerializableExtra("USUARIO");
         edtNome = findViewById(R.id.edt_nome);
         edtCpf = findViewById(R.id.edt_cpf);
         edtMatricula = findViewById(R.id.edt_matricula);
@@ -75,12 +76,17 @@ public class CadastroActivity extends SuperActivity {
         llLocation = findViewById(R.id.ll_body_location);
         setConfigs();
 
-        usuario = (Usuario) getIntent().getSerializableExtra("USUARIO");
         isEdition = usuario != null;
+        if (!isEdition) {
+            setupToolbar("Cadastro");
+        } else {
+            setupToolbar("Editar");
+        }
+
         if (isEdition) {
             setUserInFilds();
             configViewLocation();
-        }else{
+        } else {
             llLocation.setVisibility(View.GONE);
         }
 
@@ -96,7 +102,7 @@ public class CadastroActivity extends SuperActivity {
                 Intent intent = new Intent(CadastroActivity.this, RegistroLocalizacaoActivity.class);
                 intent.putExtra(RegistroLocalizacaoActivity.EDITION, true);
                 intent.putExtra("USUARIO", usuario);
-                startActivity(intent);
+                startActivityForResult(intent, LOCATION_CODE);
             }
         });
     }
@@ -211,7 +217,7 @@ public class CadastroActivity extends SuperActivity {
         usuario.setNome(edtNome.getText().toString());
         usuario.setEmail(edtEmail.getText().toString());
         usuario.setTelefone(edtTelefone.getText().toString());
-        usuario.setPushId(FirebaseInstanceId.getInstance().getId());
+        usuario.setPushId(FirebaseInstanceId.getInstance().getToken());
         if (!isEdition) {
             usuario.setSenha(edtSenha.getText().toString());
             usuario.setStatus(Status.ALUNO);
@@ -238,6 +244,13 @@ public class CadastroActivity extends SuperActivity {
                 Uri uri = data.getData();
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
             }
+
+            if (requestCode == LOCATION_CODE && resultCode == RESULT_OK && data != null) {
+                usuario = (Usuario) data.getExtras().get("USER");
+                assert usuario != null;
+                tvAddress.setText(GpsUtils.getNameLocale(CadastroActivity.this, usuario.getPositionResidence().getLatitude(), usuario.getPositionResidence().getLongitude()));
+            }
+
             if (bitmap != null) {
                 attachProfileView.setImage(bitmap);
             }

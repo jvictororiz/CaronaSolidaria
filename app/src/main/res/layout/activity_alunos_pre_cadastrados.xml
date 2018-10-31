@@ -9,7 +9,7 @@
     tools:context="br.com.joaoapps.faciplac.carona.view.activity.AlunosPreCadastradosActivity">
 
 
-    <include layout="@layout/toolbar_search_filter"></include>
+    <include layout="@layout/toolbar_search_filter" />
 
     <android.support.v7.widget.RecyclerView
         tools:listitem="@layout/item_alunos"
@@ -17,4 +17,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </android.support.v7.widget.RecyclerView>
+
+
+    <TextView
+        android:id="@+id/tv_empty"
+        android:text="@string/nenhum_aluno_encontrado"
+        android:textSize="25sp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </LinearLayout>

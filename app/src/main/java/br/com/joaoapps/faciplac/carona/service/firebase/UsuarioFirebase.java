@@ -201,9 +201,10 @@ public class UsuarioFirebase {
     public static void doLogin(final String login, final String senha, final OnLogarListener onLogarListener) {
         firebaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Usuario p = postSnapshot.getValue(Usuario.class);
+                    assert p != null;
                     if ((p.getCpf().equals(login) || p.getMatricula().equals(login)) && senha.equalsIgnoreCase(p.getSenha())) {
                         onLogarListener.success(p);
                         return;
@@ -213,7 +214,7 @@ public class UsuarioFirebase {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 if (databaseError.getCode() == DatabaseError.NETWORK_ERROR) {
                     onLogarListener.error(Code.NETWORK_ERROR);
                 }

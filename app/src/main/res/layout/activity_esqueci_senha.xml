@@ -4,13 +4,12 @@
     android:id="@+id/activity_esqueci_senha"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_background"
     android:orientation="vertical">
 
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/toolbar_default_white" />
+        layout="@layout/toolbar_default" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,48 +22,55 @@
         android:paddingTop="@dimen/activity_vertical_margin">
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/login_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/shape_white_line_"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/shape_white_line"
             android:gravity="center"
-            android:textColorHint="@color/white">
+            android:textColorHint="@color/cinzaLetra">
 
             <EditText
                 android:id="@+id/edt_matricula"
-                style="@style/EditTextReset"
+                style="@style/EditTextLogin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Matrícula"
-                android:inputType="number" />
+                android:layout_marginTop="@dimen/distancia_entre_campos"
+                android:digits="01234566789"
+                android:focusableInTouchMode="true"
+                android:hint="@string/matricula"
+                android:inputType="numberPassword"
+                android:textCursorDrawable="@drawable/color_cursor" />
         </android.support.design.widget.TextInputLayout>
+
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/shape_white_line_"
+            android:layout_marginBottom="3dp"
+            android:background="@drawable/shape_white_line"
             android:gravity="center"
-            android:textColorHint="@color/white">
+            android:textColorHint="@color/cinzaLetra">
 
             <EditText
                 android:id="@+id/edt_email"
-                style="@style/EditTextReset"
+                style="@style/EditTextLogin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/distancia_entre_campos"
-                android:hint="E-mail"
-                android:inputType="textEmailAddress" />
+                android:digits="01234566789"
+                android:focusableInTouchMode="true"
+                android:hint="@string/email"
+                android:inputType="numberPassword"
+                android:textCursorDrawable="@drawable/color_cursor" />
         </android.support.design.widget.TextInputLayout>
 
         <Button
             android:id="@+id/btn_recuperar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/distancia_entre_botao"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="25dp"
             android:text="Recuperar"
-            android:textAllCaps="false"
-            android:textColor="@color/white" />
-
+            android:textAllCaps="false" />
     </LinearLayout>
 </LinearLayout>

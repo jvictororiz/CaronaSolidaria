@@ -39,6 +39,7 @@ public class UsuarioBO {
         UsuarioFirebase.doLogin(login, senha, new OnLogarListener() {
             @Override
             public void success(Usuario usuario) {
+                SuperActivity.closeDialogLoad();
                 String tocken = FirebaseInstanceId.getInstance().getToken();
                 if (tocken != null) {
                     usuario.setPushId(tocken);
@@ -48,12 +49,11 @@ public class UsuarioBO {
                     if (usuario.getAutenticado().getSituacao() == Situacao.APROVADO) {
                         Intent intent = new Intent(context, RegistroLocalizacaoActivity.class);
                         intent.putExtra("USUARIO", usuario);
-                        context.startActivity(intent);
+                        SuperActivity.startActivityMessagePositive(context, intent, "Login realizado\ncom sucesso !");
                     } else {
                         Intent intent = new Intent(context, AguardandoAprovacaoActivity.class);
                         intent.putExtra(AguardandoAprovacaoActivity.USUARIO, usuario);
-                        context.startActivity(intent);
-                        SuperActivity.closeDialogLoad();
+                        SuperActivity.startActivityMessagePositive(context, intent, "Login realizado\ncom sucesso !");
                     }
                 } else if (usuario.getStatus() == Status.DIRETOR || usuario.getStatus() == Status.SUB_DIRETOR) {
                     Intent intent = new Intent(context, AlunosPreCadastradosActivity.class);
@@ -115,7 +115,6 @@ public class UsuarioBO {
                     saveImageUser(context, usuario, bitmap);
                 }
                 SuperActivity.startActivityMessagePositive(context, intent, "Cadaastro realizado \ncom sucesso !");
-
                 context.finish();
             }
 
@@ -179,7 +178,7 @@ public class UsuarioBO {
                 SuperActivity.closeDialogLoad();
                 if (code == Code.MATRICULA_EMAIL_INCORRETOS) {
                     AlertUtils.showAlert("Matricula ou e-mail não correspondem a nenhuma conta", appCompatActivity);
-                    }
+                }
             }
         });
     }

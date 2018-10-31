@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.joaov.caronasolidaria.R;
@@ -27,6 +28,7 @@ import br.com.joaoapps.faciplac.carona.view.utils.AlertUtils;
 public class AlunosPreCadastradosActivity extends AppCompatActivity {
     List<Usuario> usuarios = new ArrayList<>();
     RecyclerView recyclerView;
+    TextView tvEmpty;
     LinearLayoutManager linearLayoutManager;
     UsuarioNaoAutenticadoAdapter pedidosAdapter;
     private String query = "";
@@ -40,7 +42,7 @@ public class AlunosPreCadastradosActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alunos_pre_cadastrados);
-
+        setViews();
         initToolbar();
         initRecycler();
         situacaos = new ArrayList<>();
@@ -60,12 +62,14 @@ public class AlunosPreCadastradosActivity extends AppCompatActivity {
         });
     }
 
+    private void setViews() {
+        tvEmpty = findViewById(R.id.tv_empty);
+        searchView =  findViewById(R.id.searc_view);
+        menuFilter =  findViewById(R.id.filter);
+        recyclerView =  findViewById(R.id.recycler_view);
+    }
+
     private void initToolbar() {
-        searchView = (SearchView) findViewById(R.id.searc_view);
-        menuFilter = (ImageView) findViewById(R.id.filter);
-
-
-
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -107,7 +111,6 @@ public class AlunosPreCadastradosActivity extends AppCompatActivity {
     }
 
     void initRecycler() {
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         linearLayoutManager = new LinearLayoutManager(this);
         pedidosAdapter = new UsuarioNaoAutenticadoAdapter(usuarios, this);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -115,8 +118,15 @@ public class AlunosPreCadastradosActivity extends AppCompatActivity {
     }
 
     void refreshList(List<Usuario> usuarios) {
-        pedidosAdapter = new UsuarioNaoAutenticadoAdapter((usuarios), this);
-        recyclerView.setAdapter(pedidosAdapter);
+        if(usuarios != null && !usuarios.isEmpty()) {
+            recyclerView.setVisibility(View.VISIBLE);
+            tvEmpty.setVisibility(View.GONE);
+            pedidosAdapter = new UsuarioNaoAutenticadoAdapter((usuarios), this);
+            recyclerView.setAdapter(pedidosAdapter);
+        }else{
+            recyclerView.setVisibility(View.GONE);
+            tvEmpty.setVisibility(View.VISIBLE);
+        }
     }
 
     private List<Usuario> filterUsers(List<Situacao> situacaos) {
