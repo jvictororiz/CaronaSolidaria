@@ -54,7 +54,7 @@
                 android:padding="6dp">
 
                 <TextView
-                    android:text="Minha Localização"
+                    android:text="Localização atual"
                     android:layout_marginEnd="10dp"
                     android:layout_marginStart="10dp"
                     android:layout_width="wrap_content"

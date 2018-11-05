@@ -35,10 +35,10 @@ public class EmailService {
     public static void loginEmail() {
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.socketFactory.port", "465");
+        props.put("mail.smtp.socketFactory.port", "587");
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.port", "465");
+        props.put("mail.smtp.port", "587");
 
         session = Session.getDefaultInstance(props, new Authenticator() {
             @Override
@@ -71,8 +71,6 @@ public class EmailService {
                 message.setContent("Sua senha é " + params[1] + ", guarde-a bem", "text/html; charset=utf-8");
                 Transport.send(message);
                 onTransacaoListener.success(null);
-            } catch (MessagingException e) {
-                onTransacaoListener.error(Code.ERRO_ENVIAR_EMAIL);
             } catch (Exception e) {
                 onTransacaoListener.error(Code.ERRO_ENVIAR_EMAIL);
             }

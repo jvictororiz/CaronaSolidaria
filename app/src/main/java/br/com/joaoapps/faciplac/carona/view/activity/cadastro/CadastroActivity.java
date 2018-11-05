@@ -138,7 +138,7 @@ public class CadastroActivity extends SuperActivity {
             return;
         }
 
-        if (!ValidaCPF.isCPF(edtCpf.getText().toString().replaceAll("[.]", "").replaceAll("[-]", ""))) {
+        if (!ValidaCPF.isCPF(Mask.unmask(edtCpf.getText().toString()))) {
             AlertUtils.showAlert("CPF inválido", this);
             return;
         }

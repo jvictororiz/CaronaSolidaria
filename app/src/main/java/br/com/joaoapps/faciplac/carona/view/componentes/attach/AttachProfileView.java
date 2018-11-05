@@ -104,7 +104,7 @@ public class AttachProfileView extends LinearLayout {
     }
 
     public boolean containsBitmap() {
-        return ((BitmapDrawable) imgProfile.getDrawable()).getBitmap() != null;
+        return bitmapInit != null;
     }
 
     public Bitmap getBitmap() {
@@ -112,6 +112,6 @@ public class AttachProfileView extends LinearLayout {
     }
 
     public boolean changedBitmap() {
-        return  bitmapInit.equals(((BitmapDrawable) imgProfile.getDrawable()).getBitmap());
+        return bitmapInit.equals(((BitmapDrawable) imgProfile.getDrawable()).getBitmap());
     }
 }

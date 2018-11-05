@@ -59,10 +59,10 @@ public class LoadDialogFragment extends AppCompatDialogFragment {
 
                 @Override
                 public void run() {
-                    dismiss();
+                    //dismiss();
                     if (getContext() != null) {
 //                        AlertUtils.showAlert("Tempo limite excedido, tente novamente mais tarde", Objects.requireNonNull(getActivity()));
-                        if (listenre != null){
+                        if (listenre != null) {
                             listenre.timeout();
                         }
                     }
@@ -74,10 +74,12 @@ public class LoadDialogFragment extends AppCompatDialogFragment {
         }
 
     }
-    public void setOnTimeoutListener(OnTimeoutListener listener){
+
+    public void setOnTimeoutListener(OnTimeoutListener listener) {
         this.listenre = listener;
     }
-    public interface OnTimeoutListener{
+
+    public interface OnTimeoutListener {
         void timeout();
     }
 }

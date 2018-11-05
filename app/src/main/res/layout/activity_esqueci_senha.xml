@@ -36,9 +36,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/distancia_entre_campos"
                 android:digits="01234566789"
+                android:inputType="number"
                 android:focusableInTouchMode="true"
                 android:hint="@string/matricula"
-                android:inputType="numberPassword"
                 android:textCursorDrawable="@drawable/color_cursor" />
         </android.support.design.widget.TextInputLayout>
 
@@ -57,10 +57,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/distancia_entre_campos"
-                android:digits="01234566789"
                 android:focusableInTouchMode="true"
                 android:hint="@string/email"
-                android:inputType="numberPassword"
+                android:inputType="textEmailAddress"
                 android:textCursorDrawable="@drawable/color_cursor" />
         </android.support.design.widget.TextInputLayout>
 

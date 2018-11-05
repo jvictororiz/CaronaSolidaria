@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.joaov.caronasolidaria.R;
 import com.github.abdularis.civ.CircleImageView;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.Date;
@@ -74,6 +75,7 @@ public class UsuarioNaoAutenticadoAdapter extends RecyclerView.Adapter<UsuarioNa
         if (usuario.getUrlFoto() != null && !usuario.getUrlFoto().isEmpty()) {
             Picasso.with(context)
                     .load(usuario.getUrlFoto())
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
                     .placeholder(R.drawable.icon_user_default)
                     .error(R.drawable.icon_user_default)
                     .into(holder.imgUser);

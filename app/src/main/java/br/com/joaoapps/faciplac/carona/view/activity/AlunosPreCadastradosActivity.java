@@ -145,6 +145,6 @@ public class AlunosPreCadastradosActivity extends AppCompatActivity {
     }
 
     private boolean containsQuerySearch(Usuario usuario) {
-        return (usuario.getNome().contains(query) || usuario.getCpf().contains(query));
+        return (usuario.getNome().contains(query) || usuario.getMatricula().contains(query));
     }
 }

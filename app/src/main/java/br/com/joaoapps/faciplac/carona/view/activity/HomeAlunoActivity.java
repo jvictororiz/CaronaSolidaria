@@ -653,7 +653,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         if (hasClose) {
             super.onBackPressed();
         } else {
-            AlertUtils.showInfo("Aperte mais uma vez para sair", HomeAlunoActivity.this);
+            Toast.makeText(HomeAlunoActivity.this, "Aperte mais uma vez para sair", Toast.LENGTH_SHORT).show();
             hasClose = true;
             initTimeToClose();
         }
@@ -691,7 +691,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     }
 
     private BubbleShowCaseBuilder createBubbleTutorial(String title, String description, View view, String idImage, BubbleShowCase.ArrowPosition direction) {
-        return createBubbleTutorial("Alterar staus", "Aqui você pode alterar o status se deseja pedir ou oferecer carona", searchViewHV.getImgSelector(), "STAUS", R.drawable.icon_pedindo_carona_branco, BubbleShowCase.ArrowPosition.TOP);
+        return createBubbleTutorial(title, description, view, idImage, R.drawable.icon_pedindo_carona_branco, direction);
     }
 
     private BubbleShowCaseBuilder createBubbleTutorial(String title, String description, View view, String idImage, int icon, BubbleShowCase.ArrowPosition direction) {
