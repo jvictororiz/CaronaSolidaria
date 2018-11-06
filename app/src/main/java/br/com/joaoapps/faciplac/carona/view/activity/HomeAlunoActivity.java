@@ -98,7 +98,9 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
             initGps();
             setEvents();
             SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-            mapFragment.getMapAsync(this);
+            if (mapFragment != null) {
+                mapFragment.getMapAsync(this);
+            }
             findAllUsers();
             hideKeyboard();
 
