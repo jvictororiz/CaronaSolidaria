@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.Intent;
 import android.location.Location;
 
-import com.example.joaov.caronasolidaria.R;
+import com.joaov.faciplac.caronasolidaria.R;
 
 import java.util.Locale;
 

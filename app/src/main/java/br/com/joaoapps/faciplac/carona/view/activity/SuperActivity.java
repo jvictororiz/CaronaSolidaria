@@ -13,7 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.joaov.caronasolidaria.R;
+import com.joaov.faciplac.caronasolidaria.R;
 
 import br.com.joaoapps.faciplac.carona.view.activity.dialogs.LoadDialogFragment;
 import br.com.joaoapps.faciplac.carona.view.activity.dialogs.MessageActivity;

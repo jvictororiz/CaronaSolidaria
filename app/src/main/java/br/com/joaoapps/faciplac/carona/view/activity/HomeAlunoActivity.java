@@ -4,7 +4,7 @@ import com.elconfidencial.bubbleshowcase.BubbleShowCase;
 import com.elconfidencial.bubbleshowcase.BubbleShowCaseBuilder;
 import com.elconfidencial.bubbleshowcase.BubbleShowCaseListener;
 import com.elconfidencial.bubbleshowcase.BubbleShowCaseSequence;
-import com.example.joaov.caronasolidaria.R;
+import com.joaov.faciplac.caronasolidaria.R;
 import com.github.abdularis.civ.CircleImageView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -327,7 +327,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
 
             @Override
             public void onError(int code) {
-                AlertUtils.showAlert("Sem conexão", HomeAlunoActivity.this);
+                AlertUtils.showAlert("Falha ao se conectar, tente novamente mais tarde", HomeAlunoActivity.this);
             }
         });
     }
@@ -355,11 +355,15 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         searchViewHV.configEventChangeType(statusCarona, new SelectorDialogBottom.OnStatusCarona() {
             @Override
             public void selected(StatusCarona statusCarona) {
-                HomeAlunoActivity.this.statusCarona = statusCarona;
-                meuUsuarioCarona.setStatusCarona(statusCarona);
-                CaronaUsuarioFirebase.openOrUpdate(HomeAlunoActivity.this, meuUsuarioCarona);
-                mClusterManager = null;
-                setUpClusterer(false);
+                if (meuUsuarioCarona != null) {
+                    HomeAlunoActivity.this.statusCarona = statusCarona;
+                    meuUsuarioCarona.setStatusCarona(statusCarona);
+                    CaronaUsuarioFirebase.openOrUpdate(HomeAlunoActivity.this, meuUsuarioCarona);
+                    mClusterManager = null;
+                    setUpClusterer(false);
+                }else{
+                    AlertUtils.showAlert("Erro interno. Porfavor, tente novamente mais tarde.", HomeAlunoActivity.this);
+                }
             }
         }, new SearchViewHV.OnQurySubmit() {
             @Override
@@ -494,7 +498,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
 
             @Override
             public void error(int code) {
-                AlertUtils.showAlert("Sem conexão", HomeAlunoActivity.this);
+                AlertUtils.showAlert("Falha ao buscar a sua localização", HomeAlunoActivity.this);
             }
         };
     }

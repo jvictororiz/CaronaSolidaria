@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.joaov.caronasolidaria.R;
+import com.joaov.faciplac.caronasolidaria.R;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.IOException;

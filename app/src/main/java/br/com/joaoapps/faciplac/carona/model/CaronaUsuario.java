@@ -3,7 +3,9 @@ package br.com.joaoapps.faciplac.carona.model;
 
 import java.io.Serializable;
 
+import br.com.joaoapps.faciplac.carona.SuperApplication;
 import br.com.joaoapps.faciplac.carona.model.enums.StatusCarona;
+import br.com.joaoapps.faciplac.carona.view.utils.Preferences;
 
 /**
  * Created by joaov on 20/11/2017.
@@ -37,6 +39,10 @@ public class CaronaUsuario implements Serializable {
     }
 
     public String getPushId() {
+        String token = Preferences.getTockenId(SuperApplication.getInstance());
+        if (token != null) {
+            return token;
+        }
         return pushId;
     }
 

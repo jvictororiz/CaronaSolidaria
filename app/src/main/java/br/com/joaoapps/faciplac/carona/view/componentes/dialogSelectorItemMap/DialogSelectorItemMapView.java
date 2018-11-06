@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.joaov.caronasolidaria.R;
+import com.joaov.faciplac.caronasolidaria.R;
 import com.squareup.picasso.Picasso;
 
 import br.com.joaoapps.faciplac.carona.model.CaronaUsuario;

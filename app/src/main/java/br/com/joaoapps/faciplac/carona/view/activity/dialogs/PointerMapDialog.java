@@ -9,7 +9,7 @@ import android.support.v7.widget.AppCompatCheckBox;
 import android.util.Log;
 import android.view.View;
 
-import com.example.joaov.caronasolidaria.R;
+import com.joaov.faciplac.caronasolidaria.R;
 
 import java.util.ArrayList;
 import java.util.List;

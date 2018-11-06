@@ -73,6 +73,7 @@ public class LocationActivity extends SuperActivity {
                 showMessageTurnOnGpsIfDesabled();
                 return;
             }
+            assert mLocationManager != null;
             Location locationGPS = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             Location locationNet = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
@@ -108,7 +109,7 @@ public class LocationActivity extends SuperActivity {
             LocationRequest mLocationRequest = new LocationRequest();
             mLocationRequest.setInterval(500000);
             mLocationRequest.setFastestInterval(500000);
-            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
             LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {

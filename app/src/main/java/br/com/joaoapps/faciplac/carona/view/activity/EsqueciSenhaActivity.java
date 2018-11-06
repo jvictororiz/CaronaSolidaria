@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.joaov.caronasolidaria.R;
+import com.joaov.faciplac.caronasolidaria.R;
 
 import br.com.joaoapps.faciplac.carona.service.email.EmailService;
 import br.com.joaoapps.faciplac.carona.view.activity.bo.UsuarioBO;

@@ -11,7 +11,7 @@ import android.widget.ImageView;
 
 import android.widget.TextView;
 
-import com.example.joaov.caronasolidaria.R;
+import com.joaov.faciplac.caronasolidaria.R;
 
 public class MessageActivity extends AppCompatActivity {
     public static final String INTENT = "INTENT";

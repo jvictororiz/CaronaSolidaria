@@ -5,10 +5,10 @@ android {
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
     defaultConfig {
-        applicationId "com.joaov.faciplac.carona"
+        applicationId "com.joaov.faciplac.caronasolidaria"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 1
+        versionCode 3
         versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

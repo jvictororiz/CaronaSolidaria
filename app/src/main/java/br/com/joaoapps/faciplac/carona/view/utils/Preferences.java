@@ -24,8 +24,7 @@ public class Preferences {
 
     public static String getTockenId(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(TOCKEN_ID, Context.MODE_PRIVATE);
-        String restoredText = prefs.getString("TOCKEN", null);
-        return restoredText;
+        return prefs.getString("TOCKEN", null);
     }
 
     public static void saveLastLogin(Context context, String lastLogin) {

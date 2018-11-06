@@ -49,6 +49,81 @@
           "status": 2
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:584129304813:android:7eb6d12c388c7137",
+        "android_client_info": {
+          "package_name": "com.joaov.faciplac.caronasolidaria"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "584129304813-qlv4rui9oh0nmv2ppon5bpc7ii9cv8ud.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOYSuaefkWdOyHkPs2HgPPBxfrmz-lPgs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:584129304813:android:dba1f6655b5d58d4",
+        "android_client_info": {
+          "package_name": "faciplac.jvhr.com.br.faciplaccarona.faciplac"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "584129304813-d8q69ltj6nv0242b1mkof44ehuj42tid.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "faciplac.jvhr.com.br.faciplaccarona.faciplac",
+            "certificate_hash": "cabfc520db331b1c8acb6cc56a15e16c3893b4c1"
+          }
+        },
+        {
+          "client_id": "584129304813-qlv4rui9oh0nmv2ppon5bpc7ii9cv8ud.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOYSuaefkWdOyHkPs2HgPPBxfrmz-lPgs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "584129304813-qlv4rui9oh0nmv2ppon5bpc7ii9cv8ud.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
     }
   ],
   "configuration_version": "1"

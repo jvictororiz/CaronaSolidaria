@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.example.joaov.caronasolidaria.R;
+import com.joaov.faciplac.caronasolidaria.R;
 import java.util.List;
 import br.com.joaoapps.faciplac.carona.model.CaronaUsuario;
 import br.com.joaoapps.faciplac.carona.view.componentes.SuperSheetPopup;
