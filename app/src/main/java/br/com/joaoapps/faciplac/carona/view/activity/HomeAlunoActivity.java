@@ -2,7 +2,6 @@ package br.com.joaoapps.faciplac.carona.view.activity;
 
 import com.elconfidencial.bubbleshowcase.BubbleShowCase;
 import com.elconfidencial.bubbleshowcase.BubbleShowCaseBuilder;
-import com.elconfidencial.bubbleshowcase.BubbleShowCaseListener;
 import com.elconfidencial.bubbleshowcase.BubbleShowCaseSequence;
 import com.joaov.faciplac.caronasolidaria.R;
 import com.github.abdularis.civ.CircleImageView;
@@ -100,7 +99,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
             setEvents();
             SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
             mapFragment.getMapAsync(this);
-            findAllUsers(true);
+            findAllUsers();
             hideKeyboard();
 
             BubbleShowCaseBuilder bubbleTutorial1 = createBubbleTutorial("Alterar staus", "Aqui você pode alterar o status caso queria pedir ou oferecer carona", searchViewHV.getImgSelector(), "STAUS", BubbleShowCase.ArrowPosition.TOP);
@@ -314,14 +313,12 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         });
     }
 
-    private void findAllUsers(final boolean refreshForced) {
+    private void findAllUsers() {
         CaronaUsuarioFirebase.getAll(new OnRefreshUsuarisCaronas() {
             @Override
             public void onSuccess(List<CaronaUsuario> usuarioFirebase) {
                 listUsers = usuarioFirebase;
-                if ((mMap != null && mClusterManager == null) || refreshForced) {
-                    setUpClusterer(false);
-                }
+                setUpClusterer(false);
 
             }
 
@@ -361,7 +358,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
                     CaronaUsuarioFirebase.openOrUpdate(HomeAlunoActivity.this, meuUsuarioCarona);
                     mClusterManager = null;
                     setUpClusterer(false);
-                }else{
+                } else {
                     AlertUtils.showAlert("Erro interno. Porfavor, tente novamente mais tarde.", HomeAlunoActivity.this);
                 }
             }
@@ -377,14 +374,14 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
             public void onClick(View view) {
                 initGps();
                 mClusterManager = null;
-                findAllUsers(true);
+                findAllUsers();
             }
         });
 
         searchViewHV.setListenerDistance(new SearchViewHV.OnDistanceListener() {
             @Override
             public void changed(long distance) {
-                findAllUsers(true);
+                findAllUsers();
             }
         });
 
@@ -584,7 +581,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         boolean empty = true;
         if (listUsers != null && !listUsers.isEmpty()) {
             for (CaronaUsuario caronaUsuario : getUsersByStatusCarona()) {
-                if (!usuario.getCpf().equals(caronaUsuario.getCpfUsuario()) && caronaUsuario.getNome().toLowerCase().contains(query.toLowerCase()) && isDistanceMin(meuUsuarioCarona, caronaUsuario)) {
+                if (validateUser(caronaUsuario, query)) {
                     empty = false;
                     double lat = (caronaUsuario.getLatitude());
                     double lng = (caronaUsuario.getLongitude());
@@ -597,7 +594,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
             if (empty) {
                 AlertUtils.showAlert("Nenhum usuário compativel online no momento.", this);
             } else {
-                int count = mClusterManager.getClusterMarkerCollection().getMarkers().size();
+                int count = mClusterManager.getAlgorithm().getItems().size();
                 if (count > 1) {
                     AlertUtils.showInfo(count + " alunos online no momento", this);
                 } else {
@@ -735,4 +732,12 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         super.onDestroy();
         unregisterReceiver(receiver);
     }
+
+    private boolean validateUser(CaronaUsuario caronaUsuario, String query) {
+        return !usuario.getCpf().equals(caronaUsuario.getCpfUsuario()) &&
+                caronaUsuario.getNome().toLowerCase().contains(query.toLowerCase()) &&
+                isDistanceMin(meuUsuarioCarona, caronaUsuario);
+    }
 }
+
+
