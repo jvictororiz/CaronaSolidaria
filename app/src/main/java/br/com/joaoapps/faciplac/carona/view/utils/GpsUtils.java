@@ -93,11 +93,11 @@ public class GpsUtils {
     }
 
     public static String getTextToDistance(float distance) {
-        String distanceText = "";
+        String distanceText;
         if (distance >= 1000) {
-            distanceText = (String.valueOf(getDecimal(0, distance / 1000))) + " KM";
+            distanceText = (String.valueOf(getDecimal(0, distance / 1000))).replace(".",",") + " KM";
         } else {
-            distanceText = (String.valueOf(getDecimal(0, distance))).concat(" M");
+            distanceText = (String.valueOf(getDecimal(0, distance)).replace(".0","")).concat(" M");
         }
         return distanceText;
     }
@@ -106,7 +106,7 @@ public class GpsUtils {
     public static String distanceTo(Location locationOne, Location locationTwo) {
         float distance = locationOne.distanceTo(locationTwo);
 
-        String distanceText = "";
+        String distanceText ;
         if (distance >= 1000) {
             distanceText = (String.valueOf(getDecimal(distance / 1000))) + " KM";
         } else {

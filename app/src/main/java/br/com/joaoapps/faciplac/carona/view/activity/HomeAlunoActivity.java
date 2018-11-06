@@ -612,7 +612,9 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         locOne.setLongitude(meuUsuarioCarona.getPositionResidence().getLongitude());
         locTwo.setLatitude(caronaUsuario.getPositionResidence().getLatitude());
         locTwo.setLongitude(caronaUsuario.getPositionResidence().getLongitude());
-        return locOne.distanceTo(locTwo) <= searchViewHV.getDistanceMin();
+        //TODO: REVER ESSA REGRA DE NEGOCIO (Tem que ver se o cara que pede carona tem que diminuir a distancia de acordo com quem oferece)
+        float distanceMin = meuUsuarioCarona.getStatusCarona() == StatusCarona.DAR_CARONA ? searchViewHV.getDistanceMin() : 2000f;
+        return locOne.distanceTo(locTwo) <= distanceMin;
     }
 
     private List<CaronaUsuario> getUsersByStatusCarona() {

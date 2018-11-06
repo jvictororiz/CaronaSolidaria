@@ -99,12 +99,12 @@ public class SearchViewHV extends LinearLayout {
         distanceActual = min + (max / 2 * step);
         seekBar.setMax((max - min) / step);
         seekBar.setProgress(max / 2);
-        tvDistance.setText("Mora até " + (GpsUtils.getTextToDistance(distanceActual)) + " de você");
+        tvDistance.setText("Limitado aos usuários que moram até " + (GpsUtils.getTextToDistance(distanceActual)) + " de você");
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
                 distanceActual = min + (progress * step);
-                tvDistance.setText("Mora até " + (GpsUtils.getTextToDistance(distanceActual)) + " de você");
+                tvDistance.setText("Limitado aos usuários que moram até " + (GpsUtils.getTextToDistance(distanceActual)) + " de você");
             }
 
             @Override
