@@ -92,7 +92,7 @@ public class DialogItemMapView extends LinearLayout {
         if (caronaUsuario.getUrlFoto() != null && !caronaUsuario.getUrlFoto().isEmpty()) {
             Picasso.with(context)
                     .load(caronaUsuario.getUrlFoto())
-                    .placeholder(R.drawable.icon_carona)
+                    .placeholder(R.drawable.icon_user_default)
                     .error(R.drawable.icon_user_default)
                     .into(imgProfile);
         }
