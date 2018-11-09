@@ -25,7 +25,7 @@ import br.com.joaoapps.faciplac.carona.view.activity.dialogs.BottomDialogFilter;
 import br.com.joaoapps.faciplac.carona.view.activity.dialogs.listeners.OnEventDialogListener;
 import br.com.joaoapps.faciplac.carona.view.utils.AlertUtils;
 
-public class AlunosPreCadastradosActivity extends AppCompatActivity {
+public class AlunosPreCadastradosActivity extends SuperActivity {
     List<Usuario> usuarios = new ArrayList<>();
     RecyclerView recyclerView;
     TextView tvEmpty;

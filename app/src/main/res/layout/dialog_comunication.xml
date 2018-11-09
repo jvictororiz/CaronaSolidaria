@@ -59,8 +59,8 @@
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
-                    android:lines="1"
-                    android:maxLines="1"
+                    android:lines="2"
+                    android:maxLines="2"
                     android:layout_marginTop="10dp"
                     android:textColor="@color/colorPrimary"
                     tools:text="João Victor" />
@@ -85,8 +85,8 @@
                     android:layout_marginStart="12dp"
                     android:padding="10dp"
                     android:textColor="@color/white"
-                    android:textSize="16sp"
-                    tools:text="Olá João, Você poderia me da uma carona ?" />
+                    android:textSize="14sp"
+                    tools:text="Olá João, Você poderia me dar uma carona ?" />
             </LinearLayout>
 
         </LinearLayout>

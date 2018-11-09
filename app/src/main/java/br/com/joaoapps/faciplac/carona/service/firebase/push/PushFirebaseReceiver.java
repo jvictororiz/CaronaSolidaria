@@ -23,6 +23,7 @@ import br.com.joaoapps.faciplac.carona.service.firebase.push.objects.Comunicatio
 import br.com.joaoapps.faciplac.carona.view.activity.HomeAlunoActivity;
 import br.com.joaoapps.faciplac.carona.view.activity.LoginActivity;
 import br.com.joaoapps.faciplac.carona.view.activity.dialogs.ComunicationDialogFragment;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
  * Created by joaov on 18/11/2017.
@@ -87,5 +88,10 @@ public class PushFirebaseReceiver extends FirebaseMessagingService {
         assert notificationManager != null;
         notificationManager.notify(notificationId, mBuilder.build());
 
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 }

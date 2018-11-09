@@ -81,8 +81,8 @@
 
                 <ImageView
                     android:id="@+id/img_icon"
-                    android:layout_width="22dp"
-                    android:layout_height="25dp"
+                    android:layout_width="32dp"
+                    android:layout_height="35dp"
                     android:layout_marginBottom="11dp"
                     android:layout_marginLeft="15dp"
                     android:layout_marginTop="15dp"
@@ -107,9 +107,13 @@
                     <TextView
                         android:id="@+id/tv_address"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="10dp"
                         android:textColor="#9EA2A7"
-                        tools:text="Quadra 37 casa 80 marcelo de donto" />
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:lines="2"
+                        tools:text="Quadra 37 casa 80 marcelo de donto teste teste teste teste teste teste testest teste ttestset test es teste" />
 
                 </LinearLayout>
 

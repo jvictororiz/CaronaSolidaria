@@ -286,6 +286,9 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
                 meuUsuarioCarona = new CaronaUsuario(usuario.getPositionResidence(), usuario.getPushId(), usuario.getCpf(), usuario.getUrlFoto(), usuario.getTelefone(), location.getLatitude(), location.getLongitude(), usuario.getNome(), statusCarona);
                 CaronaUsuarioFirebase.openOrUpdate(HomeAlunoActivity.this, meuUsuarioCarona);
                 moveCamera(new LatLng(meuUsuarioCarona.getLatitude(), meuUsuarioCarona.getLongitude()));
+                if (listUsers != null && mClusterManager == null) {
+                    setUpClusterer(true);
+                }
                 caronaUsuarioDialogBottom.init(meuUsuarioCarona, new DialogSelectorItemMapView.OnSelectCaronaUsuario() {
                     @Override
                     public void select(CaronaUsuario caronaUsuario) {
@@ -522,6 +525,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         if (listUsers != null && mClusterManager == null) {
             setUpClusterer(true);
         }
+
     }
 
     private void setUpClusterer(boolean isFirst) {

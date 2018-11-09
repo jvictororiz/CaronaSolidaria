@@ -13,7 +13,9 @@ import android.widget.TextView;
 
 import com.joaov.faciplac.caronasolidaria.R;
 
-public class MessageActivity extends AppCompatActivity {
+import br.com.joaoapps.faciplac.carona.view.activity.SuperActivity;
+
+public class MessageActivity extends SuperActivity {
     public static final String INTENT = "INTENT";
     public static String TITLE = "TITLE";
     public static String SUBTITLE = "SUBTITLE";

@@ -13,7 +13,7 @@ import com.joaov.faciplac.caronasolidaria.R;
 import br.com.joaoapps.faciplac.carona.model.Usuario;
 import br.com.joaoapps.faciplac.carona.model.enums.Situacao;
 
-public class AguardandoAprovacaoActivity extends AppCompatActivity {
+public class AguardandoAprovacaoActivity extends SuperActivity {
     public final static String USUARIO ="USUARIO";
 
     private TextView tvTitle;
