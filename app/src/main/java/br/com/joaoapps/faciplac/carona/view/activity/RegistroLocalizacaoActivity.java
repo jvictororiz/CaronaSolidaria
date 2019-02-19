@@ -125,7 +125,7 @@ public class RegistroLocalizacaoActivity extends LocationActivity implements OnM
 
     private void goEditProfile() {
         UsuarioFirebase.saveOrUpdate(usuario);
-        setResult(CadastroActivity.LOCATION_CODE, new Intent().putExtra("USER", usuario));
+        setResult(RESULT_OK, new Intent().putExtra("USER", usuario));
         finish();
     }
 

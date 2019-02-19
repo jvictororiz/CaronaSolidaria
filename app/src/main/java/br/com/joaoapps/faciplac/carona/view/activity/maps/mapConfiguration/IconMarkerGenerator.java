@@ -29,6 +29,8 @@ import com.joaov.faciplac.caronasolidaria.R;
 import com.github.abdularis.civ.CircleImageView;
 import com.squareup.picasso.Picasso;
 
+import br.com.joaoapps.faciplac.carona.view.utils.AppUtil;
+
 
 public class IconMarkerGenerator {
     private final Context mContext;
@@ -49,32 +51,16 @@ public class IconMarkerGenerator {
         }
         createViewSmall(isBig);
         setImage(urlIcon);
-        return createBitmapFromView();
+        return AppUtil.createBitmapFromView(v);
     }
 
     public Bitmap makeIconBig(CharSequence text) {
         createViewBig();
         setText(text);
-        return createBitmapFromView();
+        return AppUtil.createBitmapFromView(v);
     }
 
-    public Bitmap createBitmapFromView() {
-        v.setLayoutParams(new ViewGroup.LayoutParams
-                (ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT));
-
-        v.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-        v.layout(0, 0, v.getMeasuredWidth(), v.getMeasuredHeight());
-        Bitmap bitmap = Bitmap.createBitmap(v.getMeasuredWidth(),
-                v.getMeasuredHeight(),
-                Bitmap.Config.ARGB_8888);
-
-        Canvas c = new Canvas(bitmap);
-        v.layout(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
-        v.draw(c);
-        return bitmap;
-    }
+   
 
     private void createViewSmall(boolean isBig) {
         if (!isBig) {

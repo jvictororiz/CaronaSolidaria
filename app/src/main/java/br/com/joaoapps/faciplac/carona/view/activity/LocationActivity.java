@@ -21,6 +21,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -28,6 +29,7 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -110,16 +112,16 @@ public class LocationActivity extends SuperActivity {
             mLocationRequest.setInterval(500000);
             mLocationRequest.setFastestInterval(500000);
             mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, new LocationListener() {
-                @Override
-                public void onLocationChanged(Location location) {
-                    lastLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                    onLocationListener.onLocationChanged(location);
-                }
-
-            });
-        } catch (Exception ignore) {
-            ignore.printStackTrace();
+            FusedLocationProviderClient mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, location -> {
+                        if (location != null) {
+                            lastLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                            onLocationListener.onLocationChanged(location);
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }

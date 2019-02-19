@@ -1,6 +1,7 @@
 package br.com.joaoapps.faciplac.carona.service.firebase.push.objects;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -12,6 +13,7 @@ import java.util.Map;
 
 import br.com.joaoapps.faciplac.carona.model.CaronaUsuario;
 import br.com.joaoapps.faciplac.carona.model.enums.StatusCarona;
+import br.com.joaoapps.faciplac.carona.view.componentes.chat.objects.Message;
 
 /**
  * Created by joaov on 19/11/2017.
@@ -21,11 +23,13 @@ public class ComunicationCaronaBody implements JsonDeserializer, Serializable {
     public static final int STEP_ONE_COMUNICATION = 0;
     public static final int STEP_TWO_ACCEPT = 1;
     public static final int STEP_TWO_DENIED = 2;
+    public static final int SEND_OR_RECEIVE_MESSAGE = 3;
 
     private Integer step;
     private CaronaUsuario myUser;
     private CaronaUsuario otherUser;
     private StatusCarona statusCarona;
+    private String message;
 
     public ComunicationCaronaBody(int step, CaronaUsuario myUser, CaronaUsuario otherUser, StatusCarona statusCarona) {
         this.myUser = myUser;
@@ -34,12 +38,20 @@ public class ComunicationCaronaBody implements JsonDeserializer, Serializable {
         this.statusCarona = statusCarona;
     }
 
+    public ComunicationCaronaBody(Integer step, CaronaUsuario myUser, CaronaUsuario otherUser, String message) {
+        this.step = step;
+        this.myUser = myUser;
+        this.otherUser = otherUser;
+        this.message = message;
+    }
+
     public ComunicationCaronaBody(Map<String, String> data) {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().setLenient().create();
         this.otherUser = gson.fromJson(data.get("myUser"), CaronaUsuario.class);
         this.myUser = gson.fromJson(data.get("otherUser"), CaronaUsuario.class);
         this.statusCarona = getInverse(gson.fromJson(data.get("statusCarona"), StatusCarona.class));
         this.step = gson.fromJson(data.get("step"), Integer.class);
+        this.message = data.get("message");
     }
 
     private StatusCarona getInverse(StatusCarona statusCarona) {
@@ -76,6 +88,14 @@ public class ComunicationCaronaBody implements JsonDeserializer, Serializable {
 
     public StatusCarona getStatusCarona() {
         return statusCarona;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public void setStatusCarona(StatusCarona statusCarona) {

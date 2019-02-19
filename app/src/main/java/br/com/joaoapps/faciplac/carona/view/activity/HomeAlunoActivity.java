@@ -10,7 +10,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
@@ -43,17 +42,16 @@ import br.com.joaoapps.faciplac.carona.model.enums.StatusCarona;
 import br.com.joaoapps.faciplac.carona.service.firebase.CaronaUsuarioFirebase;
 import br.com.joaoapps.faciplac.carona.service.firebase.push.PushFirebaseReceiver;
 import br.com.joaoapps.faciplac.carona.service.firebase.push.objects.ComunicationCaronaBody;
+import br.com.joaoapps.faciplac.carona.service.listeners.OnEventListener;
 import br.com.joaoapps.faciplac.carona.service.listeners.OnRefreshUsuarisCaronas;
-import br.com.joaoapps.faciplac.carona.service.listeners.OnTransacaoListener;
 import br.com.joaoapps.faciplac.carona.service.rest.UsuarioRestService;
 import br.com.joaoapps.faciplac.carona.view.activity.cadastro.CadastroActivity;
 import br.com.joaoapps.faciplac.carona.view.activity.dialogs.ComunicationDialogFragment;
 import br.com.joaoapps.faciplac.carona.view.activity.maps.mapConfiguration.CustomRender;
 import br.com.joaoapps.faciplac.carona.view.activity.maps.mapConfiguration.MarkerItem;
+import br.com.joaoapps.faciplac.carona.view.componentes.chat.ChatDialogView;
 import br.com.joaoapps.faciplac.carona.view.componentes.dialogSelectorItemMap.DialogItemMapView;
-import br.com.joaoapps.faciplac.carona.view.componentes.dialogSelectorItemMap.DialogSelectorItemMapView;
 import br.com.joaoapps.faciplac.carona.view.componentes.search.SearchViewHV;
-import br.com.joaoapps.faciplac.carona.view.componentes.sheetCardSelector.SelectorDialogBottom;
 import br.com.joaoapps.faciplac.carona.view.componentes.sheetDialogEstablishments.CaronaUsuarioDialogBottom;
 import br.com.joaoapps.faciplac.carona.view.utils.AlertUtils;
 import br.com.joaoapps.faciplac.carona.view.utils.AppUtil;
@@ -66,7 +64,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
 
     private StatusCarona statusCarona;
     private Usuario usuario;
-    private CaronaUsuario meuUsuarioCarona;
+    private CaronaUsuario mUsuarioCarona;
     private CaronaUsuario caronaUsuarioSelecionado;
     private Location locationActual;
     private ViewGroup viewMyLocation, llBodyProfile;
@@ -76,10 +74,11 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     private DialogItemMapView dialogSelectorItemMapView;
     private SearchViewHV searchViewHV;
     private CaronaUsuarioDialogBottom caronaUsuarioDialogBottom;
-    private String numberTellphone;
+    private String numberTelephone;
     private boolean hasClose;
     private BroadcastReceiver receiver;
     private CircleImageView imgProfile;
+    private ChatDialogView mChatDialog;
 
 
     @Override
@@ -103,21 +102,25 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
             }
             findAllUsers();
             hideKeyboard();
-
-            BubbleShowCaseBuilder bubbleTutorial1 = createBubbleTutorial("Alterar staus", "Aqui você pode alterar o status caso queria pedir ou oferecer carona", searchViewHV.getImgSelector(), "STAUS", BubbleShowCase.ArrowPosition.TOP);
-            BubbleShowCaseBuilder bubbleTutorial2 = createBubbleTutorial("Atualizar alunos", "Novos alunos podem ter entrado na rede, aqui você pode buscar todos novamente", searchViewHV.getImgRefresh(), "REFRESH", BubbleShowCase.ArrowPosition.TOP);
-            BubbleShowCaseBuilder bubbleTutorial3 = createBubbleTutorial("Dados pessoais", "Você pode clicar aqui para modificar seus dados pessoais e a sua localização", llBodyProfile, "DADOS_PESSOAIS", BubbleShowCase.ArrowPosition.TOP);
-
-            new BubbleShowCaseSequence()
-                    .addShowCase(bubbleTutorial1)
-                    .addShowCase(bubbleTutorial2)
-                    .addShowCase(bubbleTutorial3)
-                    .show();
+            configTutorial();
+            mChatDialog.hide();
         } catch (Exception e) {
             e.printStackTrace();
             finish();
         }
 
+    }
+
+    private void configTutorial() {
+        BubbleShowCaseBuilder bubbleTutorial1 = createBubbleTutorial("Alterar staus", "Aqui você pode alterar o status caso queria pedir ou oferecer carona", searchViewHV.getImgSelector(), "STAUS");
+        BubbleShowCaseBuilder bubbleTutorial2 = createBubbleTutorial("Atualizar alunos", "Novos alunos podem ter entrado na rede, aqui você pode buscar todos novamente", searchViewHV.getImgRefresh(), "REFRESH");
+        BubbleShowCaseBuilder bubbleTutorial3 = createBubbleTutorial("Dados pessoais", "Você pode clicar aqui para modificar seus dados pessoais e a sua localização", llBodyProfile, "DADOS_PESSOAIS");
+
+        new BubbleShowCaseSequence()
+                .addShowCase(bubbleTutorial1)
+                .addShowCase(bubbleTutorial2)
+                .addShowCase(bubbleTutorial3)
+                .show();
     }
 
     private void initImgProfile() {
@@ -142,11 +145,14 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
                             teratmentInitComunication(comunicationCaronaBody);
                             break;
                         case ComunicationCaronaBody.STEP_TWO_ACCEPT:
-                            treatmentResopnseComunication(comunicationCaronaBody);
+                            treatmentResopnseComunication(comunicationCaronaBody.getOtherUser());
                             break;
 
                         case ComunicationCaronaBody.STEP_TWO_DENIED:
                             treatmentDeniedComunication(comunicationCaronaBody);
+                            break;
+                        case ComunicationCaronaBody.SEND_OR_RECEIVE_MESSAGE:
+                            treatmentSendOrReceiveMessage(comunicationCaronaBody);
                             break;
                     }
                 } catch (Exception e) {
@@ -155,6 +161,10 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
             }
         };
         registerReceiver(receiver, new IntentFilter(PushFirebaseReceiver.INTENT_FILTER_USER_COMUNICATION));
+    }
+
+    private void treatmentSendOrReceiveMessage(ComunicationCaronaBody comunicationCaronaBody) {
+        mChatDialog.sendMessage(comunicationCaronaBody.getMessage(), comunicationCaronaBody.getOtherUser());
     }
 
     private void treatmentDeniedComunication(final ComunicationCaronaBody comunicationCaronaBody) {
@@ -174,30 +184,33 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         popupAlert.configToStepThree();
     }
 
-    private void treatmentResopnseComunication(final ComunicationCaronaBody comunicationCaronaBody) {
+    private void treatmentResopnseComunication(final CaronaUsuario otherUser) {
         String message = "";
-        switch (comunicationCaronaBody.getMyUser().getStatusCarona()) {
+        switch (otherUser.getStatusCarona()) {
             case RECEBER_CARONA:
-                message = ("Olá " + (comunicationCaronaBody.getMyUser().getNome().concat(", posso te da uma carona, visualise meu perfil para ver o meu celular :)")));
+                message = ("Olá " + (otherUser.getNome().concat(", posso te oferecer uma carona :)")));
                 break;
             case DAR_CARONA:
-                message = ("Olá " + (comunicationCaronaBody.getMyUser().getNome().concat(", obrigado, eu aceito a carona, pode visualizar o meu perfil para ver o meu número :)")));
+                message = ("Olá " + (otherUser.getNome().concat(", obrigado, eu aceito sua carona :)")));
                 break;
         }
-        final ComunicationDialogFragment popupAlert = ComunicationDialogFragment.newInstance(message, comunicationCaronaBody.getStatusCarona(), comunicationCaronaBody.getMyUser(), comunicationCaronaBody.getOtherUser());
-        popupAlert.show(getSupportFragmentManager(), comunicationCaronaBody.getOtherUser().getCpfUsuario());
-        popupAlert.setCancelable(true);
         AppUtil.vibrate(HomeAlunoActivity.this, 200);
-        popupAlert.configToStepTwo(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialogSelectorItemMapView.refreshCaronaUsuarios(locationActual, comunicationCaronaBody.getOtherUser(), HomeAlunoActivity.this);
-                dialogSelectorItemMapView.unmaskNumber();
-                dialogSelectorItemMapView.hideButton();
-                showExpandedEstalbishmentSelected();
-                popupAlert.dismiss();
-            }
-        });
+        mChatDialog.show();
+        mChatDialog.prepareChat(this, mUsuarioCarona,
+                message1 -> new UsuarioRestService(HomeAlunoActivity.this).sendMessageChat(mUsuarioCarona, otherUser, message1, new OnEventListener<Void>() {
+                    @Override
+                    public void success(Void object) {
+
+                    }
+
+                    @Override
+                    public void error(int code) {
+
+                    }
+                }));
+        mChatDialog.expand();
+        mChatDialog.sendMessage(message, otherUser);
+
     }
 
     private void teratmentInitComunication(final ComunicationCaronaBody comunicationCaronaBody) {
@@ -223,7 +236,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
                 dialogSelectorItemMapView.unmaskNumber();
                 dialogSelectorItemMapView.hideButton();
                 AlertUtils.showInfo("Sua resposta foi enviada para " + comunicationCaronaBody.getOtherUser().getNome(), HomeAlunoActivity.this);
-                showExpandedEstalbishmentSelected();
+                showExpandedUserSelected();
                 sendFeedbackToOtherUser(comunicationCaronaBody, true);
                 popupAlert.dismiss();
             }
@@ -247,10 +260,10 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
 
     }
 
-    private OnTransacaoListener getCallbackStepTwo() {
-        return new OnTransacaoListener() {
+    private OnEventListener<Void> getCallbackStepTwo() {
+        return new OnEventListener<Void>() {
             @Override
-            public void success(Object object) {
+            public void success(Void object) {
 
             }
 
@@ -264,8 +277,8 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     @Override
     protected void onResume() {
         super.onResume();
-        if (meuUsuarioCarona != null) {
-            CaronaUsuarioFirebase.openOrUpdate(this, meuUsuarioCarona);
+        if (mUsuarioCarona != null) {
+            CaronaUsuarioFirebase.openOrUpdate(this, mUsuarioCarona);
         }
         searchViewHV.clearFocousSearch();
     }
@@ -276,6 +289,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         dialogSelectorItemMapView = findViewById(R.id.dialgo_selector);
         llBodyProfile = findViewById(R.id.ll_body_profile);
         imgProfile = findViewById(R.id.img_profile);
+        mChatDialog = findViewById(R.id.owl_bottom_sheet);
     }
 
     private void initGps() {
@@ -283,21 +297,17 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
             @Override
             public void onLocationChanged(Location location) {
                 locationActual = location;
-                meuUsuarioCarona = new CaronaUsuario(usuario.getPositionResidence(), usuario.getPushId(), usuario.getCpf(), usuario.getUrlFoto(), usuario.getTelefone(), location.getLatitude(), location.getLongitude(), usuario.getNome(), statusCarona);
-                CaronaUsuarioFirebase.openOrUpdate(HomeAlunoActivity.this, meuUsuarioCarona);
-                moveCamera(new LatLng(meuUsuarioCarona.getLatitude(), meuUsuarioCarona.getLongitude()));
+                mUsuarioCarona = new CaronaUsuario(usuario.getPositionResidence(), usuario.getPushId(), usuario.getCpf(), usuario.getUrlFoto(), usuario.getTelefone(), location.getLatitude(), location.getLongitude(), usuario.getNome(), statusCarona);
+                CaronaUsuarioFirebase.openOrUpdate(HomeAlunoActivity.this, mUsuarioCarona);
+                moveCamera(new LatLng(mUsuarioCarona.getLatitude(), mUsuarioCarona.getLongitude()));
                 if (listUsers != null && mClusterManager == null) {
-                    setUpClusterer(true);
+                    setUpClusterer();
                 }
-                caronaUsuarioDialogBottom.init(meuUsuarioCarona, new DialogSelectorItemMapView.OnSelectCaronaUsuario() {
-                    @Override
-                    public void select(CaronaUsuario caronaUsuario) {
-                        caronaUsuarioSelecionado = caronaUsuario;
-                        dialogSelectorItemMapView.refreshCaronaUsuarios(locationActual, caronaUsuarioSelecionado, HomeAlunoActivity.this);
-                        showExpandedEstalbishmentSelected();
-                    }
+                caronaUsuarioDialogBottom.init(mUsuarioCarona, caronaUsuario -> {
+                    caronaUsuarioSelecionado = caronaUsuario;
+                    dialogSelectorItemMapView.refreshCaronaUsuarios(locationActual, caronaUsuarioSelecionado, HomeAlunoActivity.this);
+                    showExpandedUserSelected();
                 });
-                ;
             }
 
             @Override
@@ -323,7 +333,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
             @Override
             public void onSuccess(List<CaronaUsuario> usuarioFirebase) {
                 listUsers = usuarioFirebase;
-                setUpClusterer(false);
+                setUpClusterer();
 
             }
 
@@ -335,85 +345,55 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     }
 
     private View.OnClickListener callbackGoToEditProfile() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CadastroActivity.start(HomeAlunoActivity.this, usuario);
-            }
-        };
+        return view -> CadastroActivity.start(HomeAlunoActivity.this, usuario);
     }
 
     private void setEvents() {
         llBodyProfile.setOnClickListener(callbackGoToEditProfile());
         imgProfile.setOnClickListener(callbackGoToEditProfile());
 
-        findViewById(R.id.toolbar).findViewById(R.id.toolbar_back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CaronaUsuarioFirebase.exit(HomeAlunoActivity.this, Preferences.getLastCpfLogged(HomeAlunoActivity.this));
-                finishAnim();
-            }
+        findViewById(R.id.toolbar).findViewById(R.id.toolbar_back).setOnClickListener(view -> {
+            CaronaUsuarioFirebase.exit(HomeAlunoActivity.this, Preferences.getLastCpfLogged(HomeAlunoActivity.this));
+            finishAnim();
         });
-        searchViewHV.configEventChangeType(statusCarona, new SelectorDialogBottom.OnStatusCarona() {
-            @Override
-            public void selected(StatusCarona statusCarona) {
-                if (meuUsuarioCarona != null) {
-                    HomeAlunoActivity.this.statusCarona = statusCarona;
-                    meuUsuarioCarona.setStatusCarona(statusCarona);
-                    CaronaUsuarioFirebase.openOrUpdate(HomeAlunoActivity.this, meuUsuarioCarona);
-                    mClusterManager = null;
-                    setUpClusterer(false);
-                } else {
-                    AlertUtils.showAlert("Erro interno. Porfavor, tente novamente mais tarde.", HomeAlunoActivity.this);
-                }
-            }
-        }, new SearchViewHV.OnQurySubmit() {
-            @Override
-            public void submit(String query) {
-                setUpClusterer(false, query);
-            }
-        });
-
-        searchViewHV.setRefreshListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                initGps();
+        searchViewHV.configEventChangeType(statusCarona, statusCarona -> {
+            if (mUsuarioCarona != null) {
+                HomeAlunoActivity.this.statusCarona = statusCarona;
+                mUsuarioCarona.setStatusCarona(statusCarona);
+                CaronaUsuarioFirebase.openOrUpdate(HomeAlunoActivity.this, mUsuarioCarona);
                 mClusterManager = null;
-                findAllUsers();
+                setUpClusterer();
+            } else {
+                AlertUtils.showAlert("Erro interno. Porfavor, tente novamente mais tarde.", HomeAlunoActivity.this);
             }
+        }, this::setUpClusterer);
+
+        searchViewHV.setRefreshListener(view -> {
+            initGps();
+            mClusterManager = null;
+            findAllUsers();
         });
 
-        searchViewHV.setListenerDistance(new SearchViewHV.OnDistanceListener() {
-            @Override
-            public void changed(long distance) {
-                findAllUsers();
-            }
-        });
+        searchViewHV.setListenerDistance(distance -> findAllUsers());
 
         caronaUsuarioDialogBottom = new CaronaUsuarioDialogBottom(this);
 
-        viewMyLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (meuUsuarioCarona != null) {
-                    moveCamera(new LatLng(meuUsuarioCarona.getLatitude(), meuUsuarioCarona.getLongitude()));
-                } else {
-                    AlertUtils.showAlert("Sessão Expirada", HomeAlunoActivity.this);
-                    startActivityClearingOthers(LoginActivity.class);
-                }
+        viewMyLocation.setOnClickListener(view -> {
+            if (mUsuarioCarona != null) {
+                moveCamera(new LatLng(mUsuarioCarona.getLatitude(), mUsuarioCarona.getLongitude()));
+            } else {
+                AlertUtils.showAlert("Sessão Expirada", HomeAlunoActivity.this);
+                startActivityClearingOthers(LoginActivity.class);
             }
         });
 
-        findViewById(R.id.toolbar_back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (hasClose) {
-                    HomeAlunoActivity.super.finish();
-                } else {
-                    Toast.makeText(HomeAlunoActivity.this, "Aperte mais uma vez para sair", Toast.LENGTH_SHORT).show();
-                    hasClose = true;
-                    initTimeToClose();
-                }
+        findViewById(R.id.toolbar_back).setOnClickListener(view -> {
+            if (hasClose) {
+                HomeAlunoActivity.super.finish();
+            } else {
+                Toast.makeText(HomeAlunoActivity.this, "Aperte mais uma vez para sair", Toast.LENGTH_SHORT).show();
+                hasClose = true;
+                initTimeToClose();
             }
         });
     }
@@ -431,7 +411,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         dialogSelectorItemMapView.showCollected();
     }
 
-    private void showExpandedEstalbishmentSelected() {
+    private void showExpandedUserSelected() {
         hideKeyboard();
         viewMyLocation.animate().setDuration(200).alpha(0f);
         searchViewHV.hide();
@@ -467,12 +447,12 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
 
     @Override
     public void onClickCollected() {
-        showExpandedEstalbishmentSelected();
+        showExpandedUserSelected();
     }
 
     @Override
     public void onCall(String number) {
-        this.numberTellphone = number;
+        this.numberTelephone = number;
         if (dialogSelectorItemMapView.isEnableCall()) {
             AppUtil.callPhone(this, number, REQUEST_PHONE_CALL);
         } else {
@@ -484,17 +464,17 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     public void onClickComunication(final CaronaUsuario caronaUsuarioSelecionado) {
         UsuarioRestService usuarioRestService = new UsuarioRestService(this);
         if (statusCarona == StatusCarona.DAR_CARONA) {
-            usuarioRestService.oferecerCarona(meuUsuarioCarona, caronaUsuarioSelecionado, getCallback());
+            usuarioRestService.oferecerCarona(mUsuarioCarona, caronaUsuarioSelecionado, getCallback());
         } else {
-            usuarioRestService.pedirCarona(meuUsuarioCarona, caronaUsuarioSelecionado, getCallback());
+            usuarioRestService.pedirCarona(mUsuarioCarona, caronaUsuarioSelecionado, getCallback());
         }
         hideDetailedEstablishementSelected();
     }
 
-    private OnTransacaoListener getCallback() {
-        return new OnTransacaoListener() {
+    private OnEventListener<Void> getCallback() {
+        return new OnEventListener<Void>() {
             @Override
-            public void success(Object object) {
+            public void success(Void object) {
                 AlertUtils.showInfo("Foi enviado um alerta para " + caronaUsuarioSelecionado.getNome() + ", aguarde sua resposta... ", HomeAlunoActivity.this);
             }
 
@@ -513,27 +493,27 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        if (meuUsuarioCarona != null) {
+        if (mUsuarioCarona != null) {
             if (caronaUsuarioSelecionado != null) {
                 dialogSelectorItemMapView.refreshCaronaUsuarios(locationActual, caronaUsuarioSelecionado, this);
-                showExpandedEstalbishmentSelected();
+                showExpandedUserSelected();
                 moveToLocation(getLocationEstablishmenbt(caronaUsuarioSelecionado));
             } else {
-                moveCamera(new LatLng(meuUsuarioCarona.getLatitude(), meuUsuarioCarona.getLongitude()));
+                moveCamera(new LatLng(mUsuarioCarona.getLatitude(), mUsuarioCarona.getLongitude()));
             }
         }
         if (listUsers != null && mClusterManager == null) {
-            setUpClusterer(true);
+            setUpClusterer();
         }
 
     }
 
-    private void setUpClusterer(boolean isFirst) {
-        setUpClusterer(isFirst, "");
+    private void setUpClusterer() {
+        setUpClusterer("");
     }
 
-    private void setUpClusterer(boolean isFirst, String query) {
-        if (mMap != null && meuUsuarioCarona != null) {
+    private void setUpClusterer(String query) {
+        if (mMap != null && mUsuarioCarona != null) {
             mMap.clear();
             if (mClusterManager != null) {
                 mClusterManager.clearItems();
@@ -553,24 +533,18 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     }
 
     private void setClicksInPoints() {
-        mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<MarkerItem>() {
-            @Override
-            public boolean onClusterItemClick(MarkerItem markerItem) {
-                caronaUsuarioSelecionado = markerItem.getCaronaUsuario();
-                dialogSelectorItemMapView.refreshCaronaUsuarios(locationActual, markerItem.getCaronaUsuario(), HomeAlunoActivity.this);
-                showCollectedEstablishment();
+        mClusterManager.setOnClusterItemClickListener(markerItem -> {
+            caronaUsuarioSelecionado = markerItem.getCaronaUsuario();
+            dialogSelectorItemMapView.refreshCaronaUsuarios(locationActual, markerItem.getCaronaUsuario(), HomeAlunoActivity.this);
+            showCollectedEstablishment();
 
-                return true;
-            }
+            return true;
         });
 
-        mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<MarkerItem>() {
-            @Override
-            public boolean onClusterClick(Cluster<MarkerItem> cluster) {
-                hideDetailedEstablishementSelected();
-                caronaUsuarioDialogBottom.show(getCaronaUsuarios(cluster.getItems()));
-                return true;
-            }
+        mClusterManager.setOnClusterClickListener(cluster -> {
+            hideDetailedEstablishementSelected();
+            caronaUsuarioDialogBottom.show(getCaronaUsuarios(cluster.getItems()));
+            return true;
         });
     }
 
@@ -611,14 +585,14 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         }
     }
 
-    private boolean isDistanceMin(CaronaUsuario meuUsuarioCarona, CaronaUsuario caronaUsuario) {
+    private boolean containsInDistanceMin(CaronaUsuario meuUsuarioCarona, CaronaUsuario caronaUsuario) {
         Location locOne = new Location("");
         Location locTwo = new Location("");
         locOne.setLatitude(meuUsuarioCarona.getPositionResidence().getLatitude());
         locOne.setLongitude(meuUsuarioCarona.getPositionResidence().getLongitude());
         locTwo.setLatitude(caronaUsuario.getPositionResidence().getLatitude());
         locTwo.setLongitude(caronaUsuario.getPositionResidence().getLongitude());
-        //TODO: REVER ESSA REGRA DE NEGOCIO (Tem que ver se o cara que pede carona tem que diminuir a distancia de acordo com quem oferece)
+        //TODO: REVER ESSA REGRA DE NEGOCIO (Tem que ver se o cara que pede carona tem que diminuir a distancia de acordo com quem oferece) Vai ter que colocar um atributo distanciaMinima no usuario e comparar o do cara que quer dar carona ao invés de colocar 2000f
         float distanceMin = meuUsuarioCarona.getStatusCarona() == StatusCarona.DAR_CARONA ? searchViewHV.getDistanceMin() : 2000f;
         return locOne.distanceTo(locTwo) <= distanceMin;
     }
@@ -638,7 +612,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         switch (requestCode) {
             case REQUEST_PHONE_CALL: {
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    String uri = "tel:" + numberTellphone;
+                    String uri = "tel:" + numberTelephone;
                     Intent intent = new Intent(Intent.ACTION_CALL);
                     intent.setData(Uri.parse(uri));
                 } else {
@@ -651,6 +625,11 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
 
     @Override
     public void onBackPressed() {
+        if (mChatDialog.isExpanded()) {
+            mChatDialog.collapse();
+            return;
+        }
+
         if (dialogSelectorItemMapView != null && dialogSelectorItemMapView.getCurrentState() != DialogItemMapView.TYPE_STATE.HIDE) {
             hideDetailedEstablishementSelected();
             return;
@@ -670,14 +649,11 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     }
 
     private void initTimeToClose() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    hasClose = false;
-                } catch (Exception ignore) {
+        new Handler().postDelayed(() -> {
+            try {
+                hasClose = false;
+            } catch (Exception ignore) {
 
-                }
             }
         }, TIME_TO_CLOSE_BACK);
     }
@@ -699,8 +675,8 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         }
     }
 
-    private BubbleShowCaseBuilder createBubbleTutorial(String title, String description, View view, String idImage, BubbleShowCase.ArrowPosition direction) {
-        return createBubbleTutorial(title, description, view, idImage, R.drawable.icon_pedindo_carona_branco, direction);
+    private BubbleShowCaseBuilder createBubbleTutorial(String title, String description, View view, String idImage) {
+        return createBubbleTutorial(title, description, view, idImage, R.drawable.icon_pedindo_carona_branco, BubbleShowCase.ArrowPosition.TOP);
     }
 
     private BubbleShowCaseBuilder createBubbleTutorial(String title, String description, View view, String idImage, int icon, BubbleShowCase.ArrowPosition direction) {
@@ -744,7 +720,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     private boolean validateUser(CaronaUsuario caronaUsuario, String query) {
         return !usuario.getCpf().equals(caronaUsuario.getCpfUsuario()) &&
                 caronaUsuario.getNome().toLowerCase().contains(query.toLowerCase()) &&
-                isDistanceMin(meuUsuarioCarona, caronaUsuario);
+                containsInDistanceMin(mUsuarioCarona, caronaUsuario);
     }
 }
 

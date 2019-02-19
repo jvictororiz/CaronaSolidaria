@@ -1,5 +1,7 @@
 package br.com.joaoapps.faciplac.carona.model;
 
+import com.stfalcon.chatkit.commons.models.IUser;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -149,4 +151,5 @@ public class Usuario implements Serializable {
     public void setSenha(String senha) {
         this.senha = senha;
     }
+
 }

@@ -12,6 +12,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
@@ -33,6 +34,7 @@ import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -91,7 +93,7 @@ public class AppUtil {
                 if (info != null) {
                     for (NetworkInfo anInfo : info) {
                         if (anInfo.getState() == NetworkInfo.State.CONNECTED) {
-                            Log.i("LOG  ----------- ","NETWORKNAME: " + anInfo.getTypeName());
+                            Log.i("LOG  ----------- ", "NETWORKNAME: " + anInfo.getTypeName());
                             return true;
                         }
                     }
@@ -101,7 +103,7 @@ public class AppUtil {
         return false;
     }
 
-    public static void vibrate(Context context, long time){
+    public static void vibrate(Context context, long time) {
         Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         assert v != null;
         v.vibrate(300);
@@ -150,7 +152,6 @@ public class AppUtil {
     }
 
 
-
     public static String saveToExternalStorage(Bitmap finalBitmap, String fileName) {
         String root = Environment.getExternalStorageDirectory().toString();
         File myDir = new File(root + "/saved_images");
@@ -181,6 +182,19 @@ public class AppUtil {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static Bitmap createBitmapFromView(View view) {
+        view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        view.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+        Bitmap bitmap = Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+
+        Canvas c = new Canvas(bitmap);
+        view.layout(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
+        view.draw(c);
+        return bitmap;
     }
 
     public static Bitmap loadImageFromStorage(String path, String file) {
@@ -389,7 +403,7 @@ public class AppUtil {
         intent.setData(Uri.parse(uri));
 
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.CALL_PHONE},REQUEST_PHONE_CALL);
+            ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.CALL_PHONE}, REQUEST_PHONE_CALL);
         } else {
             context.startActivity(intent);
         }

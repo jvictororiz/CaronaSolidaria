@@ -50,7 +50,6 @@ public class CadastroActivity extends SuperActivity {
     private TextView tvAddress;
 
     private Usuario usuario;
-    private Bitmap bitmap;
     private boolean isEdition;
 
     public static void start(Activity context, Usuario usuario) {

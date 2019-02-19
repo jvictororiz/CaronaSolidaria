@@ -22,6 +22,8 @@
     <application
         android:name="br.com.joaoapps.faciplac.carona.SuperApplication"
         android:allowBackup="true"
+        android:largeHeap="true"
+        android:hardwareAccelerated="false"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:supportsRtl="true"

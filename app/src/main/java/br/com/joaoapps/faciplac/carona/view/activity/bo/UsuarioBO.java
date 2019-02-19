@@ -16,13 +16,13 @@ import br.com.joaoapps.faciplac.carona.service.email.EmailService;
 import br.com.joaoapps.faciplac.carona.service.exceptions.Code;
 import br.com.joaoapps.faciplac.carona.service.firebase.UsuarioFirebase;
 import br.com.joaoapps.faciplac.carona.service.firebase.push.objects.Notification;
+import br.com.joaoapps.faciplac.carona.service.listeners.OnEventListener;
 import br.com.joaoapps.faciplac.carona.service.listeners.OnLogarListener;
 import br.com.joaoapps.faciplac.carona.service.listeners.OnResetSenha;
-import br.com.joaoapps.faciplac.carona.service.listeners.OnTransacaoListener;
 import br.com.joaoapps.faciplac.carona.service.rest.UsuarioRestService;
 import br.com.joaoapps.faciplac.carona.view.activity.AguardandoAprovacaoActivity;
 import br.com.joaoapps.faciplac.carona.view.activity.AlunosPreCadastradosActivity;
-import br.com.joaoapps.faciplac.carona.view.activity.HomeAlunoActivity;
+import br.com.joaoapps.faciplac.carona.view.activity.LoginActivity;
 import br.com.joaoapps.faciplac.carona.view.activity.RegistroLocalizacaoActivity;
 import br.com.joaoapps.faciplac.carona.view.activity.SuperActivity;
 import br.com.joaoapps.faciplac.carona.view.activity.cadastro.CadastroActivity;
@@ -81,7 +81,7 @@ public class UsuarioBO {
         SuperActivity.showDialogLoad(context);
         UsuarioFirebase.saveOrUpdate(usuario);
         if (bitmap != null) {
-            UsuarioFirebase.saveImageUser(usuario, bitmap, new OnTransacaoListener() {
+            UsuarioFirebase.saveImageUser(usuario, bitmap, new OnEventListener() {
                 @Override
                 public void success(Object object) {
                     SuperActivity.closeDialogLoad();
@@ -107,7 +107,7 @@ public class UsuarioBO {
         final Intent intent = new Intent(context, AguardandoAprovacaoActivity.class);
         intent.putExtra(AguardandoAprovacaoActivity.USUARIO, usuario);
 
-        UsuarioFirebase.save(usuario, new OnTransacaoListener() {
+        UsuarioFirebase.save(usuario, new OnEventListener() {
             @Override
             public void success(Object o) {
                 SuperActivity.closeDialogLoad();
@@ -138,7 +138,7 @@ public class UsuarioBO {
     }
 
     public static void saveImageUser(final Context context, Usuario usuario, Bitmap bitmap) {
-        UsuarioFirebase.saveImageUser(usuario, bitmap, new OnTransacaoListener() {
+        UsuarioFirebase.saveImageUser(usuario, bitmap, new OnEventListener() {
             @Override
             public void success(Object object) {
             }
@@ -155,11 +155,12 @@ public class UsuarioBO {
             @Override
             public void success(Usuario usuario) {
                 EmailService.loginEmail();
-                EmailService.resetSenha(email, usuario.getSenha(), new OnTransacaoListener() {
+                EmailService.resetSenha(email, usuario.getSenha(), new OnEventListener() {
                     @Override
                     public void success(Object o) {
                         SuperActivity.closeDialogLoad();
-                        SuperActivity.startActivityMessagePositive(appCompatActivity, null, "Um e-mail com a sua senha foi enviado");
+                        SuperActivity.startActivityMessagePositive(appCompatActivity, new Intent(appCompatActivity, LoginActivity.class), "Um e-mail com a sua senha foi enviado");
+                        appCompatActivity.finish();
                     }
 
                     @Override
@@ -187,7 +188,7 @@ public class UsuarioBO {
         UsuarioFirebase.saveOrUpdate(usuario);
         UsuarioRestService notificationRestService = new UsuarioRestService(appCompatActivity);
         notification.setPushIdRemetente(usuario.getPushId());
-        notificationRestService.sendNotification(notification, new OnTransacaoListener() {
+        notificationRestService.sendNotification(notification, new OnEventListener() {
             @Override
             public void success(Object object) {
                 if (usuario.getAutenticado().getSituacao() == Situacao.APROVADO) {

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/body_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/shape_white_corners_bootom"
+        android:padding="6dp">
+
+        <com.github.abdularis.civ.CircleImageView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="5dp"
+            android:padding="7dp"
+            android:src="@drawable/icon_user_default" />
+
+        <TextView
+            android:id="@+id/tv_name_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="51dp"
+            android:layout_marginTop="10dp"
+            android:ellipsize="end"
+            android:lines="1"
+            android:maxLines="1"
+            android:textColor="@color/cinzaEscuro"
+            android:textSize="15sp"
+            tools:text="João Victor" />
+
+        <ImageView
+            android:id="@+id/img_close"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="5dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="11dp"
+            android:padding="7dp"
+            android:src="@drawable/ic_close"
+            android:tint="@color/cinzaEscuro" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/body_header"
+        android:layout_marginTop="3dp"
+        android:background="@color/black" />
+
+
+    <com.stfalcon.chatkit.messages.MessagesList
+        android:id="@+id/messagesList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/input"
+        android:layout_below="@+id/body_header"
+        android:background="@color/colorPrimary"
+        app:dateHeaderTextColor="@color/white"
+        app:incomingTextColor="@color/white"
+        app:outcomingTextColor="@color/white" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/input"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="-7dp"
+        android:background="@color/black" />
+
+    <com.stfalcon.chatkit.messages.MessageInput
+        android:id="@+id/input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="7dp"
+        android:background="@drawable/shape_mylocation_white"
+        app:attachmentButtonDefaultBgColor="@color/cinzaLetra"
+        app:attachmentButtonDefaultIconPressedColor="@color/blue"
+        app:attachmentButtonIcon="@drawable/icon_noticication"
+        app:inputButtonDefaultBgDisabledColor="@color/cinzaLetra"
+        app:inputButtonDefaultBgPressedColor="@color/blue"
+        app:inputHint="Escreva uma mensagem"
+        app:inputTextSize="14sp"
+        app:showAttachmentButton="true" />
+</RelativeLayout>
