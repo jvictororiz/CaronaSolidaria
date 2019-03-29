@@ -2,7 +2,10 @@ package br.com.joaoapps.faciplac.carona.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
@@ -13,10 +16,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.joaov.faciplac.caronasolidaria.R;
 
 import br.com.joaoapps.faciplac.carona.view.activity.dialogs.LoadDialogFragment;
 import br.com.joaoapps.faciplac.carona.view.activity.dialogs.MessageActivity;
+import io.fabric.sdk.android.Fabric;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 
@@ -26,6 +31,11 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class SuperActivity extends AppCompatActivity {
     private static LoadDialogFragment loadDialogFragment;
+
+    @Override
+    public void onCreate( Bundle savedInstanceState,  PersistableBundle persistentState) {
+        super.onCreate(savedInstanceState, persistentState);
+    }
 
     protected void setupToolbar(String title) {
         setupToolbar(true, title);

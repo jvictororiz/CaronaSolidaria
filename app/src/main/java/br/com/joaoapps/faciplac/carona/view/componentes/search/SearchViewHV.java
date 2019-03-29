@@ -11,6 +11,8 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -38,8 +40,10 @@ public class SearchViewHV extends LinearLayout {
     private SeekBar seekBar;
     private TextView tvDistance;
     private ImageView imgRefresh;
+
     private OnDistanceListener onDistanceListener;
     private float distanceActual;
+    private CheckBox ckHasDistanceMin;
 
     public SearchViewHV(Context context) {
         super(context);
@@ -79,6 +83,7 @@ public class SearchViewHV extends LinearLayout {
         llBodyDistance = view.findViewById(R.id.ll_body_distance);
         tvDistance = view.findViewById(R.id.tv_distance);
         seekBar = view.findViewById(R.id.seekbar);
+        ckHasDistanceMin = view.findViewById(R.id.check_distance_min);
     }
 
     public void setRefreshListener(final OnClickListener onClickListener) {
@@ -117,6 +122,10 @@ public class SearchViewHV extends LinearLayout {
                 onDistanceListener.changed(seekBar.getProgress());
             }
         });
+    }
+
+    public void setListenerCheckbox(CompoundButton.OnCheckedChangeListener listener){
+        ckHasDistanceMin.setOnCheckedChangeListener(listener);
     }
 
     public void configEventChangeType(StatusCarona statusCarona, final SelectorDialogBottom.OnStatusCarona onStatusCarona, final OnQurySubmit onQurySubmit) {
@@ -175,12 +184,8 @@ public class SearchViewHV extends LinearLayout {
 
     private void changeStatusView(StatusCarona statusCarona) {
         if (statusCarona.equals(StatusCarona.DAR_CARONA)) {
-            if (onDistanceListener != null) {
-                setVisibleAnimate(llBodyDistance);
-            }
             imgSelector.setImageDrawable(getResources().getDrawable(R.drawable.icon_carona));
         } else if (statusCarona.equals(StatusCarona.RECEBER_CARONA)) {
-            setInvisibleAnimate(llBodyDistance);
             imgSelector.setImageDrawable(getResources().getDrawable(R.drawable.icon_pedindo_carona));
         }
     }
@@ -211,6 +216,14 @@ public class SearchViewHV extends LinearLayout {
 
     public void clearFocousSearch() {
         search.clearFocus();
+    }
+
+    public void hideMinDistanceViews() {
+        setInvisibleAnimate(llBodyDistance);
+    }
+
+    public void showMinDistanceViews() {
+        setVisibleAnimate(llBodyDistance);
     }
 
     public interface OnQurySubmit {

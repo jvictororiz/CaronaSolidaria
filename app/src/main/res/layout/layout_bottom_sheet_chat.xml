@@ -65,7 +65,7 @@
         android:layout_below="@+id/body_header"
         android:background="@color/colorPrimary"
         app:dateHeaderTextColor="@color/white"
-        app:incomingTextColor="@color/white"
+        app:incomingTextColor="@color/black"
         app:outcomingTextColor="@color/white" />
 
     <View
@@ -91,5 +91,5 @@
         app:inputButtonDefaultBgPressedColor="@color/blue"
         app:inputHint="Escreva uma mensagem"
         app:inputTextSize="14sp"
-        app:showAttachmentButton="true" />
+        app:showAttachmentButton="false" />
 </RelativeLayout>

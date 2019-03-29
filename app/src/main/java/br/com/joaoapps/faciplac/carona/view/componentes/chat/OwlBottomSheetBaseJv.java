@@ -61,8 +61,8 @@ public class OwlBottomSheetBaseJv extends FrameLayout {
         this.bottomSheet.setOnClickListener((v) -> {
             this.expand();
         });
-        this.contentView.setVisibility(8);
-        this.scrimView.setVisibility(8);
+        this.contentView.setVisibility(View.INVISIBLE);
+        this.scrimView.setVisibility(View.INVISIBLE);
     }
 
     void collapse() {
@@ -80,16 +80,16 @@ public class OwlBottomSheetBaseJv extends FrameLayout {
             widthMotion.start();
             heightMotion.start();
             this.contentView.setAlpha(1.0F);
-            this.contentView.setVisibility(0);
+            this.contentView.setVisibility(View.VISIBLE);
             this.scrimView.setAlpha(1.0F);
-            this.scrimView.setVisibility(0);
+            this.scrimView.setVisibility(View.VISIBLE);
             this.icon.setAlpha(0.0F);
-            this.icon.setVisibility(0);
+            this.icon.setVisibility(View.VISIBLE);
             this.contentView.animate().alpha(0.0F).setDuration((long)(this.ANIM_DURATION / 2)).setStartDelay(0L).withEndAction(() -> {
-                this.contentView.setVisibility(8);
+                this.contentView.setVisibility(View.INVISIBLE);
             });
             this.scrimView.animate().alpha(0.0F).setDuration((long)(this.ANIM_DURATION / 2)).setStartDelay((long)(this.ANIM_DURATION / 2)).withEndAction(() -> {
-                this.scrimView.setVisibility(8);
+                this.scrimView.setVisibility(View.INVISIBLE);
                 if (this.interceptor != null) {
                     this.interceptor.onCollapseBottomSheet();
                 }
@@ -105,10 +105,10 @@ public class OwlBottomSheetBaseJv extends FrameLayout {
     void expand() {
         if (!isExpanded) {
             this.initAnimBuilder();
-            ValueAnimator widthMotion = ValueAnimator.ofFloat(new float[]{1.0F, 0.0F});
+            ValueAnimator widthMotion = ValueAnimator.ofFloat(1.0F, 0.0F);
             widthMotion.setDuration((long)(this.ANIM_DURATION / 3));
             widthMotion.setInterpolator(new DecelerateInterpolator());
-            ValueAnimator heightMotion = ValueAnimator.ofFloat(new float[]{1.0F, 0.0F});
+            ValueAnimator heightMotion = ValueAnimator.ofFloat(1.0F, 0.0F);
             heightMotion.setDuration((long)this.ANIM_DURATION);
             heightMotion.setInterpolator(new FastOutSlowInInterpolator());
             widthMotion.addUpdateListener(this::expandXAnimation);
@@ -116,14 +116,14 @@ public class OwlBottomSheetBaseJv extends FrameLayout {
             widthMotion.start();
             heightMotion.start();
             this.contentView.setAlpha(0.0F);
-            this.contentView.setVisibility(0);
+            this.contentView.setVisibility(View.VISIBLE);
             this.scrimView.setAlpha(0.0F);
-            this.scrimView.setVisibility(0);
+            this.scrimView.setVisibility(View.VISIBLE);
             this.icon.setAlpha(1.0F);
             this.contentView.animate().alpha(1.0F).setStartDelay((long)(this.ANIM_DURATION / 2)).setDuration((long)(this.ANIM_DURATION / 2)).start();
             this.scrimView.animate().setStartDelay(0L).alpha(1.0F).setDuration((long)(this.ANIM_DURATION / 3)).start();
             this.icon.animate().alpha(0.0F).setDuration((long)(this.ANIM_DURATION / 3)).setStartDelay(0L).withEndAction(() -> {
-                this.icon.setVisibility(8);
+                this.icon.setVisibility(View.INVISIBLE);
                 if (this.interceptor != null) {
                     this.interceptor.onExpandBottomSheet();
                 }

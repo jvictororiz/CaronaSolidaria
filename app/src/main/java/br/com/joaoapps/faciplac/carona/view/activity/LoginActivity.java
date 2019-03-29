@@ -10,11 +10,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.crashlytics.android.Crashlytics;
 import com.joaov.faciplac.caronasolidaria.R;
 
 import br.com.joaoapps.faciplac.carona.view.activity.bo.UsuarioBO;
 import br.com.joaoapps.faciplac.carona.view.activity.cadastro.CadastroActivity;
 import br.com.joaoapps.faciplac.carona.view.utils.Preferences;
+import io.fabric.sdk.android.Fabric;
 
 public class LoginActivity extends SuperActivity {
     private EditText edtLogin;
@@ -24,10 +26,12 @@ public class LoginActivity extends SuperActivity {
     private TextView tvEsqueciSenha;
     private TextView tvErro;
     private LottieAnimationView animationView;
+    private View tvMoreApp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_login);
 
         edtLogin = findViewById(R.id.edt_login);
@@ -37,6 +41,7 @@ public class LoginActivity extends SuperActivity {
         tvEsqueciSenha = findViewById(R.id.tv_repassword);
         tvErro = findViewById(R.id.tv_error);
         animationView = findViewById(R.id.animation_view);
+        tvMoreApp = findViewById(R.id.tv_more_app);
         configAnimationView();
 
         edtLogin.setOnFocusChangeListener(getTextWatcherAnimation());
@@ -59,6 +64,13 @@ public class LoginActivity extends SuperActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(LoginActivity.this, EsqueciSenhaActivity.class));
+            }
+        });
+
+        tvMoreApp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this, DeveloperProfileActivity.class));
             }
         });
 

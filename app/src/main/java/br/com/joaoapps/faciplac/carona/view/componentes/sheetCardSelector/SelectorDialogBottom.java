@@ -98,7 +98,7 @@ public class SelectorDialogBottom extends SuperSheetPopup {
             imgOferecerCarona.setImageResource(R.drawable.icon_carona);
             imgOferecerCarona.animate().alpha(1f);
             tvOferecerCarona.setTextColor(context.getResources().getColor(R.color.selectedIcon));
-            tvPedirCarona.setTextColor(context.getResources().getColor(R.color.cinzaLetra));
+            tvPedirCarona.setTextColor(context.getResources().getColor(R.color.blue));
 //                imgOferecerCarona.setBackgroundResource(R.drawable.ic_refeicao_desativado);
         } else {
             imgPedirCarona.setImageResource(R.drawable.icon_pedindo_carona);
@@ -106,7 +106,7 @@ public class SelectorDialogBottom extends SuperSheetPopup {
             imgOferecerCarona.setImageResource(R.drawable.icon_carona_branco);
             imgOferecerCarona.animate().alpha(0.3f);
             tvPedirCarona.setTextColor(context.getResources().getColor(R.color.selectedIcon));
-            tvOferecerCarona.setTextColor(context.getResources().getColor(R.color.cinzaLetra));
+            tvOferecerCarona.setTextColor(context.getResources().getColor(R.color.blue));
         }
 
     }

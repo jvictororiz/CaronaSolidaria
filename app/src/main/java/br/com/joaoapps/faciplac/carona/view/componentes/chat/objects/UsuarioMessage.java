@@ -3,35 +3,34 @@ package br.com.joaoapps.faciplac.carona.view.componentes.chat.objects;
 import com.stfalcon.chatkit.commons.models.IUser;
 
 import br.com.joaoapps.faciplac.carona.model.CaronaUsuario;
-import br.com.joaoapps.faciplac.carona.model.Usuario;
 
 public class UsuarioMessage implements IUser {
-    private CaronaUsuario usuario;
+    private CaronaUsuario user;
 
-    public UsuarioMessage(CaronaUsuario usuario) {
-        this.usuario = usuario;
+    public UsuarioMessage(CaronaUsuario user) {
+        this.user = user;
     }
 
-    public CaronaUsuario getUsuario() {
-        return usuario;
+    public CaronaUsuario getUser() {
+        return user;
     }
 
-    public void setUsuario(CaronaUsuario usuario) {
-        this.usuario = usuario;
+    public void setUser(CaronaUsuario user) {
+        this.user = user;
     }
 
     @Override
     public String getId() {
-        return usuario.getPushId();
+        return user.getPushId();
     }
 
     @Override
     public String getName() {
-        return usuario.getNome();
+        return user.getNome();
     }
 
     @Override
     public String getAvatar() {
-        return usuario.getUrlFoto();
+        return user.getUrlFoto();
     }
 }

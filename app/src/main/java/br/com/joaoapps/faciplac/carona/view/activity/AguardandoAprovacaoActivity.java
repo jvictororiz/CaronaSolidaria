@@ -12,18 +12,10 @@ import com.joaov.faciplac.caronasolidaria.R;
 
 import br.com.joaoapps.faciplac.carona.model.Usuario;
 import br.com.joaoapps.faciplac.carona.model.enums.Situacao;
+import br.com.joaoapps.faciplac.carona.view.utils.DateUtils;
 
 public class AguardandoAprovacaoActivity extends SuperActivity {
-    public final static String USUARIO ="USUARIO";
-
-    private TextView tvTitle;
-    private TextView tvData;
-    private ImageView imgAguardandoAprovacao;
-    private ImageView imgAprovado;
-    private Button btnClose;
-    private TextView tvDesacordo;
-
-    private Usuario usuario;
+    public final static String USUARIO = "USUARIO";
 
 
     @Override
@@ -31,33 +23,36 @@ public class AguardandoAprovacaoActivity extends SuperActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_aguardando_aprovacao);
 
-        tvTitle = (TextView) findViewById(R.id.toolbar_title);
-        tvData = (TextView) findViewById(R.id.tv_data);
-        imgAguardandoAprovacao = (ImageView) findViewById(R.id.img_aguardando_aprovacao);
-        imgAprovado = (ImageView) findViewById(R.id.img_aprovado);
-        btnClose = (Button) findViewById(R.id.btn_voltar);
-        tvDesacordo = (TextView) findViewById(R.id.tv_desacordo);
+        TextView tvTitle = findViewById(R.id.toolbar_title);
+        TextView tvData = findViewById(R.id.tv_data);
+        TextView tvTextNegado = findViewById(R.id.tv_message_negado);
+        ImageView imgAguardandoAprovacao = findViewById(R.id.img_aguardando_aprovacao);
+        ImageView imgAprovado = findViewById(R.id.img_aprovado);
+        Button btnClose = findViewById(R.id.btn_voltar);
+        TextView tvDesacordo = findViewById(R.id.tv_desacordo);
 
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        btnClose.setOnClickListener(view -> finish());
 
 
         Intent intent = getIntent();
-        usuario = (Usuario) intent.getSerializableExtra(USUARIO);
+        Usuario usuario = (Usuario) intent.getSerializableExtra(USUARIO);
 
-        tvData.setText("22/04");
+        tvData.setText(DateUtils.toString("MM/yyyy", usuario.getAutenticado().getDateAutenticacao()));
 
-        if(usuario.getAutenticado() != null && (usuario.getAutenticado().getSituacao() != Situacao.APROVADO && usuario.getAutenticado().getNomeAutenticador() == null)){
+        if (usuario.getAutenticado() != null && (usuario.getAutenticado().getSituacao() != Situacao.APROVADO && usuario.getAutenticado().getNomeAutenticador() == null)) {
+            tvTextNegado.setVisibility(View.GONE);
             imgAguardandoAprovacao.setImageResource(R.drawable.wait);
-             imgAprovado.setImageResource(R.drawable.wait);
+            imgAprovado.setImageResource(R.drawable.wait);
             tvTitle.setText("AGUARDANDO APROVAÇÃO");
             tvDesacordo.setVisibility(View.GONE);
-        }else {
+        } else {
             tvTitle.setText("SEU ACESSO FOI NEGADO");
+            tvTextNegado.setVisibility(View.VISIBLE);
+            if (usuario.getAutenticado().getMotivoNegado() != null && !usuario.getAutenticado().getMotivoNegado().isEmpty()) {
+                tvTextNegado.setText(usuario.getAutenticado().getMotivoNegado());
+            } else {
+                tvTextNegado.setVisibility(View.GONE);
+            }
             imgAguardandoAprovacao.setImageResource(R.drawable.correct);
             imgAprovado.setImageResource(R.drawable.negado);
             tvDesacordo.setVisibility(View.VISIBLE);

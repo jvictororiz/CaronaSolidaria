@@ -23,7 +23,7 @@ public class ComunicationCaronaBody implements JsonDeserializer, Serializable {
     public static final int STEP_ONE_COMUNICATION = 0;
     public static final int STEP_TWO_ACCEPT = 1;
     public static final int STEP_TWO_DENIED = 2;
-    public static final int SEND_OR_RECEIVE_MESSAGE = 3;
+    public static final int RECEIVE_MESSAGE = 3;
 
     private Integer step;
     private CaronaUsuario myUser;
@@ -49,7 +49,7 @@ public class ComunicationCaronaBody implements JsonDeserializer, Serializable {
         Gson gson = new GsonBuilder().setLenient().create();
         this.otherUser = gson.fromJson(data.get("myUser"), CaronaUsuario.class);
         this.myUser = gson.fromJson(data.get("otherUser"), CaronaUsuario.class);
-        this.statusCarona = getInverse(gson.fromJson(data.get("statusCarona"), StatusCarona.class));
+        this.statusCarona = (gson.fromJson(data.get("statusCarona"), StatusCarona.class));
         this.step = gson.fromJson(data.get("step"), Integer.class);
         this.message = data.get("message");
     }

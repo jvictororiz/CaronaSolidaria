@@ -4,19 +4,20 @@
     android:id="@+id/popup_dialog_select_cards"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/cinzaLetra"
+    android:background="@color/blue"
     android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="5dp"
         android:gravity="center_vertical"
-        android:paddingBottom="15dp"
         android:paddingStart="35dp"
         android:paddingTop="15dp"
+        android:paddingBottom="15dp"
         android:text="Selecionar opção"
+        android:textColor="@color/white"
         android:textSize="21sp" />
 
     <View
@@ -37,8 +38,8 @@
             android:layout_weight="0.5"
             android:gravity="center"
             android:orientation="vertical"
-            android:paddingBottom="15dp"
-            android:paddingTop="15dp">
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp">
 
             <ImageView
                 android:id="@+id/img_oferecer_carona"
@@ -63,8 +64,8 @@
             android:layout_weight="0.5"
             android:gravity="center"
             android:orientation="vertical"
-            android:paddingBottom="15dp"
-            android:paddingTop="15dp">
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp">
 
             <ImageView
                 android:id="@+id/img_pedir_carona"

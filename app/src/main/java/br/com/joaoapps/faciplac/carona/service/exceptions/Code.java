@@ -1,6 +1,5 @@
 package br.com.joaoapps.faciplac.carona.service.exceptions;
 
-import br.com.joaoapps.faciplac.carona.service.listeners.OnResetSenha;
 
 /**
  * Created by joaov on 09/11/2017.

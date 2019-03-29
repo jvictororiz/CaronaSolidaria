@@ -30,6 +30,11 @@
         android:theme="@style/AppTheme">
 
         <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="59ecd1275774792e664ed87ee5930d703338a66c"
+            />
+
+        <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
@@ -82,6 +87,8 @@
         <activity
             android:name="br.com.joaoapps.faciplac.carona.view.activity.RegistroLocalizacaoActivity"
             android:theme="@style/AppTheme" />
+        <activity android:name="br.com.joaoapps.faciplac.carona.view.activity.SuperActivity" />
+        <activity android:name="br.com.joaoapps.faciplac.carona.view.activity.DeveloperProfileActivity" />
 
         <service
             android:name="br.com.joaoapps.faciplac.carona.service.ServiceFinishIntent"

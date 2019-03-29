@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import br.com.joaoapps.faciplac.carona.SuperApplication;
@@ -16,9 +17,8 @@ import br.com.joaoapps.faciplac.carona.service.email.EmailService;
 import br.com.joaoapps.faciplac.carona.service.exceptions.Code;
 import br.com.joaoapps.faciplac.carona.service.firebase.UsuarioFirebase;
 import br.com.joaoapps.faciplac.carona.service.firebase.push.objects.Notification;
-import br.com.joaoapps.faciplac.carona.service.listeners.OnEventListener;
-import br.com.joaoapps.faciplac.carona.service.listeners.OnLogarListener;
 import br.com.joaoapps.faciplac.carona.service.listeners.OnResetSenha;
+import br.com.joaoapps.faciplac.carona.service.rest.OnEventListenerAbstract;
 import br.com.joaoapps.faciplac.carona.service.rest.UsuarioRestService;
 import br.com.joaoapps.faciplac.carona.view.activity.AguardandoAprovacaoActivity;
 import br.com.joaoapps.faciplac.carona.view.activity.AlunosPreCadastradosActivity;
@@ -36,9 +36,9 @@ public class UsuarioBO {
 
     public static void doLogin(String login, String senha, final AppCompatActivity context) {
         SuperActivity.showDialogLoad(context);
-        UsuarioFirebase.doLogin(login, senha, new OnLogarListener() {
+        UsuarioFirebase.doLogin(login, senha, new OnEventListenerAbstract<Usuario>() {
             @Override
-            public void success(Usuario usuario) {
+            public void onSuccess(Usuario usuario) {
                 SuperActivity.closeDialogLoad();
                 String tocken = FirebaseInstanceId.getInstance().getToken();
                 if (tocken != null) {
@@ -49,6 +49,7 @@ public class UsuarioBO {
                     if (usuario.getAutenticado().getSituacao() == Situacao.APROVADO) {
                         Intent intent = new Intent(context, RegistroLocalizacaoActivity.class);
                         intent.putExtra("USUARIO", usuario);
+                        fabricLogUser(usuario);
                         SuperActivity.startActivityMessagePositive(context, intent, "Login realizado\ncom sucesso !");
                     } else {
                         Intent intent = new Intent(context, AguardandoAprovacaoActivity.class);
@@ -68,7 +69,7 @@ public class UsuarioBO {
             }
 
             @Override
-            public void error(int code) {
+            public void onError(int code) {
                 SuperActivity.closeDialogLoad();
                 if (code == Code.CPF_SENHA_INCORRETO) {
                     AlertUtils.showAlert("Login ou senha incorretos !", context);
@@ -77,20 +78,26 @@ public class UsuarioBO {
         });
     }
 
+    private static void fabricLogUser(Usuario usuario) {
+        Crashlytics.setUserIdentifier(usuario.getCpf());
+        Crashlytics.setUserEmail(usuario.getEmail());
+        Crashlytics.setUserName(usuario.getNome());
+    }
+
     public static void editUser(final Bitmap bitmap, final Usuario usuario, final AppCompatActivity context) {
         SuperActivity.showDialogLoad(context);
         UsuarioFirebase.saveOrUpdate(usuario);
         if (bitmap != null) {
-            UsuarioFirebase.saveImageUser(usuario, bitmap, new OnEventListener() {
+            UsuarioFirebase.saveImageUser(usuario, bitmap, new OnEventListenerAbstract<Void>() {
                 @Override
-                public void success(Object object) {
+                public void onSuccess(Void object) {
                     SuperActivity.closeDialogLoad();
                     context.setResult(CadastroActivity.USER_CODE, new Intent().putExtra("USER", usuario));
                     context.finish();
                 }
 
                 @Override
-                public void error(int code) {
+                public void onError(int code) {
                     SuperActivity.closeDialogLoad();
                     context.finish();
                 }
@@ -107,9 +114,9 @@ public class UsuarioBO {
         final Intent intent = new Intent(context, AguardandoAprovacaoActivity.class);
         intent.putExtra(AguardandoAprovacaoActivity.USUARIO, usuario);
 
-        UsuarioFirebase.save(usuario, new OnEventListener() {
+        UsuarioFirebase.save(usuario, new OnEventListenerAbstract<Void>() {
             @Override
-            public void success(Object o) {
+            public void onSuccess(Void o) {
                 SuperActivity.closeDialogLoad();
                 if (bitmap != null) {
                     saveImageUser(context, usuario, bitmap);
@@ -119,7 +126,7 @@ public class UsuarioBO {
             }
 
             @Override
-            public void error(int code) {
+            public void onError(int code) {
                 SuperActivity.closeDialogLoad();
                 if (code == Code.LOGIN_EXISTE) {
                     AlertUtils.showAlert("CPF já está cadastrado !", context);
@@ -138,33 +145,26 @@ public class UsuarioBO {
     }
 
     public static void saveImageUser(final Context context, Usuario usuario, Bitmap bitmap) {
-        UsuarioFirebase.saveImageUser(usuario, bitmap, new OnEventListener() {
-            @Override
-            public void success(Object object) {
-            }
-
-            @Override
-            public void error(int code) {
-            }
+        UsuarioFirebase.saveImageUser(usuario, bitmap, new OnEventListenerAbstract<Void>() {
         });
     }
 
     public static void resetSenha(final AppCompatActivity appCompatActivity, String matricula, final String email) {
         SuperActivity.showDialogLoad(appCompatActivity);
-        UsuarioFirebase.verifyEmailMatriculaValid(email, matricula, new OnResetSenha() {
+        UsuarioFirebase.verifyEmailMatriculaValid(email, matricula, new OnEventListenerAbstract<Usuario>() {
             @Override
-            public void success(Usuario usuario) {
+            public void onSuccess(Usuario usuario) {
                 EmailService.loginEmail();
-                EmailService.resetSenha(email, usuario.getSenha(), new OnEventListener() {
+                EmailService.resetSenha(email, usuario.getSenha(), new OnEventListenerAbstract<Void>() {
                     @Override
-                    public void success(Object o) {
+                    public void onSuccess(Void o) {
                         SuperActivity.closeDialogLoad();
                         SuperActivity.startActivityMessagePositive(appCompatActivity, new Intent(appCompatActivity, LoginActivity.class), "Um e-mail com a sua senha foi enviado");
                         appCompatActivity.finish();
                     }
 
                     @Override
-                    public void error(int code) {
+                    public void onError(int code) {
                         SuperActivity.closeDialogLoad();
                         if (code == Code.ERRO_ENVIAR_EMAIL) {
                             AlertUtils.showAlert("Erro ao enviar e-mail. Favor procurar a secretaria para regularização de sua conta.", appCompatActivity);
@@ -175,7 +175,7 @@ public class UsuarioBO {
             }
 
             @Override
-            public void error(int code) {
+            public void onError(int code) {
                 SuperActivity.closeDialogLoad();
                 if (code == Code.MATRICULA_EMAIL_INCORRETOS) {
                     AlertUtils.showAlert("Matricula ou e-mail não correspondem a nenhuma conta", appCompatActivity);
@@ -188,19 +188,14 @@ public class UsuarioBO {
         UsuarioFirebase.saveOrUpdate(usuario);
         UsuarioRestService notificationRestService = new UsuarioRestService(appCompatActivity);
         notification.setPushIdRemetente(usuario.getPushId());
-        notificationRestService.sendNotification(notification, new OnEventListener() {
+        notificationRestService.sendNotification(notification, new OnEventListenerAbstract<Void>() {
             @Override
-            public void success(Object object) {
+            public void onSuccess(Void object) {
                 if (usuario.getAutenticado().getSituacao() == Situacao.APROVADO) {
                     AlertUtils.showInfo(usuario.getNome().concat(" foi notificado do sucesso de seu cadastro."), appCompatActivity);
                 } else if (usuario.getAutenticado().getSituacao() == Situacao.NEGADO) {
                     AlertUtils.showInfo(usuario.getNome().concat(" foi notificado a respeito da invalidez de seu cadastro."), appCompatActivity);
                 }
-            }
-
-            @Override
-            public void error(int code) {
-
             }
         });
     }

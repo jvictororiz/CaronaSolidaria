@@ -25,6 +25,7 @@ import br.com.joaoapps.faciplac.carona.model.Usuario;
 import br.com.joaoapps.faciplac.carona.model.enums.Situacao;
 import br.com.joaoapps.faciplac.carona.service.firebase.push.objects.Notification;
 import br.com.joaoapps.faciplac.carona.view.activity.bo.UsuarioBO;
+import br.com.joaoapps.faciplac.carona.view.activity.dialogs.ConfirmationInputDialogFragment;
 import br.com.joaoapps.faciplac.carona.view.utils.DateUtils;
 import br.com.joaoapps.faciplac.carona.view.utils.DialogUtils;
 
@@ -82,37 +83,26 @@ public class UsuarioNaoAutenticadoAdapter extends RecyclerView.Adapter<UsuarioNa
         }
 
 
-        holder.btnAprovar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DialogUtils.showDialogConfirm(context, "Tem certeza que deseja aprovar o acesso de " + usuario.getNome() + " ?", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        usuario.setAutenticado(new Autenticado(Situacao.APROVADO, new Date(), SuperApplication.getUsuarioLogado().getNome()));
-                        Notification notification = new Notification("Faciplac Carona", "Seu acesso ao faciplac carona foi aprovado com sucesso");
-                        notification.setPushIdRemetente(usuario.getPushId());
-                        UsuarioBO.sendFeedbackDiretoria(context, usuario, notification);
+        holder.btnAprovar.setOnClickListener(v -> DialogUtils.showDialogConfirm(context, "Tem certeza que deseja aprovar o acesso de " + usuario.getNome() + " ?",
+                (dialogInterface, i) -> {
+                    usuario.setAutenticado(new Autenticado(Situacao.APROVADO, new Date(), SuperApplication.getUsuarioLogado().getNome()));
+                    Notification notification = new Notification("Faciplac Carona", "Seu acesso ao faciplac carona foi aprovado com sucesso");
+                    notification.setPushIdRemetente(usuario.getPushId());
+                    UsuarioBO.sendFeedbackDiretoria(context, usuario, notification);
 
-                    }
-                });
-
-            }
-        });
+                }));
 
         holder.btnNeggar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogUtils.showDialogConfirm(context, "Tem certeza que deseja negar o acesso de " + usuario.getNome() + " ?", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        usuario.setAutenticado(new Autenticado(Situacao.NEGADO, new Date(), SuperApplication.getUsuarioLogado().getNome()));
-                        Notification notification = new Notification("Faciplac Carona", "Seu acesso ao faciplac carona infelizmente foi negado");
-                        notification.setPushIdRemetente(usuario.getPushId());
-                        UsuarioBO.sendFeedbackDiretoria(context, usuario, notification);
-                    }
-                });
-
-
+                ConfirmationInputDialogFragment dialog = ConfirmationInputDialogFragment.newInstance("Tem certeza que deseja negar o acesso de " + usuario.getNome() + "?",
+                        (ConfirmationInputDialogFragment.OnConfirmInput) input -> {
+                            usuario.setAutenticado(new Autenticado(Situacao.NEGADO, new Date(), SuperApplication.getUsuarioLogado().getNome(), input));
+                            Notification notification = new Notification("Faciplac Carona", "Seu acesso ao faciplac carona infelizmente foi negado");
+                            notification.setPushIdRemetente(usuario.getPushId());
+                            UsuarioBO.sendFeedbackDiretoria(context, usuario, notification);
+                        });
+                dialog.show(context.getSupportFragmentManager());
             }
         });
     }

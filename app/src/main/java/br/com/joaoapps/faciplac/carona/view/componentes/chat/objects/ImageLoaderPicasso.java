@@ -12,26 +12,17 @@ import com.stfalcon.chatkit.commons.ImageLoader;
 
 public class ImageLoaderPicasso implements ImageLoader {
     private Context context;
-    private Bitmap bitmap;
 
     public ImageLoaderPicasso(Context context) {
         this.context = context;
     }
 
-    public ImageLoaderPicasso(Context context, Bitmap bitmap) {
-        this.context = context;
-        this.bitmap = bitmap;
-    }
-
     @Override
     public void loadImage(ImageView imageView, @Nullable String url, @Nullable Object payload) {
-        if (imageView.getDrawable() == null && bitmap != null) {
-            imageView.setImageBitmap(bitmap);
-            bitmap = null;
-        }
-    }
-
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
+        Picasso.with(context)
+                .load(url)
+                .placeholder(R.drawable.icon_user_default)
+                .error(R.drawable.icon_user_default)
+                .into(imageView);
     }
 }

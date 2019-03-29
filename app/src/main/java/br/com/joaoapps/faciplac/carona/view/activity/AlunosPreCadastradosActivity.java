@@ -1,6 +1,5 @@
 package br.com.joaoapps.faciplac.carona.view.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -8,7 +7,6 @@ import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.joaov.faciplac.caronasolidaria.R;
 
@@ -19,7 +17,7 @@ import br.com.joaoapps.faciplac.carona.model.Usuario;
 import br.com.joaoapps.faciplac.carona.model.enums.Situacao;
 import br.com.joaoapps.faciplac.carona.model.enums.Status;
 import br.com.joaoapps.faciplac.carona.service.firebase.UsuarioFirebase;
-import br.com.joaoapps.faciplac.carona.service.listeners.OnRefreshAlunos;
+import br.com.joaoapps.faciplac.carona.service.rest.OnEventListenerAbstract;
 import br.com.joaoapps.faciplac.carona.view.activity.adapters.UsuarioNaoAutenticadoAdapter;
 import br.com.joaoapps.faciplac.carona.view.activity.dialogs.BottomDialogFilter;
 import br.com.joaoapps.faciplac.carona.view.activity.dialogs.listeners.OnEventDialogListener;
@@ -48,15 +46,15 @@ public class AlunosPreCadastradosActivity extends SuperActivity {
         situacaos = new ArrayList<>();
         situacaos.add(Situacao.ESPERA);
 
-        UsuarioFirebase.getAll(new OnRefreshAlunos() {
+        UsuarioFirebase.getAll(new OnEventListenerAbstract<List<Usuario>>() {
             @Override
-            public void getAll(List<Usuario> usuarios) {
+            public void onSuccess(List<Usuario> usuarios) {
                 AlunosPreCadastradosActivity.this.usuarios = usuarios;
                 refreshList(filterUsers(situacaos));
             }
 
             @Override
-            public void error(int code) {
+            public void onError(int code) {
                 AlertUtils.showAlert("Falha ao buscar alunos", AlunosPreCadastradosActivity.this);
             }
         });
@@ -102,12 +100,7 @@ public class AlunosPreCadastradosActivity extends SuperActivity {
 
             }
         });
-        menuFilter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                bottomDialogFilter.show();
-            }
-        });
+        menuFilter.setOnClickListener(view -> bottomDialogFilter.show());
     }
 
     void initRecycler() {

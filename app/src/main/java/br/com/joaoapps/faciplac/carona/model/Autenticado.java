@@ -13,7 +13,19 @@ public class Autenticado implements Serializable {
     private Situacao situacao;
     private Date dateAutenticacao;
     private String nomeAutenticador;
+    private String motivoNegado;
 
+    public void setSituacao(Situacao situacao) {
+        this.situacao = situacao;
+    }
+
+    public String getMotivoNegado() {
+        return motivoNegado;
+    }
+
+    public void setMotivoNegado(String motivoNegado) {
+        this.motivoNegado = motivoNegado;
+    }
 
     public Autenticado(Situacao situacao) {
         this.situacao = situacao;
@@ -24,6 +36,14 @@ public class Autenticado implements Serializable {
         this.dateAutenticacao = dateAutenticacao;
         this.nomeAutenticador = nomeAutenticador;
     }
+
+    public Autenticado(Situacao situacao, Date dateAutenticacao, String nomeAutenticador, String motivoNegado) {
+        this.situacao = situacao;
+        this.motivoNegado = motivoNegado;
+        this.dateAutenticacao = dateAutenticacao;
+        this.nomeAutenticador = nomeAutenticador;
+    }
+
 
     public Autenticado() {
     }

@@ -15,8 +15,7 @@ import java.util.List;
 import br.com.joaoapps.faciplac.carona.model.CaronaUsuario;
 import br.com.joaoapps.faciplac.carona.model.Usuario;
 import br.com.joaoapps.faciplac.carona.service.exceptions.Code;
-import br.com.joaoapps.faciplac.carona.service.listeners.OnRefreshAlunos;
-import br.com.joaoapps.faciplac.carona.service.listeners.OnRefreshUsuarisCaronas;
+import br.com.joaoapps.faciplac.carona.service.rest.OnEventListenerAbstract;
 import br.com.joaoapps.faciplac.carona.view.utils.Mask;
 import br.com.joaoapps.faciplac.carona.view.utils.Preferences;
 
@@ -39,7 +38,7 @@ public class CaronaUsuarioFirebase {
         }
     }
 
-    public static void getAll(final OnRefreshUsuarisCaronas onRefreshCarona) {
+    public static void getAll(final OnEventListenerAbstract<List<CaronaUsuario>> onRefreshCarona) {
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

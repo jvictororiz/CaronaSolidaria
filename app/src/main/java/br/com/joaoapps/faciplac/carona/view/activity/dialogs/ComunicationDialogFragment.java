@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
@@ -101,12 +102,7 @@ public class ComunicationDialogFragment extends AppCompatDialogFragment {
                 btnSeeProfile.setText(R.string.fechar);
                 btnSeeProfile.setVisibility(View.VISIBLE);
                 bodyStepOne.setVisibility(View.GONE);
-                btnSeeProfile.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dismiss();
-                    }
-                });
+                btnSeeProfile.setOnClickListener(view -> dismiss());
                 break;
         }
     }
@@ -159,6 +155,8 @@ public class ComunicationDialogFragment extends AppCompatDialogFragment {
             }
         });
     }
+
+
 
     public void initTimeToDeny() {
         new CountDownTimer(TIME_TO_RESPONSE, 1000) {

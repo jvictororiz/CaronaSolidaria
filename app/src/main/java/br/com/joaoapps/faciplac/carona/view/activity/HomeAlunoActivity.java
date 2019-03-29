@@ -42,8 +42,7 @@ import br.com.joaoapps.faciplac.carona.model.enums.StatusCarona;
 import br.com.joaoapps.faciplac.carona.service.firebase.CaronaUsuarioFirebase;
 import br.com.joaoapps.faciplac.carona.service.firebase.push.PushFirebaseReceiver;
 import br.com.joaoapps.faciplac.carona.service.firebase.push.objects.ComunicationCaronaBody;
-import br.com.joaoapps.faciplac.carona.service.listeners.OnEventListener;
-import br.com.joaoapps.faciplac.carona.service.listeners.OnRefreshUsuarisCaronas;
+import br.com.joaoapps.faciplac.carona.service.rest.OnEventListenerAbstract;
 import br.com.joaoapps.faciplac.carona.service.rest.UsuarioRestService;
 import br.com.joaoapps.faciplac.carona.view.activity.cadastro.CadastroActivity;
 import br.com.joaoapps.faciplac.carona.view.activity.dialogs.ComunicationDialogFragment;
@@ -79,6 +78,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     private BroadcastReceiver receiver;
     private CircleImageView imgProfile;
     private ChatDialogView mChatDialog;
+    private boolean hasDistanceMin;
 
 
     @Override
@@ -145,14 +145,14 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
                             teratmentInitComunication(comunicationCaronaBody);
                             break;
                         case ComunicationCaronaBody.STEP_TWO_ACCEPT:
-                            treatmentResopnseComunication(comunicationCaronaBody.getOtherUser());
+                            treatmentResponseCommunication(comunicationCaronaBody.getOtherUser());
                             break;
 
                         case ComunicationCaronaBody.STEP_TWO_DENIED:
                             treatmentDeniedComunication(comunicationCaronaBody);
                             break;
-                        case ComunicationCaronaBody.SEND_OR_RECEIVE_MESSAGE:
-                            treatmentSendOrReceiveMessage(comunicationCaronaBody);
+                        case ComunicationCaronaBody.RECEIVE_MESSAGE:
+                            treatmentReceiveMessage(comunicationCaronaBody);
                             break;
                     }
                 } catch (Exception e) {
@@ -163,7 +163,16 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         registerReceiver(receiver, new IntentFilter(PushFirebaseReceiver.INTENT_FILTER_USER_COMUNICATION));
     }
 
-    private void treatmentSendOrReceiveMessage(ComunicationCaronaBody comunicationCaronaBody) {
+    private void treatmentReceiveMessage(ComunicationCaronaBody comunicationCaronaBody) {
+        AppUtil.vibrate(HomeAlunoActivity.this, 30);
+        if (!mChatDialog.isPrepared()) {
+            mChatDialog.show();
+            mChatDialog.prepareChat(this, mUsuarioCarona, comunicationCaronaBody.getOtherUser(), message1 ->
+                    new UsuarioRestService(HomeAlunoActivity.this).sendMessageChat(mUsuarioCarona, comunicationCaronaBody.getOtherUser(), message1, getCallbackSendMessage()));
+        }
+        if (!mChatDialog.isExpanded()) {
+            mChatDialog.expand();
+        }
         mChatDialog.sendMessage(comunicationCaronaBody.getMessage(), comunicationCaronaBody.getOtherUser());
     }
 
@@ -184,33 +193,27 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         popupAlert.configToStepThree();
     }
 
-    private void treatmentResopnseComunication(final CaronaUsuario otherUser) {
-        String message = "";
-        switch (otherUser.getStatusCarona()) {
-            case RECEBER_CARONA:
-                message = ("Olá " + (otherUser.getNome().concat(", posso te oferecer uma carona :)")));
-                break;
-            case DAR_CARONA:
-                message = ("Olá " + (otherUser.getNome().concat(", obrigado, eu aceito sua carona :)")));
-                break;
-        }
+    private void treatmentResponseCommunication(final CaronaUsuario otherUser) {
         AppUtil.vibrate(HomeAlunoActivity.this, 200);
         mChatDialog.show();
-        mChatDialog.prepareChat(this, mUsuarioCarona,
-                message1 -> new UsuarioRestService(HomeAlunoActivity.this).sendMessageChat(mUsuarioCarona, otherUser, message1, new OnEventListener<Void>() {
-                    @Override
-                    public void success(Void object) {
-
-                    }
-
-                    @Override
-                    public void error(int code) {
-
-                    }
-                }));
+        mChatDialog.prepareChat(this, mUsuarioCarona, otherUser, message1 ->
+                new UsuarioRestService(HomeAlunoActivity.this).sendMessageChat(mUsuarioCarona, otherUser, message1, getCallbackSendMessage()));
         mChatDialog.expand();
-        mChatDialog.sendMessage(message, otherUser);
+        new UsuarioRestService(this).sendMessageChat(mUsuarioCarona, otherUser, "", getCallbackSendMessage());
+    }
 
+    private OnEventListenerAbstract<Void> getCallbackSendMessage() {
+        return new OnEventListenerAbstract<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                super.onSuccess(aVoid);
+            }
+
+            @Override
+            public void onError(int erro) {
+                super.onError(erro);
+            }
+        };
     }
 
     private void teratmentInitComunication(final ComunicationCaronaBody comunicationCaronaBody) {
@@ -260,17 +263,8 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
 
     }
 
-    private OnEventListener<Void> getCallbackStepTwo() {
-        return new OnEventListener<Void>() {
-            @Override
-            public void success(Void object) {
-
-            }
-
-            @Override
-            public void error(int code) {
-
-            }
+    private OnEventListenerAbstract<Void> getCallbackStepTwo() {
+        return new OnEventListenerAbstract<Void>() {
         };
     }
 
@@ -329,7 +323,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     }
 
     private void findAllUsers() {
-        CaronaUsuarioFirebase.getAll(new OnRefreshUsuarisCaronas() {
+        CaronaUsuarioFirebase.getAll(new OnEventListenerAbstract<List<CaronaUsuario>>() {
             @Override
             public void onSuccess(List<CaronaUsuario> usuarioFirebase) {
                 listUsers = usuarioFirebase;
@@ -359,6 +353,11 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         searchViewHV.configEventChangeType(statusCarona, statusCarona -> {
             if (mUsuarioCarona != null) {
                 HomeAlunoActivity.this.statusCarona = statusCarona;
+                if (statusCarona == StatusCarona.DAR_CARONA && hasDistanceMin) {
+                    searchViewHV.showMinDistanceViews();
+                } else {
+                    searchViewHV.hideMinDistanceViews();
+                }
                 mUsuarioCarona.setStatusCarona(statusCarona);
                 CaronaUsuarioFirebase.openOrUpdate(HomeAlunoActivity.this, mUsuarioCarona);
                 mClusterManager = null;
@@ -372,6 +371,15 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
             initGps();
             mClusterManager = null;
             findAllUsers();
+        });
+        searchViewHV.hideMinDistanceViews();
+        searchViewHV.setListenerCheckbox((buttonView, isChecked) -> {
+            hasDistanceMin = isChecked;
+            if (statusCarona == StatusCarona.DAR_CARONA && hasDistanceMin) {
+                searchViewHV.showMinDistanceViews();
+            } else {
+                searchViewHV.hideMinDistanceViews();
+            }
         });
 
         searchViewHV.setListenerDistance(distance -> findAllUsers());
@@ -471,15 +479,18 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         hideDetailedEstablishementSelected();
     }
 
-    private OnEventListener<Void> getCallback() {
-        return new OnEventListener<Void>() {
+    private OnEventListenerAbstract<Void> getCallback() {
+        return new OnEventListenerAbstract<Void>() {
+
             @Override
-            public void success(Void object) {
+            public void onSuccess(Void aVoid) {
+                super.onSuccess(aVoid);
                 AlertUtils.showInfo("Foi enviado um alerta para " + caronaUsuarioSelecionado.getNome() + ", aguarde sua resposta... ", HomeAlunoActivity.this);
             }
 
             @Override
-            public void error(int code) {
+            public void onError(int erro) {
+                super.onError(erro);
                 AlertUtils.showAlert("Falha ao buscar a sua localização", HomeAlunoActivity.this);
             }
         };
@@ -586,15 +597,19 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     }
 
     private boolean containsInDistanceMin(CaronaUsuario meuUsuarioCarona, CaronaUsuario caronaUsuario) {
-        Location locOne = new Location("");
-        Location locTwo = new Location("");
-        locOne.setLatitude(meuUsuarioCarona.getPositionResidence().getLatitude());
-        locOne.setLongitude(meuUsuarioCarona.getPositionResidence().getLongitude());
-        locTwo.setLatitude(caronaUsuario.getPositionResidence().getLatitude());
-        locTwo.setLongitude(caronaUsuario.getPositionResidence().getLongitude());
-        //TODO: REVER ESSA REGRA DE NEGOCIO (Tem que ver se o cara que pede carona tem que diminuir a distancia de acordo com quem oferece) Vai ter que colocar um atributo distanciaMinima no usuario e comparar o do cara que quer dar carona ao invés de colocar 2000f
-        float distanceMin = meuUsuarioCarona.getStatusCarona() == StatusCarona.DAR_CARONA ? searchViewHV.getDistanceMin() : 2000f;
-        return locOne.distanceTo(locTwo) <= distanceMin;
+        if (hasDistanceMin) {
+            Location locOne = new Location("");
+            Location locTwo = new Location("");
+            locOne.setLatitude(meuUsuarioCarona.getPositionResidence().getLatitude());
+            locOne.setLongitude(meuUsuarioCarona.getPositionResidence().getLongitude());
+            locTwo.setLatitude(caronaUsuario.getPositionResidence().getLatitude());
+            locTwo.setLongitude(caronaUsuario.getPositionResidence().getLongitude());
+            //TODO: REVER ESSA REGRA DE NEGOCIO (Tem que ver se o cara que pede carona tem que diminuir a distancia de acordo com quem oferece) Vai ter que colocar um atributo distanciaMinima no usuario e comparar o do cara que quer dar carona ao invés de colocar 2000f
+            float distanceMin = meuUsuarioCarona.getStatusCarona() == StatusCarona.DAR_CARONA ? searchViewHV.getDistanceMin() : 2000f;
+            return locOne.distanceTo(locTwo) <= distanceMin;
+        } else {
+            return true;
+        }
     }
 
     private List<CaronaUsuario> getUsersByStatusCarona() {
@@ -718,9 +733,9 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     }
 
     private boolean validateUser(CaronaUsuario caronaUsuario, String query) {
-        return !usuario.getCpf().equals(caronaUsuario.getCpfUsuario()) &&
-                caronaUsuario.getNome().toLowerCase().contains(query.toLowerCase()) &&
-                containsInDistanceMin(mUsuarioCarona, caronaUsuario);
+        return !usuario.getCpf().equals(caronaUsuario.getCpfUsuario()) &&   // Se não for eu mesmo
+                caronaUsuario.getNome().toLowerCase().contains(query.toLowerCase()) &&  // se o nome contém dentro da query de pesquisa (se for vazio sempre contém)
+                (containsInDistanceMin(mUsuarioCarona, caronaUsuario));  // se o usuário está dentro da distância mínima (caso tenha distância mínima)
     }
 }
 

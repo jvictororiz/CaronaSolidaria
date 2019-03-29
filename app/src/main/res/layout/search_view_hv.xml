@@ -21,103 +21,118 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="7dp"
             android:paddingLeft="10dp"
+            android:paddingTop="7dp"
             android:paddingRight="10dp"
-            android:paddingTop="7dp">
+            android:paddingBottom="7dp">
 
-            <android.support.v7.widget.SearchView
-                android:id="@+id/search"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                app:closeIcon="@drawable/ic_close"
-                app:defaultQueryHint="Buscar por nome" />
-
-            <LinearLayout
-                android:id="@+id/body_top"
+            <CheckBox
+                android:id="@+id/check_distance_min"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:layout_centerInParent="true"
-                android:gravity="center"
-                android:orientation="horizontal">
+                android:layout_centerHorizontal="true"
+                android:text="Apresentar apenas alunos que moram perto de você"
+                android:textSize="11sp" />
 
-                <LinearLayout
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/vertical_line" />
-
-                <LinearLayout
-                    android:id="@+id/ll_refresh"
-                    android:layout_width="40dp"
-                    android:layout_height="30dp"
-                    android:background="@drawable/selector_button_background"
-                    android:gravity="center"
-                    android:scaleType="centerInside">
-
-                    <ImageView
-                        android:id="@+id/fb_refresh"
-                        android:layout_width="30dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:src="@mipmap/ic_refresh" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/vertical_line" />
-
-                <LinearLayout
-                    android:id="@+id/ll_filter"
-                    android:layout_width="40dp"
-                    android:layout_height="30dp"
-                    android:background="@drawable/selector_button_background"
-                    android:gravity="center"
-                    android:scaleType="centerInside">
-
-
-                    <ImageView
-                        android:id="@+id/fb_type_card"
-                        android:layout_width="30dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:src="@drawable/icon_carona" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_body_distance"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/body_top"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="5dp">
+                android:layout_below="@+id/check_distance_min">
 
-                <SeekBar
-                    android:id="@+id/seekbar"
+                <android.support.v7.widget.SearchView
+                    android:id="@+id/search"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginStart="20dp" />
+                    android:layout_height="30dp"
+                    app:closeIcon="@drawable/ic_close"
+                    android:layout_marginBottom="15dp"
+                    app:defaultQueryHint="Buscar por nome" />
 
-                <TextView
-                    android:id="@+id/tv_distance"
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:id="@+id/body_top"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/shape_border_circle_ref"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerInParent="true"
                     android:gravity="center"
-                    android:padding="6dp"
-                    android:textColor="#fff"
-                    android:textSize="12sp"
-                    tools:text="Até 22,35 metros de vocÊ" />
-            </LinearLayout>
+                    android:orientation="horizontal">
 
+                    <LinearLayout
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/vertical_line" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_refresh"
+                        android:layout_width="40dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/selector_button_background"
+                        android:gravity="center"
+                        android:scaleType="centerInside">
+
+                        <ImageView
+                            android:id="@+id/fb_refresh"
+                            android:layout_width="30dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:src="@mipmap/ic_refresh" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/vertical_line" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_filter"
+                        android:layout_width="40dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/selector_button_background"
+                        android:gravity="center"
+                        android:scaleType="centerInside">
+
+
+                        <ImageView
+                            android:id="@+id/fb_type_card"
+                            android:layout_width="30dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:src="@drawable/icon_carona" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_body_distance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/body_top"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <SeekBar
+                        android:id="@+id/seekbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:layout_marginBottom="10dp" />
+
+                    <TextView
+                        android:id="@+id/tv_distance"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shape_border_circle_ref"
+                        android:gravity="center"
+                        android:padding="6dp"
+                        android:textColor="#fff"
+                        android:textSize="12sp"
+                        tools:text="Até 22,35 metros de vocÊ" />
+                </LinearLayout>
+
+            </RelativeLayout>
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>

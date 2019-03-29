@@ -15,7 +15,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import br.com.joaoapps.faciplac.carona.service.exceptions.Code;
-import br.com.joaoapps.faciplac.carona.service.listeners.OnEventListener;
+import br.com.joaoapps.faciplac.carona.service.rest.OnEventListenerAbstract;
 
 public class EmailService {
     private static Session session = null;
@@ -39,15 +39,15 @@ public class EmailService {
 
     }
 
-    public static void resetSenha(String email, String senha, OnEventListener<Void> onEventListener) {
+    public static void resetSenha(String email, String senha, OnEventListenerAbstract<Void> onEventListener) {
         RetreiveFeedTask task = new RetreiveFeedTask(onEventListener);
         task.execute(email, senha);
     }
 
     static class RetreiveFeedTask extends AsyncTask<String, Void, String> {
-        OnEventListener<Void> onEventListener;
+        OnEventListenerAbstract<Void> onEventListener;
 
-        RetreiveFeedTask(OnEventListener<Void> onEventListener) {
+        RetreiveFeedTask(OnEventListenerAbstract<Void> onEventListener) {
             this.onEventListener = onEventListener;
         }
 
@@ -68,9 +68,9 @@ public class EmailService {
                 message.setSubject("Solicitação de senha Faciplac Saidão Faciplac");
                 message.setText("Sua senha é " + params[1] + ", guarde-a bem");
                 Transport.send(message);
-                onEventListener.success(null);
+                onEventListener.onSuccess(null);
             } catch (Exception e) {
-                onEventListener.error(Code.ERRO_ENVIAR_EMAIL);
+                onEventListener.onError(Code.ERRO_ENVIAR_EMAIL);
             }
             return null;
         }
