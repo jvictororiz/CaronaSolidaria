@@ -1,5 +1,7 @@
 package br.com.joaoapps.faciplac.carona.view.activity;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.CustomEvent;
 import com.elconfidencial.bubbleshowcase.BubbleShowCase;
 import com.elconfidencial.bubbleshowcase.BubbleShowCaseBuilder;
 import com.elconfidencial.bubbleshowcase.BubbleShowCaseSequence;
@@ -49,11 +51,13 @@ import br.com.joaoapps.faciplac.carona.view.activity.dialogs.ComunicationDialogF
 import br.com.joaoapps.faciplac.carona.view.activity.maps.mapConfiguration.CustomRender;
 import br.com.joaoapps.faciplac.carona.view.activity.maps.mapConfiguration.MarkerItem;
 import br.com.joaoapps.faciplac.carona.view.componentes.chat.ChatDialogView;
+import br.com.joaoapps.faciplac.carona.view.componentes.chat.OwlBottomSheetBaseJv;
 import br.com.joaoapps.faciplac.carona.view.componentes.dialogSelectorItemMap.DialogItemMapView;
 import br.com.joaoapps.faciplac.carona.view.componentes.search.SearchViewHV;
 import br.com.joaoapps.faciplac.carona.view.componentes.sheetDialogEstablishments.CaronaUsuarioDialogBottom;
 import br.com.joaoapps.faciplac.carona.view.utils.AlertUtils;
 import br.com.joaoapps.faciplac.carona.view.utils.AppUtil;
+import br.com.joaoapps.faciplac.carona.view.utils.NotificationUtils;
 import br.com.joaoapps.faciplac.carona.view.utils.Preferences;
 
 public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener, DialogItemMapView.OnEventesCaronaUsuarioDetailed {
@@ -79,6 +83,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     private CircleImageView imgProfile;
     private ChatDialogView mChatDialog;
     private boolean hasDistanceMin;
+    private final int ID_NOTIFICATION_MESSAGE = 1;
 
 
     @Override
@@ -142,17 +147,21 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
                     ComunicationCaronaBody comunicationCaronaBody = (ComunicationCaronaBody) intent.getSerializableExtra(ENTRY_COMUNICATION);
                     switch (comunicationCaronaBody.getStep()) {
                         case ComunicationCaronaBody.STEP_ONE_COMUNICATION:
-                            teratmentInitComunication(comunicationCaronaBody);
+                            treatmentInitCommunication(comunicationCaronaBody);
                             break;
                         case ComunicationCaronaBody.STEP_TWO_ACCEPT:
+                            Answers.getInstance().logCustom(new CustomEvent("Carona Aceita"));
                             treatmentResponseCommunication(comunicationCaronaBody.getOtherUser());
                             break;
 
                         case ComunicationCaronaBody.STEP_TWO_DENIED:
-                            treatmentDeniedComunication(comunicationCaronaBody);
+                            Answers.getInstance().logCustom(new CustomEvent("Carona Recusada"));
+                            treatmentDeniedCommunication(comunicationCaronaBody);
                             break;
                         case ComunicationCaronaBody.RECEIVE_MESSAGE:
-                            treatmentReceiveMessage(comunicationCaronaBody);
+                            if (comunicationCaronaBody.getOtherUser().getStatusCarona() != mUsuarioCarona.getStatusCarona()) {
+                                treatmentReceiveMessage(comunicationCaronaBody);
+                            }
                             break;
                     }
                 } catch (Exception e) {
@@ -164,19 +173,34 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     }
 
     private void treatmentReceiveMessage(ComunicationCaronaBody comunicationCaronaBody) {
-        AppUtil.vibrate(HomeAlunoActivity.this, 30);
         if (!mChatDialog.isPrepared()) {
             mChatDialog.show();
-            mChatDialog.prepareChat(this, mUsuarioCarona, comunicationCaronaBody.getOtherUser(), message1 ->
+            mChatDialog.prepareChat(this, getCallbackExpand(), mUsuarioCarona, comunicationCaronaBody.getOtherUser(), message1 ->
                     new UsuarioRestService(HomeAlunoActivity.this).sendMessageChat(mUsuarioCarona, comunicationCaronaBody.getOtherUser(), message1, getCallbackSendMessage()));
         }
         if (!mChatDialog.isExpanded()) {
             mChatDialog.expand();
         }
+
+        if (!AppUtil.isOpeningApp(this) || (AppUtil.isOpeningApp(this) && !mChatDialog.isExpanded())) {
+            AppUtil.vibrate(HomeAlunoActivity.this, 30);
+            NotificationUtils.showNotification(this, ID_NOTIFICATION_MESSAGE, comunicationCaronaBody.getOtherUser().getNome(), comunicationCaronaBody.getMessage());
+        }
         mChatDialog.sendMessage(comunicationCaronaBody.getMessage(), comunicationCaronaBody.getOtherUser());
     }
 
-    private void treatmentDeniedComunication(final ComunicationCaronaBody comunicationCaronaBody) {
+    private OwlBottomSheetBaseJv.OnExpandBottomSheetListener getCallbackExpand() {
+        return new OwlBottomSheetBaseJv.OnExpandBottomSheetListener() {
+            @Override
+            public void onExpand() {
+                if (AppUtil.isOpeningApp(HomeAlunoActivity.this)) {
+                    NotificationUtils.cancelNotification(HomeAlunoActivity.this, ID_NOTIFICATION_MESSAGE);
+                }
+            }
+        };
+    }
+
+    private void treatmentDeniedCommunication(final ComunicationCaronaBody comunicationCaronaBody) {
         String message = "";
         switch (comunicationCaronaBody.getMyUser().getStatusCarona()) {
             case RECEBER_CARONA:
@@ -196,7 +220,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     private void treatmentResponseCommunication(final CaronaUsuario otherUser) {
         AppUtil.vibrate(HomeAlunoActivity.this, 200);
         mChatDialog.show();
-        mChatDialog.prepareChat(this, mUsuarioCarona, otherUser, message1 ->
+        mChatDialog.prepareChat(this, getCallbackExpand(), mUsuarioCarona, otherUser, message1 ->
                 new UsuarioRestService(HomeAlunoActivity.this).sendMessageChat(mUsuarioCarona, otherUser, message1, getCallbackSendMessage()));
         mChatDialog.expand();
         new UsuarioRestService(this).sendMessageChat(mUsuarioCarona, otherUser, "", getCallbackSendMessage());
@@ -216,14 +240,16 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         };
     }
 
-    private void teratmentInitComunication(final ComunicationCaronaBody comunicationCaronaBody) {
+    private void treatmentInitCommunication(final ComunicationCaronaBody comunicationCaronaBody) {
         String message = "";
         switch (comunicationCaronaBody.getMyUser().getStatusCarona()) {
             case RECEBER_CARONA:
                 message = ("Olá " + (comunicationCaronaBody.getMyUser().getNome().concat(", você aceita uma carona?")));
+                Answers.getInstance().logCustom(new CustomEvent("Ofereceu carona"));
                 break;
             case DAR_CARONA:
                 message = ("Olá " + (comunicationCaronaBody.getMyUser().getNome().concat(", você poderia me da uma carona?")));
+                Answers.getInstance().logCustom(new CustomEvent("Pediu carona"));
                 break;
         }
         final ComunicationDialogFragment popupAlert = ComunicationDialogFragment.newInstance(message, comunicationCaronaBody.getStatusCarona(), comunicationCaronaBody.getMyUser(), comunicationCaronaBody.getOtherUser());
@@ -469,7 +495,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     }
 
     @Override
-    public void onClickComunication(final CaronaUsuario caronaUsuarioSelecionado) {
+    public void onClickCommunication(final CaronaUsuario caronaUsuarioSelecionado) {
         UsuarioRestService usuarioRestService = new UsuarioRestService(this);
         if (statusCarona == StatusCarona.DAR_CARONA) {
             usuarioRestService.oferecerCarona(mUsuarioCarona, caronaUsuarioSelecionado, getCallback());

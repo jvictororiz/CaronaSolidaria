@@ -13,7 +13,6 @@ import java.util.Map;
 
 import br.com.joaoapps.faciplac.carona.model.CaronaUsuario;
 import br.com.joaoapps.faciplac.carona.model.enums.StatusCarona;
-import br.com.joaoapps.faciplac.carona.view.componentes.chat.objects.Message;
 
 /**
  * Created by joaov on 19/11/2017.

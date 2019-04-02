@@ -1,6 +1,5 @@
 package br.com.joaoapps.faciplac.carona.service.firebase.push;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -8,21 +7,17 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 
 import com.joaov.faciplac.caronasolidaria.R;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Map;
-import java.util.Random;
 
 import br.com.joaoapps.faciplac.carona.service.firebase.push.objects.ComunicationCaronaBody;
 import br.com.joaoapps.faciplac.carona.view.activity.HomeAlunoActivity;
 import br.com.joaoapps.faciplac.carona.view.activity.LoginActivity;
-import br.com.joaoapps.faciplac.carona.view.activity.dialogs.ComunicationDialogFragment;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
@@ -67,7 +62,7 @@ public class PushFirebaseReceiver extends FirebaseMessagingService {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             icon = R.drawable.icon;
         } else {
-            icon = R.drawable.icon_noticication;
+            icon = R.drawable.icon_carona;
         }
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {

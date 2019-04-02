@@ -163,7 +163,7 @@ public class DialogItemMapView extends LinearLayout {
         llBodyExpanded.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                onEventesCaronaUsuarioDetailed.onClickComunication(caronaUsuario);
+                onEventesCaronaUsuarioDetailed.onClickCommunication(caronaUsuario);
             }
         });
     }
@@ -238,6 +238,6 @@ public class DialogItemMapView extends LinearLayout {
 
         void onCall(String number);
 
-        void onClickComunication(CaronaUsuario caronaUsuario);
+        void onClickCommunication(CaronaUsuario caronaUsuario);
     }
 }

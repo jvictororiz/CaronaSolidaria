@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +23,6 @@ import java.util.Objects;
 import br.com.joaoapps.faciplac.carona.model.CaronaUsuario;
 import br.com.joaoapps.faciplac.carona.model.enums.StatusCarona;
 import br.com.joaoapps.faciplac.carona.service.firebase.push.objects.ComunicationCaronaBody;
-import br.com.joaoapps.faciplac.carona.service.rest.UsuarioRestService;
 
 public class ComunicationDialogFragment extends AppCompatDialogFragment {
     private final int TIME_TO_RESPONSE = 59000;

@@ -143,7 +143,7 @@ package br.com.joaoapps.faciplac.carona.view.activity.maps;//package br.com.caba
 //    }
 //
 //    @Override
-//    public void onClickComunication(Location location) {
+//    public void onClickCommunication(Location location) {
 //        String uri = "";
 //        Intent intent;
 //        try {

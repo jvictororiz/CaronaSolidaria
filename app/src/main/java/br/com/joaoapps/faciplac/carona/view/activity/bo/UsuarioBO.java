@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 
 import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.LoginEvent;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import br.com.joaoapps.faciplac.carona.SuperApplication;
@@ -17,7 +19,6 @@ import br.com.joaoapps.faciplac.carona.service.email.EmailService;
 import br.com.joaoapps.faciplac.carona.service.exceptions.Code;
 import br.com.joaoapps.faciplac.carona.service.firebase.UsuarioFirebase;
 import br.com.joaoapps.faciplac.carona.service.firebase.push.objects.Notification;
-import br.com.joaoapps.faciplac.carona.service.listeners.OnResetSenha;
 import br.com.joaoapps.faciplac.carona.service.rest.OnEventListenerAbstract;
 import br.com.joaoapps.faciplac.carona.service.rest.UsuarioRestService;
 import br.com.joaoapps.faciplac.carona.view.activity.AguardandoAprovacaoActivity;
@@ -40,16 +41,16 @@ public class UsuarioBO {
             @Override
             public void onSuccess(Usuario usuario) {
                 SuperActivity.closeDialogLoad();
-                String tocken = FirebaseInstanceId.getInstance().getToken();
-                if (tocken != null) {
-                    usuario.setPushId(tocken);
+                String token = FirebaseInstanceId.getInstance().getToken();
+                if (token != null) {
+                    usuario.setPushId(token);
                     UsuarioFirebase.saveOrUpdate(usuario);
                 }
                 if (usuario.getStatus() == Status.ALUNO) {
                     if (usuario.getAutenticado().getSituacao() == Situacao.APROVADO) {
                         Intent intent = new Intent(context, RegistroLocalizacaoActivity.class);
                         intent.putExtra("USUARIO", usuario);
-                        fabricLogUser(usuario);
+                        registerLogsUserLogin(usuario);
                         SuperActivity.startActivityMessagePositive(context, intent, "Login realizado\ncom sucesso !");
                     } else {
                         Intent intent = new Intent(context, AguardandoAprovacaoActivity.class);
@@ -78,10 +79,14 @@ public class UsuarioBO {
         });
     }
 
-    private static void fabricLogUser(Usuario usuario) {
+    private static void registerLogsUserLogin(Usuario usuario) {
         Crashlytics.setUserIdentifier(usuario.getCpf());
         Crashlytics.setUserEmail(usuario.getEmail());
         Crashlytics.setUserName(usuario.getNome());
+
+        Answers.getInstance().logLogin(new LoginEvent()
+                .putMethod("Matrícula")
+                .putSuccess(true));
     }
 
     public static void editUser(final Bitmap bitmap, final Usuario usuario, final AppCompatActivity context) {

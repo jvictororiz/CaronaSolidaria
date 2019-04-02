@@ -34,8 +34,8 @@ public class SuperApplication extends Application {
 
         try {
             startService(new Intent(getBaseContext(), ServiceFinishIntent.class));
-        } catch (Exception ignore) {
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

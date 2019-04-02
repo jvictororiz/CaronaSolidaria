@@ -2,6 +2,7 @@ package br.com.joaoapps.faciplac.carona.view.utils;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.DownloadManager;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
@@ -131,6 +132,10 @@ public class AppUtil {
             e.printStackTrace();
         }
         return Base64.encodeToString(byteArray, Base64.DEFAULT);
+    }
+
+    public static boolean isOpeningApp(Context context) {
+        return ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE)).getRunningAppProcesses().get(0).importance == 100;
     }
 
     public static byte[] getBytesFromBitmap(Bitmap bitmap) {

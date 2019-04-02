@@ -28,7 +28,7 @@
     <string name="visualizar_perfil">Visualizar perfil</string>
     <string name="fechar">Fechar</string>
     <string name="entrar">Entrar</string>
-    <string name="nenhum_aluno_encontrado">Nenhum aluno\n encontrado</string>
+    <string name="nenhum_aluno_encontrado">Nenhum aluno \nnovo encontrado</string>
     <string name="date_header_today">Hoje</string>
     <string name="date_header_yesterday">Ontem</string>
 </resources>

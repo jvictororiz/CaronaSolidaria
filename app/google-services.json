@@ -8,6 +8,68 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:584129304813:android:7096f4a3b3b963fc",
+        "android_client_info": {
+          "package_name": "br.com.jvroriz.caronasolidaria.faciplac"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "584129304813-qlv4rui9oh0nmv2ppon5bpc7ii9cv8ud.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOYSuaefkWdOyHkPs2HgPPBxfrmz-lPgs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:584129304813:android:05f175dee35afc5a",
+        "android_client_info": {
+          "package_name": "br.pedroso.mlkitsample"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "584129304813-qlv4rui9oh0nmv2ppon5bpc7ii9cv8ud.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOYSuaefkWdOyHkPs2HgPPBxfrmz-lPgs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:584129304813:android:b2d5af95628a9afd",
         "android_client_info": {
           "package_name": "com.example.joaov.caronasolidaria"

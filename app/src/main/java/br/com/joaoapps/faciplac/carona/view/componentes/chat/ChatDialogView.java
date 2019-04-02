@@ -61,9 +61,10 @@ public class ChatDialogView extends OwlBottomSheetJv implements DateFormatter.Fo
     }
 
 
-    public void prepareChat(AppCompatActivity activity, final CaronaUsuario myUser, final CaronaUsuario otherUser, OnSendMessage onSendMessage) {
+    public void prepareChat(AppCompatActivity activity, OnExpandBottomSheetListener onExpandBottomSheetListener, final CaronaUsuario myUser, final CaronaUsuario otherUser, OnSendMessage onSendMessage) {
         prepared = true;
         setActivityView(activity);
+        setOnExpandBottomSheetListener(onExpandBottomSheetListener);
         this.otherUser = new UsuarioMessage(otherUser);
         messageInput.setInputListener(input -> {
             sendMessage(input.toString(), myUser);
@@ -72,6 +73,7 @@ public class ChatDialogView extends OwlBottomSheetJv implements DateFormatter.Fo
             }
             return true;
         });
+
 
         initAdapter(myUser);
         imgClose.setOnClickListener(view -> collapse());
