@@ -5,6 +5,8 @@ import com.crashlytics.android.answers.CustomEvent;
 import com.elconfidencial.bubbleshowcase.BubbleShowCase;
 import com.elconfidencial.bubbleshowcase.BubbleShowCaseBuilder;
 import com.elconfidencial.bubbleshowcase.BubbleShowCaseSequence;
+import com.google.maps.android.MarkerManager;
+import com.google.maps.android.clustering.Cluster;
 import com.joaov.faciplac.caronasolidaria.R;
 import com.github.abdularis.civ.CircleImageView;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -64,32 +66,35 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     private static final int REQUEST_PHONE_CALL = 115;
     private static final long TIME_TO_CLOSE_BACK = 2000;
     public static final String ENTRY_COMUNICATION = "ENTRY_COMUNICATION";
+    private final int ID_NOTIFICATION_MESSAGE = 1;
 
+    private Location locationActual;
+    private ViewGroup viewMyLocation, llBodyProfile;
+    public GoogleMap mMap;
+    private ClusterManager<MarkerItem> mClusterManager;
+    private List<CaronaUsuario> listUsers;
     private StatusCarona statusCarona;
     private Usuario usuario;
     private CaronaUsuario mUsuarioCarona;
     private CaronaUsuario caronaUsuarioSelecionado;
-    private Location locationActual;
-    private ViewGroup viewMyLocation, llBodyProfile;
-    private ClusterManager<MarkerItem> mClusterManager;
-    private List<CaronaUsuario> listUsers;
-    public GoogleMap mMap;
     private DialogItemMapView dialogSelectorItemMapView;
     private SearchViewHV searchViewHV;
     private CaronaUsuarioDialogBottom caronaUsuarioDialogBottom;
-    private String numberTelephone;
-    private boolean hasClose;
-    private BroadcastReceiver receiver;
+    private ReceiverPushBroadcastReceiver receiver;
     private CircleImageView imgProfile;
     private ChatDialogView mChatDialog;
+    private ComunicationDialogFragment popupAlertPendent;
+    private String numberTelephone;
+    private boolean hasClose;
     private boolean hasDistanceMin;
-    private final int ID_NOTIFICATION_MESSAGE = 1;
+    private boolean isFirstSearch;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_aluno);
+        isFirstSearch = true;
         try {
             SuperActivity.closeDialogLoad();
             registerReceiver();
@@ -140,7 +145,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     }
 
     private void registerReceiver() {
-        receiver = new BroadcastReceiver() {
+        receiver = new ReceiverPushBroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 try {
@@ -169,7 +174,11 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
                 }
             }
         };
-        registerReceiver(receiver, new IntentFilter(PushFirebaseReceiver.INTENT_FILTER_USER_COMUNICATION));
+        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        filter.addAction(PushFirebaseReceiver.INTENT_FILTER_USER_COMUNICATION);
+        registerReceiver(receiver, filter);
+
     }
 
     private void treatmentReceiveMessage(ComunicationCaronaBody comunicationCaronaBody) {
@@ -183,8 +192,9 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         }
 
         if (!AppUtil.isOpeningApp(this) || (AppUtil.isOpeningApp(this) && !mChatDialog.isExpanded())) {
-            AppUtil.vibrate(HomeAlunoActivity.this, 30);
             NotificationUtils.showNotification(this, ID_NOTIFICATION_MESSAGE, comunicationCaronaBody.getOtherUser().getNome(), comunicationCaronaBody.getMessage());
+        } else {
+            AppUtil.vibrate(HomeAlunoActivity.this, 30);
         }
         mChatDialog.sendMessage(comunicationCaronaBody.getMessage(), comunicationCaronaBody.getOtherUser());
     }
@@ -252,11 +262,17 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
                 Answers.getInstance().logCustom(new CustomEvent("Pediu carona"));
                 break;
         }
+
+
         final ComunicationDialogFragment popupAlert = ComunicationDialogFragment.newInstance(message, comunicationCaronaBody.getStatusCarona(), comunicationCaronaBody.getMyUser(), comunicationCaronaBody.getOtherUser());
-        popupAlert.show(getSupportFragmentManager(), comunicationCaronaBody.getOtherUser().getCpfUsuario());
-        popupAlert.setCancelable(true);
-        popupAlert.initTimeToDeny();
-        AppUtil.vibrate(HomeAlunoActivity.this, 200);
+
+        if (!AppUtil.isOpeningApp(this)) {
+            NotificationUtils.showNotification(this, ID_NOTIFICATION_MESSAGE, comunicationCaronaBody.getOtherUser().getNome(), message);
+            this.popupAlertPendent = popupAlert;
+        } else {
+            initPopupTime(popupAlert);
+        }
+
 
         popupAlert.configToStepOne(new ComunicationDialogFragment.OnClickButtons() {
             @Override
@@ -279,6 +295,13 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         });
     }
 
+    private void initPopupTime(ComunicationDialogFragment popupAlert) {
+        popupAlert.show(getSupportFragmentManager(), usuario.getCpf());
+        popupAlert.setCancelable(true);
+        popupAlert.initTimeToDeny();
+        AppUtil.vibrate(HomeAlunoActivity.this, 200);
+    }
+
     private void sendFeedbackToOtherUser(ComunicationCaronaBody comunicationCaronaBody, boolean accept) {
         UsuarioRestService usuarioRestService = new UsuarioRestService(this);
         if (accept) {
@@ -297,11 +320,13 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     @Override
     protected void onResume() {
         super.onResume();
-        if (mUsuarioCarona != null) {
-            CaronaUsuarioFirebase.openOrUpdate(this, mUsuarioCarona);
+        if (popupAlertPendent != null) {
+            initPopupTime(popupAlertPendent);
+            popupAlertPendent = null;
         }
         searchViewHV.clearFocousSearch();
     }
+
 
     private void initViews() {
         viewMyLocation = findViewById(R.id.ll_body_mylocation);
@@ -349,10 +374,11 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     }
 
     private void findAllUsers() {
-        CaronaUsuarioFirebase.getAll(new OnEventListenerAbstract<List<CaronaUsuario>>() {
+        CaronaUsuarioFirebase.getAll(this, new OnEventListenerAbstract<List<CaronaUsuario>>() {
             @Override
-            public void onSuccess(List<CaronaUsuario> usuarioFirebase) {
-                listUsers = usuarioFirebase;
+            public void onSuccess(List<CaronaUsuario> userFirebase) {
+                listUsers = userFirebase;
+                closeDialogIfOtherUserExit(listUsers);
                 setUpClusterer();
 
             }
@@ -364,6 +390,18 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         });
     }
 
+    private void closeDialogIfOtherUserExit(List<CaronaUsuario> listUsers) {
+        if (mChatDialog.isPrepared()) {
+            for (CaronaUsuario otherUser : listUsers) {
+                if (mChatDialog.equalsUser(otherUser.getCpfUsuario())) {
+                    AlertUtils.showAlert(otherUser.getNome() + " saiu da conversa", this);
+                    mChatDialog.closeDialog();
+                    return;
+                }
+            }
+        }
+    }
+
     private View.OnClickListener callbackGoToEditProfile() {
         return view -> CadastroActivity.start(HomeAlunoActivity.this, usuario);
     }
@@ -373,11 +411,11 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         imgProfile.setOnClickListener(callbackGoToEditProfile());
 
         findViewById(R.id.toolbar).findViewById(R.id.toolbar_back).setOnClickListener(view -> {
-            CaronaUsuarioFirebase.exit(HomeAlunoActivity.this, Preferences.getLastCpfLogged(HomeAlunoActivity.this));
             finishAnim();
         });
         searchViewHV.configEventChangeType(statusCarona, statusCarona -> {
             if (mUsuarioCarona != null) {
+                isFirstSearch = true;
                 HomeAlunoActivity.this.statusCarona = statusCarona;
                 if (statusCarona == StatusCarona.DAR_CARONA && hasDistanceMin) {
                     searchViewHV.showMinDistanceViews();
@@ -396,7 +434,6 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
         searchViewHV.setRefreshListener(view -> {
             initGps();
             mClusterManager = null;
-            findAllUsers();
         });
         searchViewHV.hideMinDistanceViews();
         searchViewHV.setListenerCheckbox((buttonView, isChecked) -> {
@@ -408,7 +445,12 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
             }
         });
 
-        searchViewHV.setListenerDistance(distance -> findAllUsers());
+        searchViewHV.setListenerDistance(new SearchViewHV.OnDistanceListener() {
+            @Override
+            public void changed(long distance) {
+                setUpClusterer();
+            }
+        });
 
         caronaUsuarioDialogBottom = new CaronaUsuarioDialogBottom(this);
 
@@ -496,12 +538,29 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
 
     @Override
     public void onClickCommunication(final CaronaUsuario caronaUsuarioSelecionado) {
-        UsuarioRestService usuarioRestService = new UsuarioRestService(this);
-        if (statusCarona == StatusCarona.DAR_CARONA) {
-            usuarioRestService.oferecerCarona(mUsuarioCarona, caronaUsuarioSelecionado, getCallback());
-        } else {
-            usuarioRestService.pedirCarona(mUsuarioCarona, caronaUsuarioSelecionado, getCallback());
-        }
+        CaronaUsuarioFirebase.isOnline(caronaUsuarioSelecionado.getCpfUsuario(), new OnEventListenerAbstract<Boolean>() {
+            @Override
+            public void onSuccess(Boolean isOnline) {
+                super.onSuccess(isOnline);
+
+                if (isOnline) {
+                    UsuarioRestService usuarioRestService = new UsuarioRestService(HomeAlunoActivity.this);
+                    if (statusCarona == StatusCarona.DAR_CARONA) {
+                        usuarioRestService.oferecerCarona(mUsuarioCarona, caronaUsuarioSelecionado, getCallback());
+                    } else {
+                        usuarioRestService.pedirCarona(mUsuarioCarona, caronaUsuarioSelecionado, getCallback());
+                    }
+                } else {
+                    AlertUtils.showAlert("Este usuário parece não está mais disponível, por favor, clique no ícone de atualização para obter os alunos on-line.", HomeAlunoActivity.this);
+                }
+            }
+
+            @Override
+            public void onError(int erro) {
+                super.onError(erro);
+                Toast.makeText(HomeAlunoActivity.this, "Ação não pode ser completada, verifique sua conexão.", Toast.LENGTH_SHORT).show();
+            }
+        });
         hideDetailedEstablishementSelected();
     }
 
@@ -557,11 +616,11 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
             }
             mClusterManager = new ClusterManager<>(this, mMap);
             mClusterManager.setRenderer(new CustomRender(this, mMap, mClusterManager));
+            setClicksInPoints();
             mMap.setOnCameraIdleListener(mClusterManager);
             mMap.setOnMapClickListener(this);
             mMap.setOnMarkerClickListener(mClusterManager);
             convertEstablishmentInPointer(query);
-            setClicksInPoints();
         }
         if (mClusterManager != null) {
             mClusterManager.cluster();
@@ -608,16 +667,19 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
                     mClusterManager.addItem(markItem);
                 }
             }
-            if (empty) {
-                AlertUtils.showAlert("Nenhum usuário compativel online no momento.", this);
-            } else {
-                int count = mClusterManager.getAlgorithm().getItems().size();
-                if (count > 1) {
-                    AlertUtils.showInfo(count + " alunos online no momento", this);
-                } else {
-                    AlertUtils.showInfo("Apenas um usuário online no momento", this);
-                }
 
+            if (isFirstSearch || !query.isEmpty()) {
+                if (empty) {
+                    AlertUtils.showInfo("Nenhum usuário compativel online no momento.", this);
+                } else {
+                    int count = mClusterManager.getAlgorithm().getItems().size();
+                    if (count > 1) {
+                        AlertUtils.showInfo(count + " alunos online no momento", this);
+                    } else {
+                        AlertUtils.showInfo("Apenas um usuário online no momento", this);
+                    }
+                }
+                isFirstSearch = false;
             }
         }
     }
@@ -630,7 +692,6 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
             locOne.setLongitude(meuUsuarioCarona.getPositionResidence().getLongitude());
             locTwo.setLatitude(caronaUsuario.getPositionResidence().getLatitude());
             locTwo.setLongitude(caronaUsuario.getPositionResidence().getLongitude());
-            //TODO: REVER ESSA REGRA DE NEGOCIO (Tem que ver se o cara que pede carona tem que diminuir a distancia de acordo com quem oferece) Vai ter que colocar um atributo distanciaMinima no usuario e comparar o do cara que quer dar carona ao invés de colocar 2000f
             float distanceMin = meuUsuarioCarona.getStatusCarona() == StatusCarona.DAR_CARONA ? searchViewHV.getDistanceMin() : 2000f;
             return locOne.distanceTo(locTwo) <= distanceMin;
         } else {
@@ -680,6 +741,7 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
             return;
         }
         if (hasClose) {
+            CaronaUsuarioFirebase.exit(this, mUsuarioCarona.getCpfUsuario());
             super.onBackPressed();
         } else {
             Toast.makeText(HomeAlunoActivity.this, "Aperte mais uma vez para sair", Toast.LENGTH_SHORT).show();
@@ -749,13 +811,13 @@ public class HomeAlunoActivity extends LocationActivity implements OnMapReadyCal
     @Override
     protected void onPause() {
         super.onPause();
-        CaronaUsuarioFirebase.exit(this, Preferences.getLastCpfLogged(this));
+//        CaronaUsuarioFirebase.exit(this, Preferences.getLastCpfLogged(this));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(receiver);
+//        unregisterReceiver(receiver);
     }
 
     private boolean validateUser(CaronaUsuario caronaUsuario, String query) {

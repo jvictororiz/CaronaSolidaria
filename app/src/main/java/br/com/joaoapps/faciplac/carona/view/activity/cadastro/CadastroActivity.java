@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -27,6 +28,7 @@ import br.com.joaoapps.faciplac.carona.model.enums.Situacao;
 import br.com.joaoapps.faciplac.carona.model.enums.Status;
 import br.com.joaoapps.faciplac.carona.view.activity.RegistroLocalizacaoActivity;
 import br.com.joaoapps.faciplac.carona.view.activity.SuperActivity;
+import br.com.joaoapps.faciplac.carona.view.activity.TermsOfUseActivity;
 import br.com.joaoapps.faciplac.carona.view.activity.bo.UsuarioBO;
 import br.com.joaoapps.faciplac.carona.view.componentes.attach.AttachProfileView;
 import br.com.joaoapps.faciplac.carona.view.utils.AlertUtils;
@@ -51,6 +53,8 @@ public class CadastroActivity extends SuperActivity {
 
     private Usuario usuario;
     private boolean isEdition;
+    private View tvTerm;
+    private CheckBox ckAcceptTerm;
 
     public static void start(Activity context, Usuario usuario) {
         Intent starter = new Intent(context, CadastroActivity.class);
@@ -73,6 +77,8 @@ public class CadastroActivity extends SuperActivity {
         attachProfileView = findViewById(R.id.attach_profile);
         tvAddress = findViewById(R.id.tv_address);
         llLocation = findViewById(R.id.ll_body_location);
+        tvTerm = findViewById(R.id.tv_term);
+        ckAcceptTerm = findViewById(R.id.spn_accept_term);
         setConfigs();
 
         isEdition = usuario != null;
@@ -88,6 +94,13 @@ public class CadastroActivity extends SuperActivity {
         } else {
             llLocation.setVisibility(View.GONE);
         }
+
+        tvTerm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(CadastroActivity.this, TermsOfUseActivity.class));
+            }
+        });
 
 
     }
@@ -118,6 +131,7 @@ public class CadastroActivity extends SuperActivity {
         edtCpf.setAlpha(0.3f);
         edtMatricula.setEnabled(false);
         edtMatricula.setAlpha(0.3f);
+        ckAcceptTerm.setChecked(true);
         findViewById(R.id.input_confirm_password).setVisibility(View.GONE);
         findViewById(R.id.input_password).setVisibility(View.GONE);
 
@@ -131,7 +145,6 @@ public class CadastroActivity extends SuperActivity {
 
     //CADASTRO  AQUI
     public void clickCadastrar(View view) {
-
         if (!validateFieldsEmpty()) {
             AlertUtils.showAlert("Preencha todos os campos", this);
             return;
@@ -161,6 +174,10 @@ public class CadastroActivity extends SuperActivity {
             if (!validateForcePassword()) {
                 AlertUtils.showAlert("Senha deve ter no mínimo 4 caracteres", this);
                 return;
+            }
+
+            if (!ckAcceptTerm.isChecked()) {
+                AlertUtils.showAlert("Você deve aceitar os termos de condição e uso para prosseguir com o cadasro.", this);
             }
             UsuarioBO.registerOrEditUser(attachProfileView.getBitmap(), usuario, this);
         } else {

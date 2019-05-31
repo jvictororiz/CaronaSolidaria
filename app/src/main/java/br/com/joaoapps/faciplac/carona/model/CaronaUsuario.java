@@ -2,6 +2,7 @@ package br.com.joaoapps.faciplac.carona.model;
 
 
 import java.io.Serializable;
+import java.util.Date;
 
 import br.com.joaoapps.faciplac.carona.SuperApplication;
 import br.com.joaoapps.faciplac.carona.model.enums.StatusCarona;
@@ -18,6 +19,7 @@ public class CaronaUsuario implements Serializable {
     private String nome;
     private String pushId;
     private String celular;
+    public long dateLastLogin;
     private StatusCarona statusCarona;
     private LatLng positionResidence;
     private String urlFoto;
@@ -35,6 +37,7 @@ public class CaronaUsuario implements Serializable {
         this.nome = nome;
         this.positionResidence = positionResidence;
         this.pushId = pushId;
+        dateLastLogin = new Date().getTime();
         this.statusCarona = statusCarona;
     }
 
@@ -44,6 +47,14 @@ public class CaronaUsuario implements Serializable {
             return token;
         }
         return pushId;
+    }
+
+    public void setDateLastLogin(long dateLastLogin) {
+        this.dateLastLogin = dateLastLogin;
+    }
+
+    public long getDateLastLogin() {
+        return dateLastLogin;
     }
 
     public void setPushId(String pushId) {

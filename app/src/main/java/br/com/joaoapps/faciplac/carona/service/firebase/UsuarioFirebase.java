@@ -149,7 +149,6 @@ public class UsuarioFirebase {
                 onRefershAlunos.onError(databaseError.getCode());
             }
         };
-
         firebaseReference.addValueEventListener(postListener);
     }
 

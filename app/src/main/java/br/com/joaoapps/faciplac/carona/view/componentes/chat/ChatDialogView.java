@@ -62,6 +62,7 @@ public class ChatDialogView extends OwlBottomSheetJv implements DateFormatter.Fo
 
 
     public void prepareChat(AppCompatActivity activity, OnExpandBottomSheetListener onExpandBottomSheetListener, final CaronaUsuario myUser, final CaronaUsuario otherUser, OnSendMessage onSendMessage) {
+        setVisibility(VISIBLE);
         prepared = true;
         setActivityView(activity);
         setOnExpandBottomSheetListener(onExpandBottomSheetListener);
@@ -112,6 +113,10 @@ public class ChatDialogView extends OwlBottomSheetJv implements DateFormatter.Fo
         }
     }
 
+    public boolean equalsUser(String cpf) {
+        return otherUser != null && otherUser.getUser() != null && otherUser.getUser().getCpfUsuario().equals("cpf");
+    }
+
     private Message bindMessage(String message, UsuarioMessage usuarioMessage) {
         return new Message(message, usuarioMessage.getId(), usuarioMessage, new Date(), this.otherUser.getAvatar());
     }
@@ -125,6 +130,13 @@ public class ChatDialogView extends OwlBottomSheetJv implements DateFormatter.Fo
         } else {
             return DateFormatter.format(date, DateFormatter.Template.STRING_DAY_MONTH_YEAR);
         }
+    }
+
+    public void closeDialog() {
+        prepared = false;
+        collapse();
+        setVisibility(INVISIBLE);
+
     }
 
     public interface OnSendMessage {

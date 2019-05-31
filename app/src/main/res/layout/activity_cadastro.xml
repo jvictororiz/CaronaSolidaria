@@ -51,8 +51,8 @@
                         android:id="@+id/tv_address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="90dp"
                         android:layout_marginStart="20dp"
+                        android:layout_marginEnd="90dp"
                         tools:text="Distrito federa, casa 80 setor leste gama df" />
 
                     <TextView
@@ -90,8 +90,8 @@
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="3dp"
                     android:layout_marginTop="10dp"
+                    android:layout_marginBottom="3dp"
                     android:background="@drawable/shape_white_line"
                     android:gravity="center"
                     android:textColorHint="@color/cinzaLetra">
@@ -222,11 +222,35 @@
                 </android.support.design.widget.TextInputLayout>
 
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="3dp"
+                    android:background="@drawable/shape_white_line"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:textColorHint="@color/cinzaLetra">
+
+                    <CheckBox
+                        android:id="@+id/spn_accept_term"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/tv_term"
+                        android:layout_marginStart="15dp"
+                        android:text="Aceito os termos e condições de uso"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
                     android:layout_marginTop="25dp"
+                    android:layout_marginBottom="20dp"
                     android:onClick="clickCadastrar"
                     android:text="@string/cadastrar" />
             </LinearLayout>

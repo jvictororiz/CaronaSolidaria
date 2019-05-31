@@ -9,7 +9,6 @@ import com.joaov.faciplac.caronasolidaria.R;
 import java.util.Locale;
 
 import br.com.joaoapps.faciplac.carona.model.Usuario;
-import br.com.joaoapps.faciplac.carona.service.ServiceFinishIntent;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
@@ -32,11 +31,11 @@ public class SuperApplication extends Application {
                 .setFontAttrId(R.attr.fontPath)
                 .build());
 
-        try {
-            startService(new Intent(getBaseContext(), ServiceFinishIntent.class));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            startService(new Intent(getBaseContext(), ServiceFinishIntent.class));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     public static Locale getLocale() {

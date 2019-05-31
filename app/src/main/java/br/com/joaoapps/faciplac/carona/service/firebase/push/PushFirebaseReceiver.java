@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.joaov.faciplac.caronasolidaria.R;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -15,9 +16,11 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Map;
 
+import br.com.joaoapps.faciplac.carona.model.Usuario;
 import br.com.joaoapps.faciplac.carona.service.firebase.push.objects.ComunicationCaronaBody;
 import br.com.joaoapps.faciplac.carona.view.activity.HomeAlunoActivity;
 import br.com.joaoapps.faciplac.carona.view.activity.LoginActivity;
+import kotlin.jvm.Throws;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
@@ -32,6 +35,7 @@ public class PushFirebaseReceiver extends FirebaseMessagingService {
     public void onMessageReceived(final RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
         if (remoteMessage.getData().size() > 0) {
+            Log.i("apagar", remoteMessage.getData().toString());
             trataPushDados(remoteMessage.getData());
         }
         if (remoteMessage.getNotification() != null) {
@@ -44,7 +48,8 @@ public class PushFirebaseReceiver extends FirebaseMessagingService {
         try {
             ComunicationCaronaBody comunicationCaronaBody = new ComunicationCaronaBody(data);
             Intent intent = new Intent(INTENT_FILTER_USER_COMUNICATION);
-            intent.putExtra(HomeAlunoActivity.ENTRY_COMUNICATION,comunicationCaronaBody );
+            intent.putExtra(HomeAlunoActivity.ENTRY_COMUNICATION, comunicationCaronaBody);
+
             sendBroadcast(intent);
         } catch (Exception e) {
             e.printStackTrace();

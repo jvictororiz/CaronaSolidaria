@@ -101,6 +101,24 @@ public class DateUtils {
         return (dateMonth == thisMonth) && (dateYear == thisYear) && (dateDay == thisDay);
     }
 
+    public static boolean inAcceptableTime(Date date, int hours) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date(System.currentTimeMillis()));
+        int thisMonth = calendar.get(Calendar.MONTH);
+        int thisYear = calendar.get(Calendar.YEAR);
+        int thisDay = calendar.get(Calendar.DAY_OF_MONTH);
+        int thisHour = calendar.get(Calendar.HOUR);
+        calendar.setTime(date);
+        int dateMonth = calendar.get(Calendar.MONTH);
+        int dateYear = calendar.get(Calendar.YEAR);
+        int dateDay = calendar.get(Calendar.DAY_OF_MONTH);
+        int dateHour = calendar.get(Calendar.HOUR);
+        return (dateMonth == thisMonth) &&
+                (dateYear == thisYear) &&
+                (dateDay == thisDay) &&
+                (thisHour - dateHour) <= hours;
+    }
+
     public static long diferenceDays(Date maior, Date menor) {
 
         long DAY = 24L * 60L * 60L * 1000L;
@@ -228,7 +246,7 @@ public class DateUtils {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(dataReturn);
 
-        return  calendar.get(Calendar.MINUTE);
+        return calendar.get(Calendar.MINUTE);
 
     }
 }
